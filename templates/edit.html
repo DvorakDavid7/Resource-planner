@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Main table</title>
+        <style>
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: center;
+              padding: 8px;
+            }
+
+            tr:nth-child(even) {
+              background-color: #dddddd;
+            }
+
+            td:nth-child(7) {
+              background-color: #7fff00;
+            }
+
+
+            tr:hover {
+              background-color: lightblue;
+            }
+            /* td:hover {
+              background-color: lightblue;
+            } */
+
+
+        </style>
+    </head>
+
+    <body>
+        <h3>Edit plan: {{ user_id }}</h3>
+        <a href="/table">back</a>
+        <table>
+            <tr>
+                <td>Week number:</td>
+                {% for i in range(11) -%}
+                    <td>{{data[i][0][5:]}}</td>
+                {%- endfor %}
+            </tr>
+            <tr>
+                <td>Date:</td>
+                {% for i in range(11) -%}
+                    <td>{{data[i][1]}}</td>
+                {%- endfor %}
+            </tr>
+
+
+            {% for i in range(list_zakazek | length) -%}
+            <tr>
+                <td>{{ list_zakazek[i] }}</td>
+                {% for j in range(40, 51) -%}
+                    <td>{{ table[user_id][list_zakazek[i]][j] }}</td>
+                {%- endfor %}
+            </tr>
+            {%- endfor %}
+
+        </table>
+    </body>
+</html>

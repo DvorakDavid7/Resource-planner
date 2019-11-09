@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Main table</title>
+        <style>
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: center;
+              padding: 8px;
+            }
+
+            tr:nth-child(even) {
+              background-color: #dddddd;
+            }
+
+            td:nth-child(7) {
+              background-color: #7fff00;
+            }
+
+
+            tr:hover {
+              background-color: lightblue;
+            }
+            /* td:hover {
+              background-color: lightblue;
+            } */
+
+
+        </style>
+    </head>
+
+    <body>
+        <h1></h1>
+        <a href="/">back</a>
+        <table>
+            <tr>
+                <td>Week number:</td>
+                {% for i in range(11) -%}
+                    <td>{{data[i][0][5:]}}</td>
+                {%- endfor %}
+            </tr>
+            <tr>
+                <td>Date:</td>
+                {% for i in range(11) -%}
+                    <td>{{data[i][1]}}</td>
+                {%- endfor %}
+            </tr>
+
+            {% for i in range(name_list | length) -%}
+            <tr>
+                <td><a href={{ url_for('edit', question_id = name_list[i]) }}>{{ name_list[i] }}</a></td>
+                {% for j in range(40, 51) -%}
+                    <td>{{ work_summary[name_list[i]][j] }}</td>
+                {%- endfor %}
+            </tr>
+            {%- endfor %}
+
+        </table>
+    </body>
+</html>
