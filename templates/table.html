@@ -40,27 +40,31 @@
         <h1></h1>
         <a href="/">back</a>
         <table>
-            <tr>
-                <td>Week number:</td>
-                {% for i in range(11) -%}
-                    <td>{{data[i][0][5:]}}</td>
+            <thead>
+                <tr>
+                    <td>Week number:</td>
+                    {% for week_number in table.head["week_numbers"] -%}
+                        <td>{{ week_number }}</td>
+                    {%- endfor %}
+                </tr>
+                <tr>
+                    <td>Date:</td>
+                    {% for week_number in table.head["week_numbers"] -%}
+                        <td>{{ table.head["content"][week_number] }}</td>
+                    {%- endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(table.rows | length) -%}
+                <tr>
+                    <td><a href={{ url_for('edit', question_id = table.rows[i]) }}>{{ table.rows[i] }}</a></td>
+                    {% for j in range(table.columns_range["start"], table.columns_range["end"] + 1) -%}
+                        <td>{{ table.content[table.rows[i]][j] }}</td>
+                    {%- endfor %}
+                </tr>
                 {%- endfor %}
-            </tr>
-            <tr>
-                <td>Date:</td>
-                {% for i in range(11) -%}
-                    <td>{{data[i][1]}}</td>
-                {%- endfor %}
-            </tr>
+            </tbody>
 
-            {% for i in range(name_list | length) -%}
-            <tr>
-                <td><a href={{ url_for('edit', question_id = name_list[i]) }}>{{ name_list[i] }}</a></td>
-                {% for j in range(40, 51) -%}
-                    <td>{{ work_summary[name_list[i]][j] }}</td>
-                {%- endfor %}
-            </tr>
-            {%- endfor %}
 
         </table>
     </body>

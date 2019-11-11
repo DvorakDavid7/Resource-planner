@@ -4,7 +4,7 @@ from flask import Flask, render_template, session, request, redirect, url_for
 from flask_session import Session  # https://pythonhosted.org/Flask-Session
 import msal
 import app_config
-from database import DataHolder
+from database import DataConvertor, Table, DataHolder
 import datetime
 
 
@@ -12,7 +12,9 @@ app = Flask(__name__)
 app.config.from_object(app_config)
 Session(app)
 
+dataConvertor = DataConvertor()
 dataHolder = DataHolder()
+dataHolder.load_data_for_edit()
 
 
 @app.route("/")
@@ -71,33 +73,21 @@ def show_data():
     if not token:
         return redirect(url_for("login"))
 
-    data = []
-    query = dataHolder.day_range(5)
-    for i in range(len(query)):
-        data.append(query[i])
-
-    name_list = dataHolder.name_list(40, 50, "IA")
-    work_summary = dataHolder.work_summary(40, 50, "IA")
-    return render_template('table.html', data = data, work_summary = work_summary, name_list = name_list)
+    work_summary_data = dataConvertor.get_work_summary_data(41, 51, "IA")
+    table = Table(work_summary_data, 41, 51)
+    return render_template('table.html', table = table)
 
 
-@app.route('/edit/<question_id>')
+@app.route('/edit/<string:question_id>')
 def edit(question_id):
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
 
-
     userID = question_id
-    table = dataHolder.edit_plan(userID, 40, 50)
-    list_zakazek = list(table[userID].keys())
-
-    query = dataHolder.day_range(5)
-    datas = []
-    for i in range(len(query)):
-        datas.append(query[i])
-
-    return render_template('edit.html', data = datas, user_id = userID, table = table, list_zakazek = list_zakazek)
+    data = dataConvertor.return_data_for_edit(dataHolder.data_for_edit, userID, 41, 51)
+    table = Table(data, 41, 51)
+    return render_template('edit.html', table = table)
 
 
 def _load_cache():

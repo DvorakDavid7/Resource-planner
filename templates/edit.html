@@ -40,25 +40,26 @@
         <h3>Edit plan: {{ user_id }}</h3>
         <a href="/table">back</a>
         <table>
-            <tr>
-                <td>Week number:</td>
-                {% for i in range(11) -%}
-                    <td>{{data[i][0][5:]}}</td>
-                {%- endfor %}
-            </tr>
-            <tr>
-                <td>Date:</td>
-                {% for i in range(11) -%}
-                    <td>{{data[i][1]}}</td>
-                {%- endfor %}
-            </tr>
+            <thead>
+                <tr>
+                    <td>Week number:</td>
+                    {% for week_number in table.head["week_numbers"] -%}
+                        <td>{{ week_number }}</td>
+                    {%- endfor %}
+                </tr>
+                <tr>
+                    <td>Date:</td>
+                    {% for week_number in table.head["week_numbers"] -%}
+                        <td>{{ table.head["content"][week_number] }}</td>
+                    {%- endfor %}
+                </tr>
+            </thead>
 
-
-            {% for i in range(list_zakazek | length) -%}
+            {% for i in range(table.rows | length) -%}
             <tr>
-                <td>{{ list_zakazek[i] }}</td>
-                {% for j in range(40, 51) -%}
-                    <td>{{ table[user_id][list_zakazek[i]][j] }}</td>
+                <td>{{ table.rows[i] }}</td>
+                {% for j in range(table.columns_range["start"], table.columns_range["end"] + 1) -%}
+                    <td contenteditable='true'>{{ table.content[table.rows[i]][j] }}</td>
                 {%- endfor %}
             </tr>
             {%- endfor %}
