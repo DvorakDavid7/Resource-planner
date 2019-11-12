@@ -1,0 +1,39 @@
+<!-- <!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
+        <title></title>
+    </head>
+    <body>
+        <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Search for names..">
+
+        <table id="myTable">
+                <thead>
+                    <tr>
+                        <td>Week number:</td>
+                        {% for week_number in table.head["week_numbers"] -%}
+                            <td>{{ week_number }}</td>
+                        {%- endfor %}
+                    </tr>
+                    <tr>
+                        <td>Date:</td>
+                        {% for week_number in table.head["week_numbers"] -%}
+                            <td>{{ table.head["content"][week_number] }}</td>
+                        {%- endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(table.rows | length) -%}
+                    <tr>
+                        <td class="td"><a href={{ url_for('edit', question_id = table.rows[i]) }}>{{ table.rows[i] }}</a></td>
+                        {% for j in range(table.columns_range["start"], table.columns_range["end"] + 1) -%}
+                            <td>{{ table.content[table.rows[i]][j] }}</td>
+                        {%- endfor %}
+                    </tr>
+                    {%- endfor %}
+                </tbody>
+            </table>
+        <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/index.js') }}" ></script>
+    </body>
+</html> -->
