@@ -17,7 +17,7 @@ class DateManager():
 
     @staticmethod
     def get_range(range):
-        current_day = date.today()
+        current_day = date.today() # date(2019, 11, 28)
         date_start = str(current_day - timedelta(days=range))
         date_end = str(current_day + timedelta(days=range))
         return [date_start, date_end]
@@ -54,7 +54,11 @@ class DataConvertor():
         self.dataManager = DateManager()
         self.cnxn = pyodbc.connect(CONECTION_STRING)
         self.cursor = self.cnxn.cursor()
-        # self.json_table = self.get_data_for_edit(41, 51)
+        self.data_resources = {
+            "datumTyden": "[dbo].[View_ResourcePlanner_DatumTyden]",
+            "workerPlan": "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]",
+            "realVsPlan": "[dbo].[View_ResourcePlanner_RealVsPlan]",
+        }
 
 
     def get_table_header_data(self, range):
@@ -62,7 +66,7 @@ class DataConvertor():
         result = {}
         wr = self.dataManager.week_range(range)
         year_star = wr["year_start"]; start = wr["week_start"]; year_end = wr["year_end"]; end = wr["week_end"]
-        query = self.cursor.execute(f"SELECT * FROM [dbo].[View_ResourcePlanner_DatumTyden] WHERE Tyden BETWEEN '{year_star}-{start}' AND '{year_end}-{end}'")
+        query = self.cursor.execute(f"SELECT * FROM {self.data_resources['datumTyden']} WHERE Tyden BETWEEN '{year_star}-{start}' AND '{year_end}-{end}'")
         for row in query:
             data.append([row[1], row[2].replace("(", "").replace(")", "")])
         for record in data:
@@ -72,7 +76,7 @@ class DataConvertor():
 
     def get_name_list_for_work_summary(self, week_od, week_do, department):
         name_list=  []
-        query = self.cursor.execute(f"SELECT DISTINCT [PracovnikID] FROM [dbo].[View_ResourcePlanner_WorkerSummaryPlan] WHERE Tyden BETWEEN {week_od} AND {week_do} AND OddeleniID = '{department}'")
+        query = self.cursor.execute(f"SELECT DISTINCT [PracovnikID] FROM {self.data_resources['workerPlan']} WHERE Tyden BETWEEN {week_od} AND {week_do} AND OddeleniID = '{department}'")
         for row in query:
             name_list.append(row[0])
         return name_list
@@ -82,15 +86,12 @@ class DataConvertor():
         name_list = self.get_name_list_for_work_summary(week_od, week_do, department)
         data = {}
         result = {}
-
         for name in name_list:
             for i in range(week_od, week_do + 1):
                 result[i] = ""
-
-            query = self.cursor.execute(f"SELECT [Tyden], [Plan] FROM [dbo].[View_ResourcePlanner_WorkerSummaryPlan] WHERE PracovnikID = '{name}' AND Tyden BETWEEN {week_od} AND {week_do} AND Rok = 2019")
+            query = self.cursor.execute(f"SELECT [Tyden], [Plan] FROM {self.data_resources['workerPlan']} WHERE PracovnikID = '{name}' AND Tyden BETWEEN {week_od} AND {week_do} AND Rok = 2019")
             for row in query:
                 result[row[0]] = row[1]
-
             data[name] = result.copy()
         return data
 
@@ -98,7 +99,7 @@ class DataConvertor():
     def get_data_for_edit(self, week_od, week_do):
         data = []
         result = {}
-        query = self.cursor.execute(f"SELECT [PracovnikID], [Tyden] ,[ProjektId] ,[ZakazkaId] ,[Planovano] FROM [dbo].[View_ResourcePlanner_RealVsPlan] WHERE Tyden BETWEEN {week_od} AND {week_do}")
+        query = self.cursor.execute(f"SELECT [PracovnikID], [Tyden] ,[ProjektId] ,[ZakazkaId] ,[Planovano] FROM {self.data_resources['realVsPlan']} WHERE Tyden BETWEEN {week_od} AND {week_do}")
         for row in query:
             try:
                 result[row[0]]
@@ -113,31 +114,27 @@ class DataConvertor():
         result = {}
         planovano = {}
         table = data
-
         for i in range(41, 52):
             planovano[i] = ""
-
         for row in table[user_id]:
             try:
                 result[row["projektId"]]
             except KeyError:
                 result[row["projektId"]] = planovano.copy()
-
         for row in table[user_id]:
             result[row["projektId"]][row["tyden"]] = row["planovano"]
-
         return result
 
 
 class DataHolder():
     def __init__(self):
         pass
-        
+
     def load_data_for_edit(self):
         dataConvertor = DataConvertor()
         self.data_for_edit = dataConvertor.get_data_for_edit(41, 51)
 
 
 
-# x = DataHolder()
-# print(x.return_data_for_edit("akolarik", 41, 51))
+# x = DataConvertor()
+# print(x.get_table_header_data(20))

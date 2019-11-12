@@ -17,6 +17,7 @@ dataHolder = DataHolder()
 dataHolder.load_data_for_edit()
 
 
+
 @app.route("/")
 def index():
     if not session.get("user"):
@@ -67,7 +68,7 @@ def graphcall():
     return render_template('display.html', result=graph_data)
 
 
-@app.route("/table")
+@app.route("/table") # /table
 def show_data():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
@@ -83,12 +84,16 @@ def edit(question_id):
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-
     userID = question_id
     data = dataConvertor.return_data_for_edit(dataHolder.data_for_edit, userID, 41, 51)
     table = Table(data, 41, 51)
-    return render_template('edit.html', table = table)
+    return render_template('edit.html', table = table, user_id = userID)
 
+
+# @app.route('/test')
+# def test():
+#     data = "ahoj"
+#     return render_template('test.html', data = data)
 
 def _load_cache():
     cache = msal.SerializableTokenCache()

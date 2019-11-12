@@ -2,44 +2,12 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
         <title>Main table</title>
-        <style>
-            table {
-              font-family: arial, sans-serif;
-              border-collapse: collapse;
-              width: 100%;
-            }
-
-            td, th {
-              border: 1px solid #dddddd;
-              text-align: center;
-              padding: 8px;
-            }
-
-            tr:nth-child(even) {
-              background-color: #dddddd;
-            }
-
-            td:nth-child(7) {
-              background-color: #7fff00;
-            }
-
-
-            tr:hover {
-              background-color: lightblue;
-            }
-            /* td:hover {
-              background-color: lightblue;
-            } */
-
-
-        </style>
-    </head>
-
     <body>
         <h3>Edit plan: {{ user_id }}</h3>
         <a href="/table">back</a>
-        <table>
+        <table id="myTable">
             <thead>
                 <tr>
                     <td>Week number:</td>
@@ -59,11 +27,15 @@
             <tr>
                 <td>{{ table.rows[i] }}</td>
                 {% for j in range(table.columns_range["start"], table.columns_range["end"] + 1) -%}
-                    <td contenteditable='true'>{{ table.content[table.rows[i]][j] }}</td>
+                    {% if table.content[table.rows[i]][j] == None %}
+                        <td contenteditable='true'></td>
+                    {% else %}
+                        <td contenteditable='true'>{{ table.content[table.rows[i]][j] }}</td>
+                    {% endif %}
                 {%- endfor %}
             </tr>
             {%- endfor %}
-
         </table>
+        <button type="button" name="button">Submit Changes</button>
     </body>
 </html>
