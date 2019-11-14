@@ -6,7 +6,7 @@ import calendar
 
 class DateManager():
     def __init__(self):
-        pass
+        self.current_day = date(2019, 5, 15)  # date.today()
 
     @staticmethod
     def day_to_week_number(datestring):
@@ -15,43 +15,50 @@ class DateManager():
         wk = dt.isocalendar()[1]
         return wk
 
-    @staticmethod
-    def get_range(range):
-        current_day = date.today() # date(2019, 11, 28)
-        date_start = str(current_day - timedelta(days=range))
-        date_end = str(current_day + timedelta(days=range))
+    def get_range(self, range):
+        date_start = str(self.current_day - timedelta(days=range))
+        date_end = str(self.current_day + timedelta(days=range))
         return [date_start, date_end]
 
-
     def week_range(self, range):
-        get_range =  self.get_range(range * 7)
-        year_start = get_range[0][:4]
-        year_end = get_range[1][:4]
+        get_range = self.get_range(range * 7)
+        self.year_star = get_range[0][:4]
+        self.year_end = get_range[1][:4]
         week_start = self.day_to_week_number(get_range[0])
         week_end = self.day_to_week_number(get_range[1])
-        return {"week_start": week_start, "year_start": year_start, "week_end": week_end, "year_end": year_end}
+        if week_start < 10:
+            self.week_start = "0" + str(week_start)
+        else:
+            self.week_start = str(week_start)
+        if week_end < 10:
+            self.week_end = "0" + str(week_end)
+        else:
+            self.week_end = str(week_end)
+        return {"week_start": self.week_start, "year_start": self.year_star, "week_end": self.week_end, "year_end": self.year_end}
 
 
 class Table():
-    def __init__(self, json_object, col_start, col_end):
+    def __init__(self, json_object):
         self.dataConvertor = DataConvertor()
-        self.complete_header()
+
         self.content = json_object
         self.rows = list(json_object.keys())
-        self.columns_range = {"start": col_start, "end": col_end}
 
-    def complete_header(self):
+        self.columns_range = {}
+        self.columns_range["start"] = self.dataConvertor.start
+        self.columns_range["end"] = self.dataConvertor.end
+
         self.head = {"week_numbers":  [], "content": {}}
-        table_head_content = self.dataConvertor.get_table_header_data(5)
-        self.head["week_numbers"] = list(table_head_content.keys())
-        self.head["content"] = table_head_content
+
+        self.head["week_numbers"] = list(self.dataConvertor.table_header_data["content"].keys())
+        self.head["content"] = self.dataConvertor.table_header_data["content"]
+
 
 
 class DataConvertor():
     """compliting data from database."""
 
     def __init__(self):
-        self.dataManager = DateManager()
         self.cnxn = pyodbc.connect(CONECTION_STRING)
         self.cursor = self.cnxn.cursor()
         self.data_resources = {
@@ -60,46 +67,60 @@ class DataConvertor():
             "realVsPlan": "[dbo].[View_ResourcePlanner_RealVsPlan]",
         }
 
+        self.dateManager = DateManager()
+        self.table_header_data = self.get_table_header_data(5)
+        self.start = int(self.table_header_data["range"][0])
+        self.end = int(self.table_header_data["range"][1])
+
 
     def get_table_header_data(self, range):
         data = []
         result = {}
-        wr = self.dataManager.week_range(range)
+        wr = self.dateManager.week_range(range)
         year_star = wr["year_start"]; start = wr["week_start"]; year_end = wr["year_end"]; end = wr["week_end"]
-        query = self.cursor.execute(f"SELECT * FROM {self.data_resources['datumTyden']} WHERE Tyden BETWEEN '{year_star}-{start}' AND '{year_end}-{end}'")
+        query = self.cursor.execute(f'''SELECT * FROM {self.data_resources['datumTyden']}
+                                    WHERE Tyden BETWEEN \'{year_star}-{start}\' AND \'{year_end}-{end}\'''')
         for row in query:
             data.append([row[1], row[2].replace("(", "").replace(")", "")])
         for record in data:
             result[record[0][5:]] = record[1]
-        return result
+
+        return {"range":[wr["week_start"], wr["week_end"]] ,"content":result}
 
 
-    def get_name_list_for_work_summary(self, week_od, week_do, department):
+    def get_name_list_for_work_summary(self, department):
         name_list=  []
-        query = self.cursor.execute(f"SELECT DISTINCT [PracovnikID] FROM {self.data_resources['workerPlan']} WHERE Tyden BETWEEN {week_od} AND {week_do} AND OddeleniID = '{department}'")
+        query = self.cursor.execute(f'''SELECT DISTINCT [PracovnikID]
+                                    FROM {self.data_resources['workerPlan']}
+                                    WHERE Tyden BETWEEN {self.start} AND {self.end} AND OddeleniID = \'{department}\'''')
         for row in query:
             name_list.append(row[0])
         return name_list
 
 
-    def get_work_summary_data(self, week_od, week_do, department):
-        name_list = self.get_name_list_for_work_summary(week_od, week_do, department)
+    def get_work_summary_data(self, department):
+        name_list = self.get_name_list_for_work_summary(department)
         data = {}
         result = {}
         for name in name_list:
-            for i in range(week_od, week_do + 1):
+            for i in range(self.start, self.end + 1):
                 result[i] = ""
-            query = self.cursor.execute(f"SELECT [Tyden], [Plan] FROM {self.data_resources['workerPlan']} WHERE PracovnikID = '{name}' AND Tyden BETWEEN {week_od} AND {week_do} AND Rok = 2019")
+            query = self.cursor.execute(f'''SELECT [Tyden], [Plan]
+                                        FROM {self.data_resources['workerPlan']}
+                                        WHERE PracovnikID = '{name}' AND Tyden BETWEEN {self.start} AND {self.end} AND Rok = 2019''')
             for row in query:
                 result[row[0]] = row[1]
             data[name] = result.copy()
+
         return data
 
 
-    def get_data_for_edit(self, week_od, week_do):
+    def get_data_for_edit(self):
         data = []
         result = {}
-        query = self.cursor.execute(f"SELECT [PracovnikID], [Tyden] ,[ProjektId] ,[ZakazkaId] ,[Planovano] FROM {self.data_resources['realVsPlan']} WHERE Tyden BETWEEN {week_od} AND {week_do}")
+        query = self.cursor.execute(f'''SELECT [PracovnikID], [Tyden] ,[ProjektId] ,[ZakazkaId] ,[Planovano]
+                                    FROM {self.data_resources['realVsPlan']}
+                                    WHERE Tyden BETWEEN {self.start} AND {self.end}''')
         for row in query:
             try:
                 result[row[0]]
@@ -110,11 +131,11 @@ class DataConvertor():
         return result
 
 
-    def return_data_for_edit(self, data, user_id, week_od, week_do):
+    def return_data_for_edit(self, data, user_id):
         result = {}
         planovano = {}
         table = data
-        for i in range(41, 52):
+        for i in range(self.week_od, self.week_do):
             planovano[i] = ""
         for row in table[user_id]:
             try:
@@ -135,6 +156,9 @@ class DataHolder():
         self.data_for_edit = dataConvertor.get_data_for_edit(41, 51)
 
 
-
 # x = DataConvertor()
-# print(x.get_table_header_data(20))
+# # x.week_start_end()
+#
+#
+# work_summary_data = x.get_work_summary_data("IA")
+# table = Table(work_summary_data)

@@ -14,8 +14,9 @@ Session(app)
 
 dataConvertor = DataConvertor()
 dataHolder = DataHolder()
-dataHolder.load_data_for_edit()
+# dataHolder.load_data_for_edit()
 
+# dateManager = DateManager()
 
 
 @app.route("/")
@@ -74,8 +75,8 @@ def show_data():
     if not token:
         return redirect(url_for("login"))
 
-    work_summary_data = dataConvertor.get_work_summary_data(41, 51, "IA")
-    table = Table(work_summary_data, 41, 51)
+    work_summary_data = dataConvertor.get_work_summary_data("IA")
+    table = Table(work_summary_data)
     return render_template('table.html', table = table)
 
 
@@ -85,8 +86,8 @@ def edit(question_id):
     if not token:
         return redirect(url_for("login"))
     userID = question_id
-    data = dataConvertor.return_data_for_edit(dataHolder.data_for_edit, userID, 41, 51)
-    table = Table(data, 41, 51)
+    edit_table_data = dataConvertor.return_data_for_edit(dataHolder.data_for_edit, userID)
+    table = Table(edit_table_data)
     return render_template('edit.html', table = table, user_id = userID)
 
 
@@ -120,4 +121,4 @@ def _get_token_from_cache(scope=None):
         return result
 
 if __name__ == "__main__":
-    app.run(debug = True)  # parametr debud = True okamžité provedení změny
+    app.run(debug = True, port = 5000)  # parametr debud = True okamžité provedení změny
