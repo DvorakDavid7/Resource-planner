@@ -6,30 +6,32 @@
         <title></title>
     </head>
     <body>
-        <a href="/">back</a>
+        <a href="/">Home</a>
         <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Search for names..">
-
+        <a href=""><--</a>
+        <br>
+        <a href="">--></a>
         <table id="myTable">
                 <thead>
                     <tr>
                         <td>Week:</td>
-                        {% for week_number in table.head["week_numbers"] -%}
+                        {% for week_number in table.header_columns -%}
                             <td>{{ week_number }}</td>
                         {%- endfor %}
                     </tr>
                     <tr>
                         <td>Date:</td>
-                        {% for week_number in table.head["week_numbers"] -%}
-                            <td>{{ table.head["content"][week_number] }}</td>
+                        {% for week_number in table.header_content -%}
+                            <td>{{ table.header_content[week_number] }}</td>
                         {%- endfor %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for i in range(table.rows | length) -%}
                     <tr>
-                        <td class="td"><a href={{ url_for('edit', question_id = table.rows[i]) }}>{{ table.rows[i] }}</a></td>
-                        {% for j in range(table.columns_range["start"], table.columns_range["end"] + 1) -%}
-                            <td>{{ table.content[table.rows[i]][j] }}</td>
+                        <td class="td"><a href={{ url_for('table/edit', question_id = table.rows[i]) }}>{{ table.rows[i] }}</a></td>
+                        {% for j in range(table.weeks | length)  -%}
+                            <td>{{ table.content[table.rows[i]][table.weeks[j]] }}</td>
                         {%- endfor %}
                     </tr>
                     {%- endfor %}

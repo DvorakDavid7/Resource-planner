@@ -13,7 +13,7 @@ app.config.from_object(app_config)
 Session(app)
 
 dataConvertor = DataConvertor()
-dataHolder = DataHolder()
+# dataHolder = DataHolder()
 # dataHolder.load_data_for_edit()
 
 # dateManager = DateManager()
@@ -75,12 +75,13 @@ def show_data():
     if not token:
         return redirect(url_for("login"))
 
-    work_summary_data = dataConvertor.get_work_summary_data("IA")
-    table = Table(work_summary_data)
+    table = Table("overview")
+    table.load_header()
+    table.load_content()
     return render_template('table.html', table = table)
 
 
-@app.route('/edit/<string:question_id>')
+@app.route('/table/edit/<string:question_id>')
 def edit(question_id):
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:

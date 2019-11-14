@@ -6,7 +6,7 @@
         <title>Main table</title>
     <body>
         <h3>Edit plan: {{ user_id }}</h3>
-        <a href="/table">back</a>
+        <a href="/table">Overview</a>
         <table id="myTable">
             <thead>
                 <tr>
@@ -26,11 +26,11 @@
             {% for i in range(table.rows | length) -%}
             <tr>
                 <td>{{ table.rows[i] }}</td>
-                {% for j in range(table.columns_range["start"], table.columns_range["end"] + 1) -%}
+                {% for j in range(table.weeks | length)  -%}
                     {% if table.content[table.rows[i]][j] == None %}
                         <td contenteditable='true'></td>
                     {% else %}
-                        <td contenteditable='true'>{{ table.content[table.rows[i]][j] }}</td>
+                        <td contenteditable='true'>{{ table.content[table.rows[i]][table.weeks[j]] }}</td>
                     {% endif %}
                 {%- endfor %}
             </tr>
