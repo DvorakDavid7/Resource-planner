@@ -12,13 +12,6 @@ app = Flask(__name__)
 app.config.from_object(app_config)
 Session(app)
 
-dataConvertor = DataConvertor()
-# dataHolder = DataHolder()
-# dataHolder.load_data_for_edit()
-
-# dateManager = DateManager()
-
-
 @app.route("/")
 def index():
     if not session.get("user"):
@@ -74,21 +67,21 @@ def show_data():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-
-    table = Table("overview")
+    table = Table()
     table.load_header()
-    table.load_content()
+    table.load_content_overview()
     return render_template('table.html', table = table)
 
 
-@app.route('/table/edit/<string:question_id>')
+@app.route('/edit/<string:question_id>')
 def edit(question_id):
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
     userID = question_id
-    edit_table_data = dataConvertor.return_data_for_edit(dataHolder.data_for_edit, userID)
-    table = Table(edit_table_data)
+    table = Table()
+    table.load_header()
+    table.load_content_edit(userID)
     return render_template('edit.html', table = table, user_id = userID)
 
 

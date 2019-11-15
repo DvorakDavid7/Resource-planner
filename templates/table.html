@@ -29,7 +29,7 @@
                 <tbody>
                     {% for i in range(table.rows | length) -%}
                     <tr>
-                        <td class="td"><a href={{ url_for('table/edit', question_id = table.rows[i]) }}>{{ table.rows[i] }}</a></td>
+                        <td class="td"><a href={{ url_for('edit', question_id = table.rows[i]) }}>{{ table.names[table.rows[i]] }}</a></td>
                         {% for j in range(table.weeks | length)  -%}
                             <td>{{ table.content[table.rows[i]][table.weeks[j]] }}</td>
                         {%- endfor %}

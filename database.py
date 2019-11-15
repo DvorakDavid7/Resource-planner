@@ -2,6 +2,7 @@ import pyodbc
 from app_config import CONECTION_STRING
 from datetime import datetime, timedelta, date
 import calendar
+import operator
 
 
 class DateManager():
@@ -48,7 +49,9 @@ class SQL:
             "datumTyden": "[dbo].[View_ResourcePlanner_DatumTyden]",
             "NameList": "[dbo].[View_ResourcePlanner_Department]",
             "SummaryPlan": "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]",
-            "realVsPlan": "[dbo].[View_ResourcePlanner_RealVsPlan]",
+            "ProjektySeznam": "[dbo].[View_ResourcePlanner_ProjektySeznam]",
+            "PrilezitostiSeznam": "[dbo].[View_ResourcePlanner_PrilezitostiSeznam]",
+            "PracovnikPlan": "[dbo].[PracovnikPlan]",
         }
         self.dateManager = DateManager()
         dates_range = self.dateManager.dates_range()
@@ -93,19 +96,41 @@ class SQL:
         return data  # [(x,x), (x,x), ...]
 
 
-    def read_projects(self):
+    def read_projects(self, project_id):
         data = []
-        query = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.data_resources['NameList']}
-                WHERE OddeleniID = \'{department}\''''
-
+        query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno] FROM {self.data_resources["ProjektySeznam"]}
+                WHERE ProjektID = {project_id}'''
         table = self.cursor.execute(query)
         for row in table:
             data.append(row)
         return data  # [(x,x,x), (x,x,x), ...]
 
 
-    def read_opportunity(self):
-        pass
+    def read_opportunity(self, zakazka_id):
+        data = []
+        query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno], [Status] FROM {self.data_resources["PrilezitostiSeznam"]}
+                WHERE ZakazkaID = \'{zakazka_id}\''''
+        table = self.cursor.execute(query)
+        for row in table:
+            data.append(row)
+        return data  # [(x,x,x), (x,x,x), ...]
+
+
+    def read_WorkerPlan(self, user_id):
+        data = []
+        query1 = f'''SELECT [ZakazkaID], [ProjektID], [Rok], [Tyden], [PlanHod]
+                FROM {self.data_resources["PracovnikPlan"]} WHERE PracovnikID = \'{user_id}\'
+                AND ((Tyden >= {self.w_start} AND Rok = {self.y_start}) OR (Tyden <= {self.w_end} AND Rok = {self.y_end}))'''
+
+        query2 = f'''SELECT [ZakazkaID], [ProjektID], [Rok], [Tyden], [PlanHod]
+                FROM {self.data_resources["PracovnikPlan"]} WHERE PracovnikID = \'{user_id}\' AND Tyden BETWEEN {self.w_start} AND {self.w_end} AND Rok = {self.y_start}'''
+        if self.y_start == self.y_end:
+            table = self.cursor.execute(query2)
+        else:
+            table = self.cursor.execute(query1)
+        for row in table:
+            data.append(row)
+        return data  # [(x,x), (x,x), ...]
 
 
 
@@ -114,6 +139,15 @@ class DataConvertor():
     def __init__(self):
         self.sql = SQL()
         self.weeks = []
+
+    def user_id_to_name(self, department):
+        result = {}
+        name_list = self.sql.read_Department(department)
+        for row in name_list:
+            result[row[0]] = row[2]
+        result = dict(sorted(result.items(), key=operator.itemgetter(1)))
+        return result
+
 
     def table_header_data(self):   # {"week_number": date range, "week_number": date range, ...}
         result = {}
@@ -135,9 +169,58 @@ class DataConvertor():
             worker_plan_table = self.sql.read_WorkerSummaryPlan(user_id)
             for row in worker_plan_table:
                 plan[row[0]] = row[1]
-            result[name_list_table[i][2]] = plan.copy()
+            result[user_id] = plan.copy()
         result = dict(sorted(result.items()))
         return result
+
+
+    def edit_plan_projects_data(self, user_id):
+        result = {}
+        plan = {}
+        worker_plan_table = self.sql.read_WorkerPlan(user_id)
+        for week in self.weeks:
+            plan[week] = ""
+        for row in worker_plan_table:
+            if row[1] != None:
+                try:
+                    result[row[1]]
+                except KeyError:
+                    result[row[1]] = plan.copy()
+                finally:
+                    result[row[1]][row[3]] = row[4]
+        # replace project id with project name
+        for project_id in list(result.keys()):
+            project_name = self.sql.read_projects(project_id)[0][0] + " (" + self.sql.read_projects(project_id)[0][1] + ")"
+            result[project_name] = result.pop(project_id)
+        return result
+
+
+
+    def edit_plan_opportunity_data(self, user_id):
+        result = {}
+        plan = {}
+        worker_plan_table = self.sql.read_WorkerPlan(user_id)
+        for week in self.weeks:
+            plan[week] = ""
+        for row in worker_plan_table:
+            if row[1] == None and row[0] != None:
+                try:
+                    result[row[0]]
+                except KeyError:
+                    result[row[0]] = plan.copy()
+                finally:
+                    result[row[0]][row[3]] = row[4]
+        # replace opportunity id with opportunity name
+        for opportunity_id in list(result.keys()):
+            try:
+                opportunity_name = self.sql.read_opportunity(opportunity_id)[0][0] + " (" + self.sql.read_opportunity(opportunity_id)[0][1] +")"
+                opportunity_status = self.sql.read_opportunity(opportunity_id)[0][2]
+            except:
+                opportunity_name = "nedefinováno"
+                opportunity_status = 3
+            result[opportunity_name] = {"status": opportunity_status,"plan": result.pop(opportunity_id)}
+        return result
+
 
 
 
@@ -150,152 +233,56 @@ class DataHolder():
         return self.dataConvertor.table_header_data()
 
     def load_data_for_work_summary(self, department):
+        self.names = self.dataConvertor.user_id_to_name(department).copy()
         return self.dataConvertor.work_summary_data(department)
+
+    def load_data_for_edit(self, user_id):
+        self.projects = self.dataConvertor.edit_plan_projects_data(user_id)
+        self.opportunity = self.dataConvertor.edit_plan_opportunity_data(user_id)
 
 
 
 class Table():
-    def __init__(self, type):
+    def __init__(self):
         self.dataHolder = DataHolder()
         self.weeks = self.dataHolder.weeks
-        self.type = type
-
-        self.header_columns = []
-        self.header_content = {}
-
-        self.rows = []
-        self.content = {}
 
     def load_header(self):
         table_header = self.dataHolder.load_table_header()
         self.header_columns = list(table_header.keys())
         self.header_content = table_header
 
-    def load_content(self):
-        if self.type == "overview":
-            work_summary = self.dataHolder.load_data_for_work_summary("IA")
-            self.rows = list(work_summary.keys())
-            self.content = work_summary
+    def load_content_overview(self):
+        work_summary = self.dataHolder.load_data_for_work_summary("IA")
+        self.content = work_summary
+        self.names = self.dataHolder.names
+        self.rows = list(self.names.keys())
 
-        elif self.type == "edit":
-            pass
+    def load_content_edit(self, user_id):
+        self.dataHolder.load_data_for_edit(user_id)
+        self.rows_projects = list(self.dataHolder.projects.keys())
+        self.content_projects = self.dataHolder.projects
+
+        self.rows_opportunity = list(self.dataHolder.opportunity.keys())
+        self.content_opportunity = self.dataHolder.opportunity
+
+        self.sum = []
+        for week in self.weeks:
+            tmp = 0
+            for row in self.rows_projects:
+                if self.content_projects[row][week] != "":
+                    tmp += int(self.content_projects[row][week])
+
+            for row in self.rows_opportunity:
+                if self.content_opportunity[row]["plan"][week] != "" and self.content_opportunity[row]["status"] != 2:
+                     tmp += int(self.content_opportunity[row]["plan"][week])
+            self.sum.append(tmp)
 
 
-# x = Table("overview")
-# x.load_content()
+# x = Table()
 # x.load_header()
-# print(x.weeks)
+# x.load_content_edit("jadam")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# class DataConvertor2():
-#     """data from database to json form."""
-#
-#     def __init__(self):
-#         self.cnxn = pyodbc.connect(CONECTION_STRING)
-#         self.cursor = self.cnxn.cursor()
-#         self.data_resources = {
-#             "datumTyden": "[dbo].[View_ResourcePlanner_DatumTyden]",
-#             "workerPlan": "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]",
-#             "realVsPlan": "[dbo].[View_ResourcePlanner_RealVsPlan]",
-#         }
-#
-#         self.dateManager = DateManager()
-#         self.table_header_data = self.get_table_header_data(5)
-#         self.start_year = self.table_header_data["years"][0]
-#         self.end_year = self.table_header_data["years"][1]
-#
-#         self.start = int(self.table_header_data["range"][0])
-#         self.end = int(self.table_header_data["range"][1])
-#
-#         self.weeks = []
-#         tmp1 = self.start
-#         tmp2 = self.end
-#         while tmp1 != tmp2 + 1:
-#             self.weeks.append(tmp1)
-#             tmp1 = tmp1 % 53 + 1
-#
-#
-#     def get_table_header_data(self, range):
-#         data = []
-#         result = {}
-#         wr = self.dateManager.dates_range()
-#         year_star = wr["year_start"]; start = wr["week_start"]; year_end = wr["year_end"]; end = wr["week_end"]
-#         query = self.cursor.execute(f'''SELECT * FROM {self.data_resources['datumTyden']}
-#                                     WHERE Tyden BETWEEN \'{year_star}-{start}\' AND \'{year_end}-{end}\'''')
-#         for row in query:
-#             data.append([row[1], row[2].replace("(", "").replace(")", "")])
-#         for record in data:
-#             result[record[0][5:]] = record[1]
-#         return {"range":[wr["week_start"], wr["week_end"]], "years":[wr["year_start"], wr["year_end"]] ,"content":result}
-#
-#
-#     def get_name_list_for_work_summary(self, department):
-#         name_list=  []
-#         query = self.cursor.execute(f'''SELECT DISTINCT [PracovnikID]
-#                                     FROM {self.data_resources['workerPlan']}
-#                                     WHERE OddeleniID = \'{department}\' AND (Tyden >= {self.start} AND Rok = {self.start_year} OR Tyden <= {self.end} AND Rok = {self.end_year})''')
-#         for row in query:
-#             name_list.append(row[0])
-#         return name_list
-#
-#
-#     def get_work_summary_data(self, department):
-#         name_list = self.get_name_list_for_work_summary(department)
-#         data = {}
-#         result = {}
-#         for name in name_list:
-#             for i in range(len(self.weeks)):
-#                 result[self.weeks[i]] = ""
-#             query = self.cursor.execute(f'''SELECT [Tyden], [Plan]
-#                                         FROM {self.data_resources['workerPlan']}
-#                                         WHERE PracovnikID = \'{name}\' AND ((Tyden >= {self.start} AND Rok = {self.start_year}) OR (Tyden <= {self.end} AND Rok = {self.end_year}))''')
-#             for row in query:
-#                 result[row[0]] = row[1]
-#             data[name] = result.copy()
-#         return data
-#
-#
-#     def get_data_for_edit(self):
-#         data = []
-#         result = {}
-#         query = self.cursor.execute(f'''SELECT [PracovnikID], [Tyden] ,[ProjektId] ,[ZakazkaId] ,[Planovano]
-#                                     FROM {self.data_resources['realVsPlan']}
-#                                     WHERE ((Tyden >= {self.start} AND Rok = {self.start_year}) OR (Tyden <= {self.end} AND Rok = {self.end_year}))''')
-#         for row in query:
-#             try:
-#                 result[row[0]]
-#             except KeyError:
-#                 result[row[0]] = []
-#             finally:
-#                 result[row[0]].append({"tyden": row[1], "projektId": row[2], "zakazkaId": row[3], "planovano": row[4]})
-#         return result
-#
-#
-#     def return_data_for_edit(self, data, user_id):
-#         result = {}
-#         planovano = {}
-#         table = data
-#         for i in range(len(self.weeks)):
-#             planovano[self.weeks[i]] = ""
-#         for row in table[user_id]:
-#             try:
-#                 result[row["projektId"]]
-#             except KeyError:
-#                 result[row["projektId"]] = planovano.copy()
-#         for row in table[user_id]:
-#             result[row["projektId"]][row["tyden"]] = row["planovano"]
-#         return result
+# x = DataConvertor()
+# print(x.edit_plan_opportunity_data("jadam"))

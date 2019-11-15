@@ -10,31 +10,46 @@
         <table id="myTable">
             <thead>
                 <tr>
-                    <td>Week number:</td>
-                    {% for week_number in table.head["week_numbers"] -%}
+                    <td>Week:</td>
+                    {% for week_number in table.header_columns -%}
                         <td>{{ week_number }}</td>
                     {%- endfor %}
                 </tr>
                 <tr>
                     <td>Date:</td>
-                    {% for week_number in table.head["week_numbers"] -%}
-                        <td>{{ table.head["content"][week_number] }}</td>
+                    {% for week_number in table.header_content -%}
+                        <td>{{ table.header_content[week_number] }}</td>
                     {%- endfor %}
                 </tr>
             </thead>
-
-            {% for i in range(table.rows | length) -%}
-            <tr>
-                <td>{{ table.rows[i] }}</td>
-                {% for j in range(table.weeks | length)  -%}
-                    {% if table.content[table.rows[i]][j] == None %}
-                        <td contenteditable='true'></td>
-                    {% else %}
-                        <td contenteditable='true'>{{ table.content[table.rows[i]][table.weeks[j]] }}</td>
-                    {% endif %}
+            <tbody>
+                {% for i in range(table.rows_projects | length) -%}
+                <tr>
+                    <td>{{ table.rows_projects[i] }}</td>
+                    {% for j in range(table.weeks | length)  -%}
+                        <td>{{ table.content_projects[table.rows_projects[i]][table.weeks[j]] }}</td>
+                    {%- endfor %}
+                </tr>
                 {%- endfor %}
-            </tr>
-            {%- endfor %}
+
+                {% for i in range(table.rows_opportunity | length) -%}
+                <tr>
+                    <td><i>{{ table.rows_opportunity[i] }}</i></td>
+                    {% for j in range(table.weeks | length)  -%}
+                        {% if table.content_opportunity[table.rows_opportunity[i]]["status"][table.weeks[j]] != 1 %}
+                            <td>{{ table.content_opportunity[table.rows_opportunity[i]]["plan"][table.weeks[j]] }}</td>
+                        {% endif %}
+                    {%- endfor %}
+                </tr>
+                {%- endfor %}
+
+                <tr>
+                    <td>Sum:</td>
+                    {% for i in range(table.weeks | length) -%}
+                        <td>{{ table.sum[i] }}</td>
+                    {%- endfor %}
+                </tr>
+            </tbody>
         </table>
         <button type="button" name="button">Submit Changes</button>
     </body>
