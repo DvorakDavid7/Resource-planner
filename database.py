@@ -7,7 +7,8 @@ import operator
 
 class DateManager():
     def __init__(self):
-        self.current_day = date(2019, 11, 14)  # date.today()
+        self.current_day = date.today()
+        # self.current_day = date(2019, 11, 14)  # date.today()
         self.range = 5
 
     @staticmethod
@@ -42,7 +43,7 @@ class DateManager():
 class SQL:
     '''write and read data from database'''
 
-    def __init__(self):
+    def __init__(self, dateManager):
         self.cnxn = pyodbc.connect(CONECTION_STRING)
         self.cursor = self.cnxn.cursor()
         self.data_resources = {
@@ -53,12 +54,23 @@ class SQL:
             "PrilezitostiSeznam": "[dbo].[View_ResourcePlanner_PrilezitostiSeznam]",
             "PracovnikPlan": "[dbo].[PracovnikPlan]",
         }
-        self.dateManager = DateManager()
-        dates_range = self.dateManager.dates_range()
-        self.w_start = dates_range["week_start"]
-        self.w_end = dates_range["week_end"]
-        self.y_start = dates_range["year_start"]
-        self.y_end = dates_range["year_end"]
+        self.dateManager = dateManager
+
+
+    def set_department(self, department):
+        if len(department) == 2:
+            self.department = department #str(('IA', 'CC'))
+        else:
+            department = str(tuple(department.split(" ")))
+            self.department = department
+
+
+    def set_date_range(self):
+        self.dates_range = self.dateManager.dates_range()
+        self.w_start = self.dates_range["week_start"]
+        self.w_end = self.dates_range["week_end"]
+        self.y_start = self.dates_range["year_start"]
+        self.y_end = self.dates_range["year_end"]
 
 
     def read_DatumTyden(self):
@@ -71,11 +83,17 @@ class SQL:
         return data  # [(x,x,x), (x,x,x), ...]
 
 
-    def read_Department(self, department): # name list from department table
+    def read_Department(self): # name list from department table
         data = []
-        query = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.data_resources['NameList']}
-                WHERE OddeleniID = \'{department}\''''
-        table = self.cursor.execute(query)
+        query1 = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.data_resources['NameList']}
+                WHERE OddeleniID IN {self.department}'''
+        query2 = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.data_resources['NameList']}
+                WHERE OddeleniID = \'{self.department}\''''
+
+        if len(self.department) == 2:
+            table = self.cursor.execute(query2)
+        else:
+            table = self.cursor.execute(query1)
         for row in table:
             data.append(row)
         return data  # [(x,x,x), (x,x,x), ...]
@@ -136,15 +154,17 @@ class SQL:
 
 class DataConvertor():
     '''takes data from SQl object, combine it and return appropriate JSON'''
-    def __init__(self):
-        self.sql = SQL()
+    def __init__(self, sql):
+        self.sql = sql
+        self.y_start = sql.y_start
+        self.y_end = sql.y_end
         self.weeks = []
 
-    def user_id_to_name(self, department):
+    def user_id_to_name(self):
         result = {}
-        name_list = self.sql.read_Department(department)
+        name_list = self.sql.read_Department()
         for row in name_list:
-            result[row[0]] = row[2]
+            result[row[0]] = row[2] + f" ({row[1]})"
         result = dict(sorted(result.items(), key=operator.itemgetter(1)))
         return result
 
@@ -158,10 +178,10 @@ class DataConvertor():
         return result
 
 
-    def work_summary_data(self, department):
+    def work_summary_data(self): # {"user_id": {"41": x, "42": y, ...}, "user_id": {"41": x, "42": y, ...}, ...}
         result = {}
         plan = {}
-        name_list_table = self.sql.read_Department(department)
+        name_list_table = self.sql.read_Department()
         for i in range(len(name_list_table)):
             user_id = name_list_table[i][0]
             for week in self.weeks:
@@ -174,7 +194,7 @@ class DataConvertor():
         return result
 
 
-    def edit_plan_projects_data(self, user_id):
+    def get_edit_plan_projects_data(self, user_id):  # {"project_id": {"41": x, "42": y, ...}, "project_id": {"41": x, "42": y, ...}, ...}
         result = {}
         plan = {}
         worker_plan_table = self.sql.read_WorkerPlan(user_id)
@@ -188,15 +208,18 @@ class DataConvertor():
                     result[row[1]] = plan.copy()
                 finally:
                     result[row[1]][row[3]] = row[4]
-        # replace project id with project name
-        for project_id in list(result.keys()):
-            project_name = self.sql.read_projects(project_id)[0][0] + " (" + self.sql.read_projects(project_id)[0][1] + ")"
-            result[project_name] = result.pop(project_id)
         return result
 
 
+    def edit_plan_projects_data(self, user_id): # {"project_name": {"41": x, "42": y, ...}, "project_name": {"41": x, "42": y, ...}, ...}
+        projects_data = self.get_edit_plan_projects_data(user_id)
+        for project_id in list(projects_data.keys()):
+            project_name = self.sql.read_projects(project_id)[0][0] + " (" + self.sql.read_projects(project_id)[0][1] + ")"
+            projects_data[project_name] = projects_data.pop(project_id)
+        return projects_data
 
-    def edit_plan_opportunity_data(self, user_id):
+
+    def get_edit_plan_opportunity_data(self, user_id): # {"project_id": {"41": x, "42": y, ...}, "project_id": {"41": x, "42": y, ...}, ...}
         result = {}
         plan = {}
         worker_plan_table = self.sql.read_WorkerPlan(user_id)
@@ -210,50 +233,61 @@ class DataConvertor():
                     result[row[0]] = plan.copy()
                 finally:
                     result[row[0]][row[3]] = row[4]
+        return result
+
+
+    def edit_plan_opportunity_data(self, user_id):
+        opportunity_data = self.get_edit_plan_opportunity_data(user_id) # {"project_name": {"status": x, "plan": {"41": x, "42": y, ...}}, ...}
         # replace opportunity id with opportunity name
-        for opportunity_id in list(result.keys()):
+        for opportunity_id in list(opportunity_data.keys()):
             try:
                 opportunity_name = self.sql.read_opportunity(opportunity_id)[0][0] + " (" + self.sql.read_opportunity(opportunity_id)[0][1] +")"
                 opportunity_status = self.sql.read_opportunity(opportunity_id)[0][2]
             except:
                 opportunity_name = "nedefinováno"
                 opportunity_status = 3
-            result[opportunity_name] = {"status": opportunity_status,"plan": result.pop(opportunity_id)}
-        return result
+            opportunity_data[opportunity_name] = {"status": opportunity_status,
+                                                    "plan": opportunity_data.pop(opportunity_id)}
+        return opportunity_data
 
 
 
 
 class DataHolder():
-    def __init__(self):
-        self.dataConvertor = DataConvertor()
+    def __init__(self, dataConvertor):
+        self.dataConvertor = dataConvertor
         self.weeks = self.dataConvertor.weeks
+
+        self.y_start = self.dataConvertor.y_start
+        self.y_end = self.dataConvertor.y_end
 
     def load_table_header(self):
         return self.dataConvertor.table_header_data()
 
-    def load_data_for_work_summary(self, department):
-        self.names = self.dataConvertor.user_id_to_name(department).copy()
-        return self.dataConvertor.work_summary_data(department)
+    def load_data_for_work_summary(self):
+        self.names = self.dataConvertor.user_id_to_name().copy()
+        return self.dataConvertor.work_summary_data()
 
     def load_data_for_edit(self, user_id):
         self.projects = self.dataConvertor.edit_plan_projects_data(user_id)
         self.opportunity = self.dataConvertor.edit_plan_opportunity_data(user_id)
 
 
-
 class Table():
-    def __init__(self):
-        self.dataHolder = DataHolder()
+    def __init__(self, dataHolder):
+        self.dataHolder = dataHolder
         self.weeks = self.dataHolder.weeks
 
     def load_header(self):
         table_header = self.dataHolder.load_table_header()
         self.header_columns = list(table_header.keys())
         self.header_content = table_header
+        self.y_start = self.dataHolder.y_start
+        self.y_end = self.dataHolder.y_end
+
 
     def load_content_overview(self):
-        work_summary = self.dataHolder.load_data_for_work_summary("IA")
+        work_summary = self.dataHolder.load_data_for_work_summary()
         self.content = work_summary
         self.names = self.dataHolder.names
         self.rows = list(self.names.keys())

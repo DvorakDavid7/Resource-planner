@@ -4,13 +4,20 @@ from flask import Flask, render_template, session, request, redirect, url_for
 from flask_session import Session  # https://pythonhosted.org/Flask-Session
 import msal
 import app_config
-from database import DataConvertor, Table, DataHolder
+from database import DataConvertor, Table, DataHolder, DateManager, SQL
 import datetime
 
 
 app = Flask(__name__)
 app.config.from_object(app_config)
 Session(app)
+
+dateManager = DateManager()
+dateManager.current_day = datetime.date.today()
+sql = SQL(dateManager)
+sql.set_date_range()
+sql.set_department("IA")
+
 
 @app.route("/")
 def index():
@@ -62,24 +69,48 @@ def graphcall():
     return render_template('display.html', result=graph_data)
 
 
-@app.route("/table") # /table
+@app.route("/table", methods = ["GET", "POST"]) # /table
 def show_data():
+    global dateManager
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    table = Table()
+
+    department = "IA"
+    if request.method == "POST" and request.form.get("switch"):
+        switch = request.form.get("switch")
+        if switch == "back":
+            dateManager.current_day -= datetime.timedelta(days = 10 * 7)
+        elif switch == "forward":
+            dateManager.current_day += datetime.timedelta(days = 10 * 7)
+        sql.set_date_range()
+
+    if request.method == "POST" and request.form.get("department"):
+        department = request.form.get("department")
+        sql.set_department(department)
+
+    if request.method == "POST" and request.form.get("addall"):
+        department = "BI ED AC DM SA NL IS SD EX CC BR ZA IA PO SU SL OS PD NA SK BS"
+        sql.set_department(department)
+
+    dataConvertor = DataConvertor(sql)
+    dataHolder = DataHolder(dataConvertor)
+    table = Table(dataHolder)
     table.load_header()
     table.load_content_overview()
-    return render_template('table.html', table = table)
+    return render_template('table.html', table = table, department=department)
 
 
 @app.route('/edit/<string:question_id>')
 def edit(question_id):
+    global dateManager
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
     userID = question_id
-    table = Table()
+    dataConvertor = DataConvertor(sql)
+    dataHolder = DataHolder(dataConvertor)
+    table = Table(dataHolder)
     table.load_header()
     table.load_content_edit(userID)
     return render_template('edit.html', table = table, user_id = userID)
