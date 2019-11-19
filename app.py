@@ -17,7 +17,7 @@ dateManager.current_day = datetime.date.today()
 sql = SQL(dateManager)
 sql.set_date_range()
 sql.set_department("IA")
-
+department = "IA"
 
 @app.route("/")
 def index():
@@ -71,12 +71,11 @@ def graphcall():
 
 @app.route("/table", methods = ["GET", "POST"]) # /table
 def show_data():
-    global dateManager
+    global dateManager, department
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
 
-    department = "IA"
     if request.method == "POST" and request.form.get("switch"):
         switch = request.form.get("switch")
         if switch == "back":
@@ -86,12 +85,28 @@ def show_data():
         sql.set_date_range()
 
     if request.method == "POST" and request.form.get("department"):
+        print("department: " + request.form.get("department"))
         department = request.form.get("department")
         sql.set_department(department)
 
     if request.method == "POST" and request.form.get("addall"):
+        print("addall: " + request.form.get("addall"))
         department = "BI ED AC DM SA NL IS SD EX CC BR ZA IA PO SU SL OS PD NA SK BS"
         sql.set_department(department)
+
+    if request.method == "POST" and request.form.get("date"):
+        date = request.form.get("date").split("-")
+        dateManager.current_day = datetime.date(int(date[0]), int(date[1]), int(date[2]))
+        sql.set_date_range()
+
+    if request.method == "POST" and request.form.get("week"):
+        week = request.form.get("week").split("/")
+        d = str(week[1] + "-W"+week[0])
+        date = datetime.datetime.strptime(d + '-1', '%G-W%V-%u')
+        date = str(date).split(" ")[0]
+        date = date.split("-")
+        dateManager.current_day = datetime.date(int(date[0]), int(date[1]), int(date[2]))
+        sql.set_date_range()
 
     dataConvertor = DataConvertor(sql)
     dataHolder = DataHolder(dataConvertor)

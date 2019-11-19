@@ -13,6 +13,10 @@
             <button name="switch" value="back">back</button>
             <button name="switch" value="forward">forvard</button>
             <br></br>
+            <input name="date" type="text" placeholder=YYYY-MM-DD> or
+            <input name="week" type="text" placeholder=week/year>
+            <input type="submit" value="Go">
+            <br></br>
             Enter department:
             <input name="department" type="text">
             <input type="submit" value="Send">
@@ -21,6 +25,7 @@
         <div class="">
             shown department(s): {{ department }}
         </div>
+        <br>
         <div class="">
             year start: {{ table.y_start }} / year end: {{ table.y_end }}
         </div>

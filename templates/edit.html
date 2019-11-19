@@ -27,7 +27,7 @@
                 <tr>
                     <td>{{ table.rows_projects[i] }}</td>
                     {% for j in range(table.weeks | length)  -%}
-                        <td>{{ table.content_projects[table.rows_projects[i]][table.weeks[j]] }}</td>
+                        <td contenteditable>{{ table.content_projects[table.rows_projects[i]][table.weeks[j]] }}</td>
                     {%- endfor %}
                 </tr>
                 {%- endfor %}
@@ -37,7 +37,7 @@
                     <td><i>{{ table.rows_opportunity[i] }}</i></td>
                     {% for j in range(table.weeks | length)  -%}
                         {% if table.content_opportunity[table.rows_opportunity[i]]["status"][table.weeks[j]] != 1 %}
-                            <td>{{ table.content_opportunity[table.rows_opportunity[i]]["plan"][table.weeks[j]] }}</td>
+                            <td contenteditable>{{ table.content_opportunity[table.rows_opportunity[i]]["plan"][table.weeks[j]] }}</td>
                         {% endif %}
                     {%- endfor %}
                 </tr>
