@@ -77,6 +77,7 @@ def show_data():
         return redirect(url_for("login"))
 
     if request.method == "POST" and request.form.get("switch"):
+        print("switch: " + request.form.get("switch"))
         switch = request.form.get("switch")
         if switch == "back":
             dateManager.current_day -= datetime.timedelta(days = 10 * 7)
@@ -95,11 +96,13 @@ def show_data():
         sql.set_department(department)
 
     if request.method == "POST" and request.form.get("date"):
+        print("date: " + request.form.get("date"))
         date = request.form.get("date").split("-")
         dateManager.current_day = datetime.date(int(date[0]), int(date[1]), int(date[2]))
         sql.set_date_range()
 
     if request.method == "POST" and request.form.get("week"):
+        print("week: " + request.form.get("week"))
         week = request.form.get("week").split("/")
         d = str(week[1] + "-W"+week[0])
         date = datetime.datetime.strptime(d + '-1', '%G-W%V-%u')
@@ -131,10 +134,19 @@ def edit(question_id):
     return render_template('edit.html', table = table, user_id = userID)
 
 
-# @app.route('/test')
-# def test():
-#     data = "ahoj"
-#     return render_template('test.html', data = data)
+@app.route('/test', methods = ["GET", "POST"])
+def test():
+    userID = "jadam"
+
+    if request.method == "POST":
+        print(dict(request.form))
+    dataConvertor = DataConvertor(sql)
+    dataHolder = DataHolder(dataConvertor)
+    table = Table(dataHolder)
+    table.load_header()
+    table.load_content_edit(userID)
+    return render_template('test.html', table = table)
+
 
 def _load_cache():
     cache = msal.SerializableTokenCache()

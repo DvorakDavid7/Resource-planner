@@ -1,39 +1,61 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
-        <title></title>
-    </head>
+        <title>Main table</title>
     <body>
-        <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Search for names..">
+        <h3>Edit plan: {{ user_id }}</h3>
+        <a href="/table">Overview</a>
 
-        <table id="myTable">
+        <form id="mydata" method="POST" action="/test">
+            <table id="myTable">
                 <thead>
                     <tr>
-                        <td>Week number:</td>
-                        {% for week_number in table.head["week_numbers"] -%}
+                        <td>Week:</td>
+                        {% for week_number in table.header_columns -%}
                             <td>{{ week_number }}</td>
                         {%- endfor %}
                     </tr>
                     <tr>
                         <td>Date:</td>
-                        {% for week_number in table.head["week_numbers"] -%}
-                            <td>{{ table.head["content"][week_number] }}</td>
+                        {% for week_number in table.header_content -%}
+                            <td>{{ table.header_content[week_number] }}</td>
                         {%- endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in range(table.rows | length) -%}
+
+                    {% for i in range(table.rows_projects | length) -%}
                     <tr>
-                        <td class="td"><a href={{ url_for('edit', question_id = table.rows[i]) }}>{{ table.rows[i] }}</a></td>
-                        {% for j in range(table.columns_range["start"], table.columns_range["end"] + 1) -%}
-                            <td>{{ table.content[table.rows[i]][j] }}</td>
+                        <td>{{ table.rows_projects[i] }}</td>
+                        {% for j in range(table.weeks | length)  -%}
+
+                            <td><input name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_projects[table.rows_projects[i]][table.weeks[j]] }}></td>
                         {%- endfor %}
                     </tr>
                     {%- endfor %}
+
+                    {% for i in range(table.rows_opportunity | length) -%}
+                    <tr>
+                        <td><i>{{ table.rows_opportunity[i] }}</i></td>
+                        {% for j in range(table.weeks | length)  -%}
+                            {% if table.content_opportunity[table.rows_opportunity[i]]["status"][table.weeks[j]] != 1 %}
+                                <td>{{ table.content_opportunity[table.rows_opportunity[i]]["plan"][table.weeks[j]] }}</td>
+                            {% endif %}
+                        {%- endfor %}
+                    </tr>
+                    {%- endfor %}
+
+                    <tr>
+                        <td>Sum:</td>
+                        {% for i in range(table.weeks | length) -%}
+                            <td>{{ table.sum[i] }}</td>
+                        {%- endfor %}
+                    </tr>
                 </tbody>
             </table>
-        <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/index.js') }}" ></script>
+            <input type="submit" value="send Values to my save script">
+        </form>
     </body>
-</html> -->
+</html>
