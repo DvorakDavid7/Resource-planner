@@ -246,8 +246,9 @@ class DataConvertor():
             except:
                 opportunity_name = "nedefinováno"
                 opportunity_status = 3
-            opportunity_data[opportunity_name] = {"status": opportunity_status,
-                                                    "plan": opportunity_data.pop(opportunity_id)}
+            # opportunity_data[opportunity_name] = {"status": opportunity_status,
+            #                                         "plan": opportunity_data.pop(opportunity_id)}
+            opportunity_data[opportunity_name] = opportunity_data.pop(opportunity_id)
         return opportunity_data
 
 
@@ -300,22 +301,32 @@ class Table():
         self.rows_opportunity = list(self.dataHolder.opportunity.keys())
         self.content_opportunity = self.dataHolder.opportunity
 
-        self.sum = []
-        for week in self.weeks:
-            tmp = 0
-            for row in self.rows_projects:
-                if self.content_projects[row][week] != "":
-                    tmp += int(self.content_projects[row][week])
+        self.rows_complet = self.rows_projects + self.rows_opportunity
+        self.content_complet = {**self.content_projects, **self.content_opportunity}
 
-            for row in self.rows_opportunity:
-                if self.content_opportunity[row]["plan"][week] != "" and self.content_opportunity[row]["status"] != 2:
-                     tmp += int(self.content_opportunity[row]["plan"][week])
-            self.sum.append(tmp)
+        # self.sum = []
+        # for week in self.weeks:
+        #     tmp = 0
+        #     for row in self.rows_projects:
+        #         if self.content_projects[row][week] != "":
+        #             tmp += int(self.content_projects[row][week])
+        #
+        #     for row in self.rows_opportunity:
+        #         if self.content_opportunity[row]["plan"][week] != "" and self.content_opportunity[row]["status"] != 2:
+        #              tmp += int(self.content_opportunity[row]["plan"][week])
+        #     self.sum.append(tmp)
 
 
-# x = Table()
-# x.load_header()
-# x.load_content_edit("jadam")
+
+dateManager = DateManager()
+sql = SQL(dateManager)
+sql.set_date_range()
+dataConvertor = DataConvertor(sql)
+dataHolder = DataHolder(dataConvertor)
+table = Table(dataHolder)
+table.load_header()
+table.load_content_edit("jadam")
+print(table.content_complet)
 
 
 # x = DataConvertor()

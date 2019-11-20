@@ -136,15 +136,72 @@ def edit(question_id):
 
 @app.route('/test', methods = ["GET", "POST"])
 def test():
-    userID = "jadam"
+    global dateManager
+    def set_year():
+        rok = ""
+        if table.y_start != table.y_end:
+            print(int(tyden))
+            if 1 <= int(tyden) < 15:
+                rok = table.y_end
+            else:
+                rok = table.y_start
+        else:
+            rok = table.y_start
+        return rok
 
-    if request.method == "POST":
-        print(dict(request.form))
+    def rebuild_data_content(): # keys odpovídají requestu z FE použití pro porovnání změn vůči FE
+        data = {}
+        for i in range(len(table.rows_complet)):
+            for j in range(len(table.weeks)):
+                data[str(i) + "-" + str(table.weeks[j])] = table.content_complet[table.rows_complet[i]][table.weeks[j]]
+        return data
+
+    def separates_differences(): # vrací hodnoty odlišné od BE
+        different = []
+        data = rebuild_data_content()
+        req = dict(request.form)
+        for i in req.keys():
+            if str(data[i]) != str(req[i]):
+                different.append({i : req[i]})
+        return different
+
+    userID = "jadam"
+    # dateManager.current_day = datetime.date(2020, 1, 27)
+    sql.set_date_range()
     dataConvertor = DataConvertor(sql)
     dataHolder = DataHolder(dataConvertor)
     table = Table(dataHolder)
     table.load_header()
     table.load_content_edit(userID)
+    project_ids = []
+
+    if request.method == "POST":
+        result = []
+        different = separates_differences()
+        for record in different:
+            row = int(str(list(record.keys())[0]).split("-")[0])
+            try:
+                ProjektID = list(dataConvertor.get_edit_plan_projects_data(userID).keys())[row]
+            except IndexError:
+                ProjektID = ""
+
+            try:
+                ZakazkaID = table.rows_projects[row].split(" ")[0]
+            except IndexError:
+                ZakazkaID = ""
+
+            tyden = str(list(record.keys())[0]).split("-")[1]
+            result.append({
+                "Tyden": tyden,
+                "Rok": set_year(),
+                "PlanHod":  record[str(list(record.keys())[0])],
+                "ModifiedBy": session["user"]['preferred_username'],
+                "ProjektID": ProjektID,
+                "ZakazkaID": ZakazkaID,
+                "PracovnikID": userID
+            })
+        print(result)
+
     return render_template('test.html', table = table)
 
 

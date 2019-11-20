@@ -25,34 +25,21 @@
                     </tr>
                 </thead>
                 <tbody>
-
-                    {% for i in range(table.rows_projects | length) -%}
-                    <tr>
-                        <td>{{ table.rows_projects[i] }}</td>
-                        {% for j in range(table.weeks | length)  -%}
-
-                            <td><input name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_projects[table.rows_projects[i]][table.weeks[j]] }}></td>
-                        {%- endfor %}
-                    </tr>
+                    {% for i in range(table.rows_complet | length) -%}
+                        {% if i < table.rows_projects | length %}
+                            <tr>
+                                <td>{{ table.rows_complet[i] }}</td>
+                                {% for j in range(table.weeks | length)  -%}
+                                    <td><input name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
+                                {%- endfor %}
+                            </tr>
+                        {% else %}
+                            <td><i>{{ table.rows_complet[i] }}</i></td>
+                            {% for j in range(table.weeks | length)  -%}
+                                <td><input name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
+                            {%- endfor %}
+                        {% endif%}
                     {%- endfor %}
-
-                    {% for i in range(table.rows_opportunity | length) -%}
-                    <tr>
-                        <td><i>{{ table.rows_opportunity[i] }}</i></td>
-                        {% for j in range(table.weeks | length)  -%}
-                            {% if table.content_opportunity[table.rows_opportunity[i]]["status"][table.weeks[j]] != 1 %}
-                                <td>{{ table.content_opportunity[table.rows_opportunity[i]]["plan"][table.weeks[j]] }}</td>
-                            {% endif %}
-                        {%- endfor %}
-                    </tr>
-                    {%- endfor %}
-
-                    <tr>
-                        <td>Sum:</td>
-                        {% for i in range(table.weeks | length) -%}
-                            <td>{{ table.sum[i] }}</td>
-                        {%- endfor %}
-                    </tr>
                 </tbody>
             </table>
             <input type="submit" value="send Values to my save script">
