@@ -7,50 +7,48 @@
     <body>
         <h3>Edit plan: {{ user_id }}</h3>
         <a href="/table">Overview</a>
-        <table id="myTable">
-            <thead>
-                <tr>
-                    <td>Week:</td>
-                    {% for week_number in table.header_columns -%}
-                        <td>{{ week_number }}</td>
-                    {%- endfor %}
-                </tr>
-                <tr>
-                    <td>Date:</td>
-                    {% for week_number in table.header_content -%}
-                        <td>{{ table.header_content[week_number] }}</td>
-                    {%- endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for i in range(table.rows_projects | length) -%}
-                <tr>
-                    <td>{{ table.rows_projects[i] }}</td>
-                    {% for j in range(table.weeks | length)  -%}
-                        <td contenteditable>{{ table.content_projects[table.rows_projects[i]][table.weeks[j]] }}</td>
-                    {%- endfor %}
-                </tr>
-                {%- endfor %}
 
-                {% for i in range(table.rows_opportunity | length) -%}
-                <tr>
-                    <td><i>{{ table.rows_opportunity[i] }}</i></td>
-                    {% for j in range(table.weeks | length)  -%}
-                        {% if table.content_opportunity[table.rows_opportunity[i]]["status"][table.weeks[j]] != 1 %}
-                            <td contenteditable>{{ table.content_opportunity[table.rows_opportunity[i]]["plan"][table.weeks[j]] }}</td>
-                        {% endif %}
+        <form id="mydata" method="POST" action="">
+            <table id="myTable">
+                <thead>
+                    <tr>
+                        <td>Week:</td>
+                        {% for week_number in table.header_columns -%}
+                            <td>{{ week_number }}</td>
+                        {%- endfor %}
+                    </tr>
+                    <tr>
+                        <td>Date:</td>
+                        {% for week_number in table.header_content -%}
+                            <td>{{ table.header_content[week_number] }}</td>
+                        {%- endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(table.rows_complet | length) -%}
+                        {% if i < table.rows_projects | length %}
+                            <tr>
+                                <td>{{ table.rows_complet[i] }}</td>
+                                {% for j in range(table.weeks | length)  -%}
+                                    <td><input class="edit_input" name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
+                                {%- endfor %}
+                            </tr>
+                        {% else %}
+                            <td><i>{{ table.rows_complet[i] }}</i></td>
+                            {% for j in range(table.weeks | length)  -%}
+                                <td><input class="edit_input" name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
+                            {%- endfor %}
+                        {% endif%}
                     {%- endfor %}
-                </tr>
-                {%- endfor %}
-
-                <tr>
-                    <td>Sum:</td>
-                    {% for i in range(table.weeks | length) -%}
-                        <td>{{ table.sum[i] }}</td>
-                    {%- endfor %}
-                </tr>
-            </tbody>
-        </table>
-        <button type="button" name="button">Submit Changes</button>
+                    <tr>
+                        <td>Sum:</td>
+                        {% for i in range(table.weeks | length) -%}
+                            <td>{{ table.sum[i] }}</td>
+                        {%- endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            <input type="submit" value="send Values to my save script">
+        </form>
     </body>
 </html>

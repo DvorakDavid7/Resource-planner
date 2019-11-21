@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
@@ -8,7 +8,7 @@
         <h3>Edit plan: {{ user_id }}</h3>
         <a href="/table">Overview</a>
 
-        <form id="mydata" method="POST" action="/test">
+        <form id="mydata" method="POST" action="">
             <table id="myTable">
                 <thead>
                     <tr>
@@ -30,19 +30,25 @@
                             <tr>
                                 <td>{{ table.rows_complet[i] }}</td>
                                 {% for j in range(table.weeks | length)  -%}
-                                    <td><input name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
+                                    <td><input class="edit_input" name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
                                 {%- endfor %}
                             </tr>
                         {% else %}
                             <td><i>{{ table.rows_complet[i] }}</i></td>
                             {% for j in range(table.weeks | length)  -%}
-                                <td><input name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
+                                <td><input class="edit_input" name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
                             {%- endfor %}
                         {% endif%}
                     {%- endfor %}
+                    <tr>
+                        <td>Sum:</td>
+                        {% for i in range(table.weeks | length) -%}
+                            <td>{{ table.sum[i] }}</td>
+                        {%- endfor %}
+                    </tr>
                 </tbody>
             </table>
             <input type="submit" value="send Values to my save script">
         </form>
     </body>
-</html>
+</html> -->

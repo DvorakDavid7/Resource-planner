@@ -53,6 +53,8 @@ class SQL:
             "ProjektySeznam": "[dbo].[View_ResourcePlanner_ProjektySeznam]",
             "PrilezitostiSeznam": "[dbo].[View_ResourcePlanner_PrilezitostiSeznam]",
             "PracovnikPlan": "[dbo].[PracovnikPlan]",
+
+            "Zapis": "[dbo].[PracovnikPlan_TEST]",
         }
         self.dateManager = dateManager
 
@@ -151,6 +153,53 @@ class SQL:
         return data  # [(x,x), (x,x), ...]
 
 
+    def write_modify_changes_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
+        query = f'''UPDATE {self.data_resources['Zapis']} SET
+                PlanHod = {PlanHod} WHERE
+                PracovnikID = \'{PracovnikID}\' AND
+                ZakazkaID = \'{ZakazkaID}\' AND
+                ProjektID = {ProjektID} AND
+                Rok = {Rok} AND
+                Tyden = {Tyden} AND
+                ModifiedBy = \'{ModifiedBy}\''''
+        self.cursor.execute(query)
+        self.cnxn.commit()
+
+
+    def write_modify_changes_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
+        query = f'''UPDATE {self.data_resources['Zapis']} SET
+                PlanHod = {PlanHod} WHERE
+                PracovnikID = \'{PracovnikID}\' AND
+                ZakazkaID = \'{ZakazkaID}\' AND
+                Rok = {Rok} AND
+                Tyden = {Tyden} AND
+                ModifiedBy = \'{ModifiedBy}\''''
+        self.cursor.execute(query)
+        self.cnxn.commit()
+
+
+    def write_insert_row_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
+        query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy)
+                VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {ProjektID}, {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
+        self.cursor.execute(query)
+        self.cnxn.commit()
+
+
+    def write_insert_row_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
+        query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)
+                VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
+        self.cursor.execute(query)
+        self.cnxn.commit()
+
+
+    def read_find_record_in_database(self, PracovnikID, Rok, Tyden, ZakazkaID, ProjektID):
+        data = []
+        query = f'''SELECT * FROM {self.data_resources['Zapis']} WHERE Tyden = {Tyden} AND Rok = {Rok} AND PracovnikID = \'{PracovnikID}\'
+        AND ZakazkaID = \'{ZakazkaID}\' AND ProjektID = {ProjektID}'''
+        table = self.cursor.execute(query)
+        for row in table:
+            data.append(row)
+        return data  # [(x,x,x), (x,x,x), ...]
 
 class DataConvertor():
     '''takes data from SQl object, combine it and return appropriate JSON'''
@@ -159,6 +208,22 @@ class DataConvertor():
         self.y_start = sql.y_start
         self.y_end = sql.y_end
         self.weeks = []
+
+
+    def insert_into_database(self, data):
+        for row in data:
+            if row["ProjektID"]:
+                self.sql.write_insert_row_project(row["PracovnikID"], row["ZakazkaID"], row["ProjektID"], row["Rok"], row["Tyden"], row["PlanHod"], row["ModifiedBy"])
+            else:
+                self.sql.write_insert_row_opportunity(row["PracovnikID"], row["ZakazkaID"], row["Rok"], row["Tyden"], row["PlanHod"], row["ModifiedBy"])
+
+
+    def update_row_in_database(self, data):
+        for row in data:
+            if row["ProjektID"]:
+                self.sql.write_modify_changes_project(row["PracovnikID"], row["ZakazkaID"], row["ProjektID"], row["Rok"], row["Tyden"], row["PlanHod"], row["ModifiedBy"])
+            else:
+                self.sql.write_modify_changes_opportunity(row["PracovnikID"], row["ZakazkaID"], row["Rok"], row["Tyden"], row["PlanHod"], row["ModifiedBy"])
 
     def user_id_to_name(self):
         result = {}
@@ -201,13 +266,18 @@ class DataConvertor():
         for week in self.weeks:
             plan[week] = ""
         for row in worker_plan_table:
+            val = 0
             if row[1] != None:
                 try:
                     result[row[1]]
+                    val = result[row[1]][row[3]]
                 except KeyError:
                     result[row[1]] = plan.copy()
                 finally:
-                    result[row[1]][row[3]] = row[4]
+                    if val and val != 0:
+                        result[row[1]][row[3]] = row[4] + val
+                    else:
+                        result[row[1]][row[3]] = row[4]
         return result
 
 
@@ -288,45 +358,40 @@ class Table():
 
 
     def load_content_overview(self):
-        work_summary = self.dataHolder.load_data_for_work_summary()
-        self.content = work_summary
+        self.content = self.dataHolder.load_data_for_work_summary()
         self.names = self.dataHolder.names
         self.rows = list(self.names.keys())
 
     def load_content_edit(self, user_id):
         self.dataHolder.load_data_for_edit(user_id)
+
         self.rows_projects = list(self.dataHolder.projects.keys())
-        self.content_projects = self.dataHolder.projects
-
         self.rows_opportunity = list(self.dataHolder.opportunity.keys())
-        self.content_opportunity = self.dataHolder.opportunity
-
         self.rows_complet = self.rows_projects + self.rows_opportunity
+
+        self.content_projects = self.dataHolder.projects
+        self.content_opportunity = self.dataHolder.opportunity
         self.content_complet = {**self.content_projects, **self.content_opportunity}
 
-        # self.sum = []
-        # for week in self.weeks:
-        #     tmp = 0
-        #     for row in self.rows_projects:
-        #         if self.content_projects[row][week] != "":
-        #             tmp += int(self.content_projects[row][week])
-        #
-        #     for row in self.rows_opportunity:
-        #         if self.content_opportunity[row]["plan"][week] != "" and self.content_opportunity[row]["status"] != 2:
-        #              tmp += int(self.content_opportunity[row]["plan"][week])
-        #     self.sum.append(tmp)
+        self.sum = []
+        for week in self.weeks:
+            tmp = 0
+            for row in self.rows_complet:
+                if self.content_complet[row][week] != "":
+                    tmp += int(self.content_complet[row][week])
+            self.sum.append(tmp)
 
 
 
-dateManager = DateManager()
-sql = SQL(dateManager)
-sql.set_date_range()
-dataConvertor = DataConvertor(sql)
-dataHolder = DataHolder(dataConvertor)
-table = Table(dataHolder)
-table.load_header()
-table.load_content_edit("jadam")
-print(table.content_complet)
+# dateManager = DateManager()
+# sql = SQL(dateManager)
+# sql.set_date_range()
+# dataConvertor = DataConvertor(sql)
+# dataHolder = DataHolder(dataConvertor)
+# table = Table(dataHolder)
+# table.load_header()
+# table.load_content_edit("mbendik")
+# print(table.sum)
 
 
 # x = DataConvertor()
