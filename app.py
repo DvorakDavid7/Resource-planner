@@ -33,7 +33,8 @@ def login():
                            # here we choose to also collect end user consent upfront
         state=session["state"],
         redirect_uri=url_for("authorized", _external=True))
-    return "<a href='%s'>Login with Microsoft Identity</a>" % auth_url
+    return render_template('login.html', redirect=auth_url)
+    # return "<a href='%s'>Login with Microsoft Identity</a>" % auth_url
 
 @app.route(app_config.REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
 def authorized():

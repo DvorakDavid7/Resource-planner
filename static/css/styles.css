@@ -40,5 +40,28 @@
      font-size:20px;
      border-width: 1px;
      background: transparent;
-     
+
  }
+
+
+.login {
+    text-align: center;
+    margin-top: 300px;
+}
+
+.menu {
+    text-align: center;
+}
+
+.menu-text{
+    text-align: center;
+}
+
+
+.test {
+    width: 100px;
+    height: 100px;
+    position: sticky;
+    top: 0;
+    background-color: black;
+}
