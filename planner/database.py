@@ -44,6 +44,15 @@ class SQL:
     '''write and read data from database'''
 
     def __init__(self, dateManager):
+        CONECTION_STRING = '''Driver={ODBC Driver 17 for SQL Server};
+                            Server=tcp:dwhdbsrv.database.windows.net,1433;
+                            Database=DWH-DB;Uid=ddvorak@trask.cz;
+                            Pwd=2gHmDME6;
+                            Encrypt=yes;
+                            TrustServerCertificate=no;
+                            Connection Timeout=30;
+                            Authentication=ActiveDirectoryPassword'''
+                            
         self.cnxn = pyodbc.connect(CONECTION_STRING)
         self.cursor = self.cnxn.cursor()
         self.data_resources = {

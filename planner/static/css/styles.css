@@ -1,0 +1,67 @@
+
+
+#myInput {
+   background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+   background-position: 10px 12px; /* Position the search icon */
+   background-repeat: no-repeat; /* Do not repeat the icon image */
+   font-size: 16px; /* Increase font-size */
+   padding: 12px 20px 12px 40px; /* Add some padding */
+   border: 1px solid #ddd; /* Add a grey border */
+   margin-bottom: 12px; /* Add some space below the input */
+ }
+
+ #myTable {
+   border-collapse: collapse; /* Collapse borders */
+   width: 100%; /* Full-width */
+   border: 1px solid #ddd; /* Add a grey border */
+   font-size: 18px; /* Increase font-size */
+ }
+
+ #myTable th, #myTable td {
+   border: 1px solid #dddddd;
+   text-align: center; /* Left-align text */
+   padding: 12px; /* Add padding */
+ }
+
+ #myTable tr {
+   border-bottom: 1px solid #ddd;
+ }
+
+ #myTable tr.header, #myTable tr:hover {
+   background-color: #f1f1f1;
+ }
+
+ td:nth-child(7) {
+   background-color: #7fff00;
+ }
+
+ .edit_input {
+     width:30%;
+     font-size:20px;
+     border-width: 1px;
+     background: transparent;
+
+ }
+
+
+.login {
+    text-align: center;
+    margin-top: 300px;
+}
+
+.menu {
+    text-align: center;
+}
+
+.menu-text{
+    text-align: center;
+}
+
+
+.test {
+    width: 100px;
+    height: 100px;
+    position: sticky;
+    top: 0;
+    background-color: black;
+}

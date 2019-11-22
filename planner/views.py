@@ -1,16 +1,12 @@
 import uuid
-import requests
+from planner import app
 from flask import Flask, render_template, session, request, redirect, url_for
-from flask_session import Session  # https://pythonhosted.org/Flask-Session
 import msal
 import app_config
-from database import DataConvertor, Table, DataHolder, DateManager, SQL
 import datetime
+import requests
 
-
-app = Flask(__name__)
-app.config.from_object(app_config)
-Session(app)
+from planner.database import DataConvertor, Table, DataHolder, DateManager, SQL
 
 dateManager = DateManager()
 dateManager.current_day = datetime.date.today()
@@ -18,6 +14,7 @@ sql = SQL(dateManager)
 sql.set_date_range()
 sql.set_department("IA")
 department = "IA"
+
 
 @app.route("/")
 def index():
@@ -215,6 +212,3 @@ def _get_token_from_cache(scope=None):
         result = cca.acquire_token_silent(scope, account=accounts[0])
         _save_cache(cache)
         return result
-
-if __name__ == "__main__":
-    app.run(debug = True, port = 5000)  # parametr debud = True okamžité provedení změny
