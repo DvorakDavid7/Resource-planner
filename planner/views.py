@@ -1,19 +1,22 @@
 import uuid
 from planner import app
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import render_template, session, request, redirect, url_for, json
 import msal
 import app_config
 import datetime
 import requests
 
-from planner.database import DataConvertor, Table, DataHolder, DateManager, SQL
+from planner.database import Table, DataHolder
+from planner.sql import SQL
+from planner.DateManager import DateManager
+from planner.DataConvertor import DataConvertor
 
-dateManager = DateManager()
-dateManager.current_day = datetime.date.today()
-sql = SQL(dateManager)
-sql.set_date_range()
-sql.set_department("IA")
-department = "IA"
+
+
+
+
+
+from Table_test import Table_test
 
 
 @app.route("/")
@@ -117,76 +120,130 @@ def show_data():
     return render_template('table.html', table = table, department=department)
 
 
-@app.route('/edit/<string:question_id>', methods = ["GET", "POST"])
-def edit(question_id):
-    token = _get_token_from_cache(app_config.SCOPE)
-    if not token:
-        return redirect(url_for("login"))
-    global dateManager
-    def set_year():
-        rok = ""
-        if table.y_start != table.y_end:
-            if 1 <= int(tyden) < 15:
-                rok = table.y_end
-            else:
-                rok = table.y_start
-        else:
-            rok = table.y_start
-        return rok
-    def rebuild_data_content(): # keys odpovídají requestu z FE použití pro porovnání změn vůči FE
-        data = {}
-        for i in range(len(table.rows_complet)):
-            for j in range(len(table.weeks)):
-                data[str(i) + "-" + str(table.weeks[j])] = table.content_complet[table.rows_complet[i]][table.weeks[j]]
-        return data
-    def separates_differences(): # vrací hodnoty odlišné od BE
-        different = []
-        data = rebuild_data_content()
-        req = dict(request.form)
-        for i in req.keys():
-            if str(data[i]) != str(req[i]):
-                different.append({i : req[i]})
-        return different
-    userID = question_id
-    sql.set_date_range()
-    dataConvertor = DataConvertor(sql)
-    dataHolder = DataHolder(dataConvertor)
-    table = Table(dataHolder)
-    table.load_header()
-    table.load_content_edit(userID)
+# @app.route('/edit/<string:question_id>', methods = ["GET", "POST"])
+# def edit(question_id):
+#     token = _get_token_from_cache(app_config.SCOPE)
+#     if not token:
+#         return redirect(url_for("login"))
+#     global dateManager
+#     def set_year():
+#         rok = ""
+#         if table.y_start != table.y_end:
+#             if 1 <= int(tyden) < 15:
+#                 rok = table.y_end
+#             else:
+#                 rok = table.y_start
+#         else:
+#             rok = table.y_start
+#         return rok
+#     def rebuild_data_content(): # keys odpovídají requestu z FE použití pro porovnání změn vůči FE
+#         data = {}
+#         for i in range(len(table.rows_complet)):
+#             for j in range(len(table.weeks)):
+#                 data[str(i) + "-" + str(table.weeks[j])] = table.content_complet[table.rows_complet[i]][table.weeks[j]]
+#         return data
+#     def separates_differences(): # vrací hodnoty odlišné od BE
+#         different = []
+#         data = rebuild_data_content()
+#         req = dict(request.form)
+#         for i in req.keys():
+#             if str(data[i]) != str(req[i]):
+#                 different.append({i : req[i]})
+#         return different
+#     userID = question_id
+#     sql.set_date_range()
+#     dataConvertor = DataConvertor(sql)
+#     dataHolder = DataHolder(dataConvertor)
+#     table = Table(dataHolder)
+#     table.load_header()
+#     table.load_content_edit(userID)
+#
+#     if request.method == "POST":
+#         result = []
+#         different = separates_differences()
+#         for record in different:
+#             row = int(str(list(record.keys())[0]).split("-")[0])
+#             project_ids = list(dataConvertor.get_edit_plan_projects_data(userID).keys())
+#             zakazka_ids = list(table.rows_complet[row].split(" "))
+#             PlanHod = record[str(list(record.keys())[0])]
+#             tyden = str(list(record.keys())[0]).split("-")[1]
+#             if row < len(project_ids):
+#                 ProjektID = project_ids[row]
+#             else:
+#                 ProjektID = None
+#             ZakazkaID = zakazka_ids[0]
+#             result.append({
+#                 "Tyden": tyden,
+#                 "Rok": set_year(),
+#                 "PlanHod":  PlanHod,
+#                 "ModifiedBy": session["user"]['preferred_username'],
+#                 "ProjektID": ProjektID,
+#                 "ZakazkaID": ZakazkaID,
+#                 "PracovnikID": userID
+#             })
+#         for row in result:
+#             is_in_database = sql.read_find_record_in_database(row["PracovnikID"], row["Rok"], row["Tyden"], row["ZakazkaID"], row["ProjektID"])
+#             if is_in_database == []:
+#                 dataConvertor.insert_into_database(result)
+#             else:
+#                 dataConvertor.update_row_in_database(result)
+#         sql.set_date_range()
+#
+#     return render_template('edit.html', table = table, user_id = userID)
 
+
+
+
+
+sql = SQL()
+dateManager = DateManager()
+table = Table_test(sql, dateManager)
+
+current_day = datetime.date(2019, 10, 20)
+table.set_date_range(current_day)
+table.set_department("IA")
+
+@app.route('/test', methods = ["GET", "POST"])
+def test():
     if request.method == "POST":
-        result = []
-        different = separates_differences()
-        for record in different:
-            row = int(str(list(record.keys())[0]).split("-")[0])
-            project_ids = list(dataConvertor.get_edit_plan_projects_data(userID).keys())
-            zakazka_ids = list(table.rows_complet[row].split(" "))
-            PlanHod = record[str(list(record.keys())[0])]
-            tyden = str(list(record.keys())[0]).split("-")[1]
-            if row < len(project_ids):
-                ProjektID = project_ids[row]
-            else:
-                ProjektID = None
-            ZakazkaID = zakazka_ids[0]
-            result.append({
-                "Tyden": tyden,
-                "Rok": set_year(),
-                "PlanHod":  PlanHod,
-                "ModifiedBy": session["user"]['preferred_username'],
-                "ProjektID": ProjektID,
-                "ZakazkaID": ZakazkaID,
-                "PracovnikID": userID
-            })
-        for row in result:
-            is_in_database = sql.read_find_record_in_database(row["PracovnikID"], row["Rok"], row["Tyden"], row["ZakazkaID"], row["ProjektID"])
-            if is_in_database == []:
-                dataConvertor.insert_into_database(result)
-            else:
-                dataConvertor.update_row_in_database(result)
-        sql.set_date_range()
+        req = request.form.get("switch")
+        if req == "back":
+            table.current_day -= datetime.timedelta(days = 7)
+            table.set_date_range(table.current_day)
 
-    return render_template('edit.html', table = table, user_id = userID)
+        elif req == "forward":
+            table.current_day += datetime.timedelta(days = 7)
+            table.set_date_range(table.current_day)
+
+        elif request.form.get("date") != "":
+            req = request.form.get("date").split("-")
+            year = int(req[0])
+            month = int(req[1])
+            day = int(req[2])
+            date = datetime.date(year, month, day)
+            table.set_date_range(date)
+            test = table.complete_overwie_table()
+            return render_template("test.html",table = test)
+
+        elif request.form.get("week") != "":
+            week = request.form.get("week").split("/")
+            d = str(week[1] + "-W"+week[0])
+            date = datetime.datetime.strptime(d + '-1', '%G-W%V-%u')
+            date = str(date).split(" ")[0]
+            date = date.split("-")
+            table.set_date_range(datetime.date(int(date[0]), int(date[1]), int(date[2])))
+            test = table.complete_overwie_table()
+            return render_template("test.html",table = test)
+
+    test = table.complete_overwie_table()
+    return render_template("test.html",table = test)
+
+
+@app.route('/edit_test_funce/<string:user_id>', methods = ["GET", "POST"])
+def edit_test_funce(user_id):
+    test = table.complete_edit_table(user_id)
+    return render_template("test_edit.html",table = test, user_id = user_id)
+
 
 
 def _load_cache():

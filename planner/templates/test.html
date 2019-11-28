@@ -1,54 +1,75 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
-        <title>Main table</title>
-    <body>
-        <h3>Edit plan: {{ user_id }}</h3>
-        <a href="/table">Overview</a>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-        <form id="mydata" method="POST" action="">
-            <table id="myTable">
-                <thead>
-                    <tr>
-                        <td>Week:</td>
-                        {% for week_number in table.header_columns -%}
-                            <td>{{ week_number }}</td>
-                        {%- endfor %}
-                    </tr>
-                    <tr>
-                        <td>Date:</td>
-                        {% for week_number in table.header_content -%}
-                            <td>{{ table.header_content[week_number] }}</td>
-                        {%- endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in range(table.rows_complet | length) -%}
-                        {% if i < table.rows_projects | length %}
-                            <tr>
-                                <td>{{ table.rows_complet[i] }}</td>
-                                {% for j in range(table.weeks | length)  -%}
-                                    <td><input class="edit_input" name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
-                                {%- endfor %}
-                            </tr>
-                        {% else %}
-                            <td><i>{{ table.rows_complet[i] }}</i></td>
-                            {% for j in range(table.weeks | length)  -%}
-                                <td><input class="edit_input" name={{ i|string + "-" + table.weeks[j] | string }} value={{ table.content_complet[table.rows_complet[i]][table.weeks[j]] }}></td>
-                            {%- endfor %}
-                        {% endif%}
-                    {%- endfor %}
-                    <tr>
-                        <td>Sum:</td>
-                        {% for i in range(table.weeks | length) -%}
-                            <td>{{ table.sum[i] }}</td>
-                        {%- endfor %}
-                    </tr>
-                </tbody>
-            </table>
-            <input type="submit" value="send Values to my save script">
+        <title></title>
+    </head>
+    <body>
+        <button class="btn btn-primary btn-lg" onclick="window.location.href='/'">Home</button>
+        <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Search for names..">
+
+        <form action="" method="post">
+            <button name="switch" value="back">back</button>
+            <button name="switch" value="forward">forward</button>
         </form>
+        <br></br>
+        <form action="" method="post">
+            <input name="date" type="text" placeholder=YYYY-MM-DD> or
+            <input name="week" type="text" placeholder=week/year>
+            <input type="submit" value="Go">
+        </form>
+        <br></br>
+        <form action="" method="post">
+            Enter department:
+            <input name="department" type="text">
+            <input type="submit" value="Send">
+            <input type="submit" name="addall" value="add all"/>
+        </form>
+        <div class="">
+            shown department(s):
+        </div>
+        <br>
+        <div class="">
+            year start: {{ table["header"]["year_start"] }} / year end: {{ table["header"]["year_end"] }}
+        </div>
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <td>Week:</td>
+                    {% for week_number in table.header.working_hours -%}
+                        <td class = center>{{ week_number }}</td>
+                    {%- endfor %}
+                </tr>
+                <tr>
+                    <td>Dates:</td>
+                    {% for date in table.header.dates -%}
+                        <td>{{ date }}</td>
+                    {%- endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(table.body | length) -%}
+                <tr>
+                    <td class="td"><a href={{ url_for('edit_test_funce', user_id = table.body[i].user_id) }}>{{ table.body[i].name }}</a></td>
+                    {% for week in table.header.weeks -%}
+                        {% if table["body"][i]["values"][week] | int > 40 %}
+                            <td class = "over">{{ table["body"][i]["values"][week] }}</td>
+                        {% elif table["body"][i]["values"][week] | int == 40 %}
+                            <td class = "optimal">{{ table["body"][i]["values"][week] }}</td>
+                        {% else %}
+                            <td class = "less">{{ table["body"][i]["values"][week] }}</td>
+                        {% endif %}
+                    {%- endfor %}
+                </tr>
+                {%- endfor %}
+            </tbody>
+        </table>
+        <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/index.js') }}" ></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
-</html> -->
+</html>
