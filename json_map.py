@@ -31,13 +31,13 @@ table_edit =  {
             "body" :
                     {
                     "projects": [
-                                    {"id": 0,"project_id": "9920", "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" : {"41":40, "42":40 "43":20}},
-                                    {"id": 1,"project_id": "9985", "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" : {"41":40, "42":40 "43":20}},
+                                    {"id": 0,"project_id": "9920","zakazka_id": "TDU29", "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" : {"41":40, "42":40 "43":20}},
+                                    {"id": 1,"project_id": "9985","zakazka_id": "TDU29", "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" : {"41":40, "42":40 "43":20}},
                                 ],
 
                     "opportunity":[
-                                    {"id": 2,"status": 1, "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" : {"41":40, "42":40 "43":20}},
-                                    {"id": 3,"status": 1, "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" :  {"41":40, "42":40 "43":20}},
+                                    {"id": 2,"status": 1,"zakazka_id": "TDU29", "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" : {"41":40, "42":40 "43":20}},
+                                    {"id": 3,"status": 1,"zakazka_id": "TDU29", "nazev": "CSOB - upravy", "project_manager":"David Dvořák", "values" :  {"41":40, "42":40 "43":20}},
                                 ],
                     }
 

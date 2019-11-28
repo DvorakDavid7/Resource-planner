@@ -58,7 +58,7 @@ class SQL:
         query1 = f'''SELECT [Tyden], [Plan] FROM {self.data_resources["SummaryPlan"]}
                 WHERE PracovnikID = \'{name}\' AND ((Tyden >= {week_start} AND Rok = {year_start}) OR (Tyden <= {week_end} AND Rok = {year_end}))'''
         query2 = f'''SELECT [Tyden], [Plan] FROM {self.data_resources["SummaryPlan"]}
-                WHERE PracovnikID = \'{name}\' AND Tyden BETWEEN {week_start} AND {week_end}'''
+                WHERE PracovnikID = \'{name}\' AND Rok = {year_start} AND Tyden BETWEEN {week_start} AND {week_end}'''
         if year_start == year_end:
             table = self.cursor.execute(query2)
         else:
@@ -70,7 +70,7 @@ class SQL:
 
     def read_projects(self, project_id):
         data = []
-        query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno] FROM {self.data_resources["ProjektySeznam"]}
+        query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno], [ZakazkaID] FROM {self.data_resources["ProjektySeznam"]}
                 WHERE ProjektID = {project_id}'''
         table = self.cursor.execute(query)
         for row in table:
@@ -80,7 +80,7 @@ class SQL:
 
     def read_opportunity(self, zakazka_id):
         data = []
-        query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno], [Status] FROM {self.data_resources["PrilezitostiSeznam"]}
+        query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno], [Status], [ZakazkaID] FROM {self.data_resources["PrilezitostiSeznam"]}
                 WHERE ZakazkaID = \'{zakazka_id}\''''
         table = self.cursor.execute(query)
         for row in table:
@@ -152,4 +152,3 @@ class SQL:
         for row in table:
             data.append(row)
         return data  # [(x,x,x), (x,x,x), ...]
-        

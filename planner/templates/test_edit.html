@@ -30,9 +30,9 @@
                     <tr>
                         <td>{{ table.body.projects[i].nazev }}</td>
                         {% for week in table.header.weeks -%}
-                            <td><input class="edit_input data-row"  onkeyup="compute_sum()" value={{ table["body"]["projects"][i]["values"][week] }}></td>
+                            <td><input class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string }}" value={{ table["body"]["projects"][i]["values"][week] }}></td>
                         {%- endfor %}
-                        <td><button class="btn btn-danger btn-sm" type="button" name="button" onclick="delete_row({{ i }}); compute_sum();">X</button></td>
+                        <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ i }}); compute_sum();">X</button></td>
                     </tr>
                     {%- endfor %}
 
@@ -53,9 +53,28 @@
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-primary btn-lg" type="submit" name="button">Save Changes</button>
+            <button class="btn btn-primary btn-lg" type="button" onclick="send_data()">Save Changes</button>
         </form>
+        <script type="text/javascript">
+            function send_data(){
+                var xhr = new XMLHttpRequest()
+                var form = document.getElementById("mydata");
+                var table = {{ table | tojson() }}
+                xhr.open('POST', '/edit_test_funce/{{ user_id }}', true);
+                xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
 
+                var data = {}
+                var row, column;
+                for (var i = 0; i < form.elements.length; i++) {
+                    if (form.elements[i].name != ""){
+                        row = Number(form.elements[i].name.split("-")[0])
+                        column = Number(form.elements[i].name.split("-")[1])
+                        table.body.projects[row].values[column] = form.elements[i].value
+                    }
+                }
+                xhr.send(JSON.stringify(table));
+            }
+        </script>
         <script type="text/javascript">
             function compute_sum(){
                 var table = {{ table | tojson() }}
@@ -97,7 +116,6 @@
                 for (var i = id * weeks.length; i < (id * weeks.length + weeks.length); i++){
                     elements[i].value = ""
                 }
-                console.log(elements)
             }
         </script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

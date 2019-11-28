@@ -107,7 +107,8 @@ class Table_test():
                 project_informations = self.sql.read_projects(project_id)
                 project_name = project_informations[0][0]
                 projekt_manager = project_informations[0][1]
-                f = {"project_id": project_id, "nazev":project_name, "project_manager":projekt_manager, "values" : result[key]}
+                zakazka_id = project_informations[0][2]
+                f = {"project_id": project_id, "zakazka_id": zakazka_id, "nazev":project_name, "project_manager":projekt_manager, "values" : result[key]}
                 table_body["projects"].append(f.copy())
             else:   # příležitost
                 try:
@@ -115,12 +116,13 @@ class Table_test():
                     opportunity_name = opportunity_informations[0][0]
                     projekt_manager = opportunity_informations[0][1]
                     opportunity_status = opportunity_informations[0][2]
+                    zakazka_id = opportunity_informations[0][3]
                 except:
                     opportunity_name = "nedefinováno"
                     projekt_manager = ""
                     opportunity_status = 0
 
-                f = {"status": opportunity_status, "nazev":opportunity_name, "project_manager":projekt_manager, "values" : result[key]}
+                f = {"status": opportunity_status, "zakazka_id": zakazka_id, "nazev":opportunity_name, "project_manager":projekt_manager, "values" : result[key]}
                 table_body["opportunity"].append(f.copy())
         return table_body
 
