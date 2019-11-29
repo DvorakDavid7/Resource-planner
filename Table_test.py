@@ -47,12 +47,12 @@ class Table_test():
 
 
     def generate_header(self):
-        table_header = {"year_start": "", "year_end":"", "weeks": [], "working_hours": [], "dates": []}
+        table_header = {"year_start": "", "year_end":"", "weeks": [], "working_hours": {}, "dates": []}
         data = self.sql.read_DatumTyden(self.year_start, self.week_start, self.year_end, self.week_end)
         self.weeks = []
         for record in data:
             self.weeks.append(int(record[0].split("-")[1]))
-            table_header["working_hours"].append(record[0].split("-")[1] + "(" + str(record[2]) + ")" )
+            table_header["working_hours"][int(record[0].split("-")[1])] = str(record[2])
             table_header["dates"].append(record[1].replace("(", "").replace(")", ""))
         table_header["weeks"] = self.weeks
         table_header["year_start"] =self.year_start

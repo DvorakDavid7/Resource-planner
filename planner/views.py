@@ -77,14 +77,17 @@ def test():
     if request.method == "POST":
         req = request.form.get("switch")
         if req == "back":
+            print(req)
             table.current_day -= datetime.timedelta(days = 7 * 10)
             table.set_date_range(table.current_day)
 
         elif req == "forward":
+            print(req)
             table.current_day += datetime.timedelta(days = 7 * 10)
             table.set_date_range(table.current_day)
 
-        elif request.form.get("date") != "":
+        elif request.form.get("date"):
+            print(request.form.get("date"))
             req = request.form.get("date").split("-")
             year = int(req[0])
             month = int(req[1])
@@ -92,7 +95,8 @@ def test():
             date = datetime.date(year, month, day)
             table.set_date_range(date)
 
-        elif request.form.get("week") != "":
+        elif request.form.get("week"):
+            print(request.form.get("week"))
             week = request.form.get("week").split("/")
             d = str(week[1] + "-W"+week[0])
             date = datetime.datetime.strptime(d + '-1', '%G-W%V-%u')
@@ -100,8 +104,12 @@ def test():
             date = date.split("-")
             table.set_date_range(datetime.date(int(date[0]), int(date[1]), int(date[2])))
 
+        elif request.form.get("department"):
+            departments = request.form.get("department")
+            table.set_department(departments)
+
     test = table.complete_overwie_table()
-    return render_template("test.html",table = test)
+    return render_template("test.html",table = test, departments = table.department)
 
 
 @app.route('/edit_test_funce/<string:user_id>', methods = ["GET", "POST"])
@@ -148,7 +156,7 @@ def edit_test_funce(user_id):
                                     "PlanHod":  planhod,
                                     "ModifiedBy": session["user"]['preferred_username'],
                                     "ProjektID": receve_data["body"]["projects"][i]["project_id"],
-                                    "ZakazkaID": receve_data["bod2y"]["projects"][i]["zakazka_id"],
+                                    "ZakazkaID": receve_data["body"]["projects"][i]["zakazka_id"],
                                     "PracovnikID": user_id,
                                     }
                         print(result)
@@ -196,6 +204,7 @@ def edit_test_funce(user_id):
                                     "PracovnikID": user_id,
                                     }
                         print(result)
+
 
     test = table.complete_edit_table(user_id)
     return render_template("test_edit.html",table = test, user_id = user_id)

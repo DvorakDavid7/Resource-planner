@@ -14,8 +14,8 @@
                 <thead>
                     <tr>
                         <td>Week:</td>
-                        {% for week_number in table.header.working_hours -%}
-                            <td class = center>{{ week_number }}</td>
+                        {% for i in range(table.header.weeks | length) -%}
+                            <td class = center>{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</td>
                         {%- endfor %}
                     </tr>
                     <tr>
@@ -78,7 +78,6 @@
                         table.body.opportunity[row].values[column] = form.elements[i].value
                     }
                 }
-                console.log(table.body);
                 xhr.send(JSON.stringify(table));
             }
         </script>

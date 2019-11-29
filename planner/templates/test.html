@@ -24,12 +24,12 @@
         <br></br>
         <form action="" method="post">
             Enter department:
-            <input name="department" type="text">
-            <input type="submit" value="Send">
-            <input type="submit" name="addall" value="add all"/>
+            <input class="department-input" name="department" type="text">
+            <input type="submit" value="Send" onclick="set_shown_departments()">
+            <button type="button" name="button" onclick="addall()">Add All</button>
         </form>
         <div class="">
-            shown department(s):
+            shown department(s): {{ departments }}
         </div>
         <br>
         <div class="">
@@ -39,8 +39,8 @@
             <thead>
                 <tr>
                     <td>Week:</td>
-                    {% for week_number in table.header.working_hours -%}
-                        <td class = center>{{ week_number }}</td>
+                    {% for i in range(table.header.weeks | length) -%}
+                        <td class = center>{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</td>
                     {%- endfor %}
                 </tr>
                 <tr>
@@ -53,11 +53,11 @@
             <tbody>
                 {% for i in range(table.body | length) -%}
                 <tr>
-                    <td class="td"><a href={{ url_for('edit_test_funce', user_id = table.body[i].user_id) }}>{{ table.body[i].name }}</a></td>
+                    <td class="td"><a href={{ url_for('edit_test_funce', user_id = table.body[i].user_id) }}>{{ table.body[i].name + ' (' +  table.body[i].deparment + ')' }}</a></td>
                     {% for week in table.header.weeks -%}
-                        {% if table["body"][i]["values"][week] | int > 40 %}
+                        {% if table["body"][i]["values"][week] | int > table.header.working_hours[week] | int %}
                             <td class = "over">{{ table["body"][i]["values"][week] }}</td>
-                        {% elif table["body"][i]["values"][week] | int == 40 %}
+                        {% elif table["body"][i]["values"][week] | int == table.header.working_hours[week] | int %}
                             <td class = "optimal">{{ table["body"][i]["values"][week] }}</td>
                         {% else %}
                             <td class = "less">{{ table["body"][i]["values"][week] }}</td>
@@ -67,6 +67,12 @@
                 {%- endfor %}
             </tbody>
         </table>
+        <script type="text/javascript">
+            function addall(){
+                var textbox = document.getElementsByClassName("department-input")[0]
+                textbox.value = "BI ED AC DM SA NL IS SD EX CC BR ZA IA PO SU SL OS PD NA SK BS"
+            }
+        </script>
         <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/index.js') }}" ></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
