@@ -148,12 +148,58 @@ def edit_test_funce(user_id):
                                     "PlanHod":  planhod,
                                     "ModifiedBy": session["user"]['preferred_username'],
                                     "ProjektID": receve_data["body"]["projects"][i]["project_id"],
-                                    "ZakazkaID": receve_data["body"]["projects"][i]["zakazka_id"],
+                                    "ZakazkaID": receve_data["bod2y"]["projects"][i]["zakazka_id"],
                                     "PracovnikID": user_id,
                                     }
                         print(result)
+
+        for i in range(len(reference["body"]["opportunity"])):
+            for week in reference["body"]["opportunity"][i]["values"].keys():
+                default_value = str(reference["body"]["opportunity"][i]["values"][week])
+                receve_value = str(receve_data["body"]["opportunity"][i]["values"][str(week)])
+
+                if reference["header"]["year_start"] == reference["header"]["year_end"]:
+                    rok = reference["header"]["year_start"]
+                else:
+                    if week > reference["header"]["weeks"][10]:
+                         rok = reference["header"]["year_start"]
+                    else:
+                        rok = reference["header"]["year_end"]
+
+                if receve_value != "":
+                    planhod = int(receve_value)
+                else:
+                    planhod = None
+
+                if default_value != receve_value:
+                    if default_value == "":
+                        result = {
+                                    "action":"insert",
+                                    "Tyden": week,
+                                    "Rok": rok,
+                                    "PlanHod": planhod,
+                                    "ModifiedBy": session["user"]['preferred_username'],
+                                    "ProjektID": None,
+                                    "ZakazkaID": receve_data["body"]["opportunity"][i]["zakazka_id"],
+                                    "PracovnikID": user_id,
+                                    }
+                        print(result)
+                    else:
+                        result = {
+                                    "action":"update",
+                                    "Tyden": week,
+                                    "Rok": rok,
+                                    "PlanHod":  planhod,
+                                    "ModifiedBy": session["user"]['preferred_username'],
+                                    "ProjektID": None,
+                                    "ZakazkaID": receve_data["body"]["opportunity"][i]["zakazka_id"],
+                                    "PracovnikID": user_id,
+                                    }
+                        print(result)
+
     test = table.complete_edit_table(user_id)
     return render_template("test_edit.html",table = test, user_id = user_id)
+
 
 def _load_cache():
     cache = msal.SerializableTokenCache()

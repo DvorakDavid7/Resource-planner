@@ -30,7 +30,7 @@
                     <tr>
                         <td>{{ table.body.projects[i].nazev }}</td>
                         {% for week in table.header.weeks -%}
-                            <td><input class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string }}" value={{ table["body"]["projects"][i]["values"][week] }}></td>
+                            <td><input class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-project' }}" value={{ table["body"]["projects"][i]["values"][week] }}></td>
                         {%- endfor %}
                         <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ i }}); compute_sum();">X</button></td>
                     </tr>
@@ -40,8 +40,9 @@
                     <tr>
                         <td ><i>{{ table.body.opportunity[i].nazev }}</i></td>
                         {% for week in table.header.weeks -%}
-                            <td><input class="edit_input" value={{ table["body"]["opportunity"][i]["values"][week] }}></td>
+                            <td><input class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-opportunity' }}" value={{ table["body"]["opportunity"][i]["values"][week] }}></td>
                         {%- endfor %}
+                        <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{table.body.projects | length + i }}); compute_sum();">X</button></td>
                     </tr>
                     {%- endfor %}
 
@@ -62,16 +63,22 @@
                 var table = {{ table | tojson() }}
                 xhr.open('POST', '/edit_test_funce/{{ user_id }}', true);
                 xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-
+                var type = ""
                 var data = {}
                 var row, column;
+
                 for (var i = 0; i < form.elements.length; i++) {
-                    if (form.elements[i].name != ""){
-                        row = Number(form.elements[i].name.split("-")[0])
-                        column = Number(form.elements[i].name.split("-")[1])
+                    row = Number(form.elements[i].name.split("-")[0])
+                    column = Number(form.elements[i].name.split("-")[1])
+                    type = form.elements[i].name.split("-")[2]
+                    if (form.elements[i].name != "" && type == "project"){
                         table.body.projects[row].values[column] = form.elements[i].value
                     }
+                    if (form.elements[i].name != "" && type == "opportunity"){
+                        table.body.opportunity[row].values[column] = form.elements[i].value
+                    }
                 }
+                console.log(table.body);
                 xhr.send(JSON.stringify(table));
             }
         </script>
@@ -82,10 +89,9 @@
                 var element = document.getElementsByClassName("sum");
                 var rows = document.getElementsByClassName("data-row");
                 var q = 0;
-
                 for (var i = 0; i < weeks.length; i++) {
                     var sum = 0;
-                    for (var j = q; j < table.body.projects.length * weeks.length ; j = j + weeks.length){
+                    for (var j = q; j < (table.body.projects.length + table.body.opportunity.length) * weeks.length ; j = j + weeks.length){
                         sum = sum + Number(rows[j].value);
                     }
                     element[i].innerHTML = sum;
