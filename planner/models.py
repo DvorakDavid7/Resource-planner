@@ -1,10 +1,9 @@
 import planner
 from planner.sql import SQL
-from planner.DateManager import DateManager
-import datetime
+from datetime import datetime, timedelta, date
 
 
-class Table_test():
+class Table():
     def __init__(self, sql, dateManager):
         self.sql = sql
         self.dateManager = dateManager
@@ -127,13 +126,36 @@ class Table_test():
         return table_body
 
 
-# current_day = datetime.date(2019, 10, 20)
-#
-# sql = SQL()
-# dateManager = DateManager()
-# table = Table_test(sql, dateManager)
-#
-# table.set_date_range(current_day)
-# table.set_department("IA")
-#
-# print(table.complete_edit_table("pmarek"))
+
+
+class DateManager():
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def day_to_week_number(datestring):
+        day = datestring                        #  '07.11.2019'
+        dt = datetime.strptime(day, '%Y-%m-%d')
+        wk = dt.isocalendar()[1]
+        return wk
+
+    def get_range(self, current_day, range):
+        date_start = str(current_day - timedelta(days=range * 7))
+        date_end = str(current_day + timedelta(days=range * 7))
+        return [date_start, date_end]
+
+    def dates_range(self, current_day, range):
+        get_range = self.get_range(current_day, range)
+        self.year_star = get_range[0][:4]
+        self.year_end = get_range[1][:4]
+        week_start = self.day_to_week_number(get_range[0])
+        week_end = self.day_to_week_number(get_range[1])
+        if week_start < 10:
+            self.week_start = "0" + str(week_start)
+        else:
+            self.week_start = str(week_start)
+        if week_end < 10:
+            self.week_end = "0" + str(week_end)
+        else:
+            self.week_end = str(week_end)
+        return {"week_start": self.week_start, "year_start": self.year_star, "week_end": self.week_end, "year_end": self.year_end}

@@ -24,38 +24,44 @@
         <br></br>
         <form action="" method="post">
             Enter department:
-            <input name="department" type="text">
-            <input type="submit" value="Send">
-            <input type="submit" name="addall" value="add all"/>
+            <input class="department-input" name="department" type="text">
+            <input type="submit" value="Send" onclick="set_shown_departments()">
+            <button type="button" name="button" onclick="addall()">Add All</button>
         </form>
         <div class="">
-            shown department(s): {{ department }}
+            shown department(s): {{ departments }}
         </div>
         <br>
         <div class="">
-            year start: {{ table.y_start }} / year end: {{ table.y_end }}
+            year start: {{ table["header"]["year_start"] }} / year end: {{ table["header"]["year_end"] }}
         </div>
         <table id="myTable">
             <thead>
                 <tr>
                     <td>Week:</td>
-                    {% for week_number in table.header_columns -%}
-                        <td>{{ week_number }}</td>
+                    {% for i in range(table.header.weeks | length) -%}
+                        <td class = center>{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</td>
                     {%- endfor %}
                 </tr>
                 <tr>
-                    <td>Date:</td>
-                    {% for week_number in table.header_content -%}
-                        <td>{{ table.header_content[week_number] }}</td>
+                    <td>Dates:</td>
+                    {% for date in table.header.dates -%}
+                        <td>{{ date }}</td>
                     {%- endfor %}
                 </tr>
             </thead>
             <tbody>
-                {% for i in range(table.rows | length) -%}
+                {% for i in range(table.body | length) -%}
                 <tr>
-                    <td class="td"><a href={{ url_for('edit', question_id = table.rows[i]) }}>{{ table.names[table.rows[i]] }}</a></td>
-                    {% for j in range(table.weeks | length)  -%}
-                        <td>{{ table.content[table.rows[i]][table.weeks[j]] }}</td>
+                    <td class="td"><a href={{ url_for('edit', user_id = table.body[i].user_id) }}>{{ table.body[i].name + ' (' +  table.body[i].deparment + ')' }}</a></td>
+                    {% for week in table.header.weeks -%}
+                        {% if table["body"][i]["values"][week] | int > table.header.working_hours[week] | int %}
+                            <td class = "over">{{ table["body"][i]["values"][week] }}</td>
+                        {% elif table["body"][i]["values"][week] | int == table.header.working_hours[week] | int %}
+                            <td class = "optimal">{{ table["body"][i]["values"][week] }}</td>
+                        {% else %}
+                            <td class = "less">{{ table["body"][i]["values"][week] }}</td>
+                        {% endif %}
                     {%- endfor %}
                 </tr>
                 {%- endfor %}

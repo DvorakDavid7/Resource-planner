@@ -142,13 +142,3 @@ class SQL:
                 VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
         self.cursor.execute(query)
         self.cnxn.commit()
-
-
-    # def read_find_record_in_database(self, PracovnikID, Rok, Tyden, ZakazkaID, ProjektID):
-    #     data = []
-    #     query = f'''SELECT * FROM {self.data_resources['Zapis']} WHERE Tyden = {Tyden} AND Rok = {Rok} AND PracovnikID = \'{PracovnikID}\'
-    #     AND ZakazkaID = \'{ZakazkaID}\' AND ProjektID = {ProjektID}'''
-    #     table = self.cursor.execute(query)
-    #     for row in table:
-    #         data.append(row)
-    #     return data  # [(x,x,x), (x,x,x), ...]

@@ -20,3 +20,9 @@ function tableSearch() {
         }
     }
 }
+
+
+function addall(){
+    var textbox = document.getElementsByClassName("department-input")[0]
+    textbox.value = "BI ED AC DM SA NL IS SD EX CC BR ZA IA PO SU SL OS PD NA SK BS"
+}

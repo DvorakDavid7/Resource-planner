@@ -6,18 +6,15 @@ import app_config
 import datetime
 import requests
 
-from planner.DateManager import DateManager
+from planner.models import DateManager, Table
 from planner.sql import SQL
-
-from Table_test import Table_test
-
 
 
 sql = SQL()
 dateManager = DateManager()
-table = Table_test(sql, dateManager)
+table = Table(sql, dateManager)
 
-current_day = datetime.date(2019, 10, 20)
+current_day = datetime.date.today()
 table.set_date_range(current_day)
 table.set_department("IA")
 
@@ -72,7 +69,7 @@ def graphcall():
         ).json()
     return render_template('display.html', result=graph_data)
 
-@app.route('/test', methods = ["GET", "POST"])
+@app.route('/table', methods = ["GET", "POST"])
 def test():
     if request.method == "POST":
         req = request.form.get("switch")
@@ -109,11 +106,11 @@ def test():
             table.set_department(departments)
 
     test = table.complete_overwie_table()
-    return render_template("test.html",table = test, departments = table.department)
+    return render_template("table.html",table = test, departments = table.department)
 
 
-@app.route('/edit_test_funce/<string:user_id>', methods = ["GET", "POST"])
-def edit_test_funce(user_id):
+@app.route('/edit/<string:user_id>', methods = ["GET", "POST"])
+def edit(user_id):
     if request.method == "POST":
         reference = table.complete_edit_table(user_id)
         receve_data = json.loads(str(request.get_data().decode('utf-8')))
@@ -207,7 +204,7 @@ def edit_test_funce(user_id):
 
 
     test = table.complete_edit_table(user_id)
-    return render_template("test_edit.html",table = test, user_id = user_id)
+    return render_template("edit.html",table = test, user_id = user_id)
 
 
 def _load_cache():
