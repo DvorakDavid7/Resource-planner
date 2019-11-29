@@ -118,11 +118,10 @@ def edit(user_id):
             for week in reference["body"]["projects"][i]["values"].keys():
                 default_value = str(reference["body"]["projects"][i]["values"][week])
                 receve_value = str(receve_data["body"]["projects"][i]["values"][str(week)])
-
                 if reference["header"]["year_start"] == reference["header"]["year_end"]:
                     rok = reference["header"]["year_start"]
                 else:
-                    if week > reference["header"]["weeks"][10]:
+                    if week > reference["header"]["weeks"][len(reference["header"]["weeks"]) - 1]:
                          rok = reference["header"]["year_start"]
                     else:
                         rok = reference["header"]["year_end"]
@@ -130,7 +129,7 @@ def edit(user_id):
                 if receve_value != "":
                     planhod = int(receve_value)
                 else:
-                    planhod = None
+                    planhod = "NULL"
 
                 if default_value != receve_value:
                     if default_value == "":
@@ -144,6 +143,7 @@ def edit(user_id):
                                     "ZakazkaID": receve_data["body"]["projects"][i]["zakazka_id"],
                                     "PracovnikID": user_id,
                                     }
+                        sql.write_insert_row_project(result["PracovnikID"], result["ZakazkaID"], result["ProjektID"], result["Rok"], result["Tyden"], result["PlanHod"], result["ModifiedBy"])
                         print(result)
                     else:
                         result = {
@@ -156,6 +156,7 @@ def edit(user_id):
                                     "ZakazkaID": receve_data["body"]["projects"][i]["zakazka_id"],
                                     "PracovnikID": user_id,
                                     }
+                        sql.write_modify_changes_project(result["PracovnikID"], result["ZakazkaID"], result["ProjektID"], result["Rok"], result["Tyden"], result["PlanHod"], result["ModifiedBy"])
                         print(result)
 
         for i in range(len(reference["body"]["opportunity"])):
@@ -166,7 +167,7 @@ def edit(user_id):
                 if reference["header"]["year_start"] == reference["header"]["year_end"]:
                     rok = reference["header"]["year_start"]
                 else:
-                    if week > reference["header"]["weeks"][10]:
+                    if week > reference["header"]["weeks"][len(reference["header"]["weeks"]) - 1]:
                          rok = reference["header"]["year_start"]
                     else:
                         rok = reference["header"]["year_end"]
@@ -174,7 +175,7 @@ def edit(user_id):
                 if receve_value != "":
                     planhod = int(receve_value)
                 else:
-                    planhod = None
+                    planhod = "NULL"
 
                 if default_value != receve_value:
                     if default_value == "":
@@ -184,11 +185,12 @@ def edit(user_id):
                                     "Rok": rok,
                                     "PlanHod": planhod,
                                     "ModifiedBy": session["user"]['preferred_username'],
-                                    "ProjektID": None,
+                                    "ProjektID": "NULL",
                                     "ZakazkaID": receve_data["body"]["opportunity"][i]["zakazka_id"],
                                     "PracovnikID": user_id,
                                     }
                         print(result)
+                        sql.write_insert_row_opportunity(result["PracovnikID"], result["ZakazkaID"], result["Rok"], result["Tyden"], result["PlanHod"], result["ModifiedBy"])
                     else:
                         result = {
                                     "action":"update",
@@ -196,10 +198,11 @@ def edit(user_id):
                                     "Rok": rok,
                                     "PlanHod":  planhod,
                                     "ModifiedBy": session["user"]['preferred_username'],
-                                    "ProjektID": None,
+                                    "ProjektID": "NULL",
                                     "ZakazkaID": receve_data["body"]["opportunity"][i]["zakazka_id"],
                                     "PracovnikID": user_id,
                                     }
+                        sql.write_modify_changes_opportunity(result["PracovnikID"], result["ZakazkaID"], result["Rok"], result["Tyden"], result["PlanHod"], result["ModifiedBy"])
                         print(result)
 
 
