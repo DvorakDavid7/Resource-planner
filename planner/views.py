@@ -101,6 +101,10 @@ def test():
             date = date.split("-")
             table.set_date_range(datetime.date(int(date[0]), int(date[1]), int(date[2])))
 
+        elif request.form.get("home") == "home":
+            print(request.form.get("home"))
+            table.set_date_range(datetime.date.today())
+
         elif request.form.get("department"):
             departments = request.form.get("department")
             table.set_department(departments)
@@ -126,9 +130,9 @@ def edit(user_id):
                     else:
                         rok = reference["header"]["year_end"]
 
-                if receve_value != "":
+                try:
                     planhod = int(receve_value)
-                else:
+                except:
                     planhod = "NULL"
 
                 if default_value != receve_value:
@@ -172,9 +176,9 @@ def edit(user_id):
                     else:
                         rok = reference["header"]["year_end"]
 
-                if receve_value != "":
+                try:
                     planhod = int(receve_value)
-                else:
+                except:
                     planhod = "NULL"
 
                 if default_value != receve_value:

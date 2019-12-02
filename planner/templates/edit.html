@@ -80,6 +80,7 @@
                 }
                 xhr.send(JSON.stringify(table));
                 alert("Changes saved!");
+                location.reload();
             }
 
             function compute_sum(){
@@ -87,6 +88,8 @@
                 var weeks = table.header.weeks;
                 var element = document.getElementsByClassName("sum");
                 var rows = document.getElementsByClassName("data-row");
+
+
                 var q = 0;
                 for (var i = 0; i < weeks.length; i++) {
                     var sum = 0;

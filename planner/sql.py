@@ -107,8 +107,7 @@ class SQL:
 
 
     def write_modify_changes_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
-        query = f'''UPDATE {self.data_resources['Zapis']} SET
-                PlanHod = {PlanHod} WHERE
+        query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod} WHERE
                 PracovnikID = \'{PracovnikID}\' AND
                 ZakazkaID = \'{ZakazkaID}\' AND
                 ProjektID = {ProjektID} AND
