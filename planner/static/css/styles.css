@@ -32,6 +32,7 @@
    border-radius: 20px;
    border-spacing: 2px;
    background-color: rgba(153, 153, 153, 0.3);
+   position: relative;
 
  }
 
@@ -41,6 +42,11 @@
    padding: 12px; /* Add padding */
  }
 
+ #myTable thead {
+     position: sticky;
+      top: 0;
+ }
+
  #myTable tr {
    border-bottom: 1px solid #ddd;
  }
@@ -48,6 +54,27 @@
 #myTable tbody tr:hover {
    background-color: #f1f1f1;
  }
+
+
+th{
+    background: rgba(153, 153, 153, 1);
+    position: sticky;
+    top: 0;
+    font-weight: normal;
+    /* box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 1); */
+}
+ th:nth-child(1) {
+     border-radius: 20px 0px 0px 0px;
+
+ }
+ th:last-child {
+     border-radius: 0px 20px 0px 0px;
+ }
+
+
+.dates {
+    font-size: 15px;
+}
 
 .edit_input {
     width: 70%;
@@ -60,7 +87,7 @@
 
 
  .center:nth-child(7) {
-   background: rgba(0, 210, 255, 0.3);
+   background: rgba(0, 210, 255, 1);
  }
 
 .login {
@@ -76,6 +103,32 @@
     text-align: center;
 }
 
+@keyframes spin {
+ from{
+ transform: rotateY(0deg);
+ moz-transform: rotateY(0deg); //Firefox
+ ms-transform: rotateY(0deg); //Microsoft Browsers
+ }
+ to{
+ transform: rotateY(360deg);
+ moz-transform: rotateY(360deg); //Firefox
+ ms-transform: rotateY(360deg); //Microsoft Browsers
+ }
+}
+@-webkit-keyframes spin{
+ from{-webkit-transform: rotateY(0deg);}
+ to{-webkit-transform: rotateY(360deg);}
+}
+.for-planning{
+ animation-name: spin;
+ animation-timing-function: ease-out;
+ animation-iteration-count: 1;
+ animation-duration: 3s;
+ -webkit-animation-name: spin;
+ -webkit-animation-timing-function: ease-out;
+ -webkit-animation-iteration-count: 1;
+ -webkit-animation-duration: 3s;
+}
 
 .arrows{
     margin-top: 15px;
@@ -152,8 +205,7 @@ text-align: center;
 }
 
 .logo{
-    width: 500px;
-    height: 300px;
+    width: 600px;
 }
 
 .microsoft-logo {

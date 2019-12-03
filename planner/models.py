@@ -92,7 +92,7 @@ class Table():
             current_value = 0
             key = str(projekt_id) + "~" + str(zakazka_id)
             if key in result:
-                current_value = result[key][tyden]
+                current_value = result[key][int(tyden)]
             else:
                 result[key] = plan.copy()
             if current_value and current_value != 0:

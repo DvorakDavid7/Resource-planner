@@ -10,7 +10,7 @@
     <body>
         <div class="navbar">
             <div class="home-button">
-                <button class="btn btn-link btn-lg" onclick="window.location.href='/'"><span><img class="trask-logo" src="{{ url_for('static', filename = 'images/home.png') }}"></span></button>
+                <button class="btn btn-light btn-lg" onclick="window.location.href='/'"><span><img class="trask-logo" src="{{ url_for('static', filename = 'images/home.png') }}"></span></button>
             </div>
             <div class="user-input-dates">
                 <form class="form-inline" action="" method="post">
@@ -44,18 +44,18 @@
             </div>
         </div>
         <div class="table-container">
-            <table id="myTable" class="fixed_header">
+            <table id="myTable">
                 <thead>
                     <tr>
-                        <td>Week:</td>
+                        <th>Week:</th>
                         {% for i in range(table.header.weeks | length) -%}
-                            <td class = "center">{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</td>
+                            <th class = "center">{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</th>
                         {%- endfor %}
                     </tr>
                     <tr>
                         <td>Dates:</td>
                         {% for date in table.header.dates -%}
-                            <td>{{ date }}</td>
+                            <td class="dates">{{ date }}</td>
                         {%- endfor %}
                     </tr>
                 </thead>
