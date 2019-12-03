@@ -68,7 +68,8 @@ class Table():
             user_id = name_list_table[i][0]
             for week in self.weeks:
                 plan[week] = ""
-            worker_plan_table = self.sql.read_WorkerSummaryPlan(user_id, self.year_start, self.week_start, self.year_end, self.week_end)
+            worker_plan_table = self.sql.read_WorkerSummaryPlan(user_id, self.year_start,
+                                            self.week_start, self.year_end, self.week_end)
             for row in worker_plan_table:
                 plan[row[0]] = row[1]
             result["id"] = i
@@ -84,7 +85,8 @@ class Table():
         table_body = {"projects": [], "opportunity": []}
         result = {}
         plan = {}
-        worker_plan_table = self.sql.read_WorkerPlan(user_id, self.year_start, self.week_start, self.year_end, self.week_end)
+        worker_plan_table = self.sql.read_WorkerPlan(user_id, self.year_start,
+                                    self.week_start, self.year_end, self.week_end)
         for week in self.weeks:
             plan[week] = ""
         for row in worker_plan_table: # {"project_id": {"41": x, "42": y, ...}, "project_id": {"41": x, "42": y, ...}, ...}
@@ -107,7 +109,9 @@ class Table():
                 project_name = project_informations[0][0]
                 projekt_manager = project_informations[0][1]
                 zakazka_id = project_informations[0][2]
-                f = {"project_id": project_id, "zakazka_id": zakazka_id, "nazev":project_name, "project_manager":projekt_manager, "values" : result[key]}
+                f = {"project_id": project_id, "zakazka_id": zakazka_id,
+                    "nazev":project_name, "project_manager":projekt_manager,
+                     "values" : result[key]}
                 table_body["projects"].append(f.copy())
             else:   # příležitost
                 try:
@@ -121,7 +125,9 @@ class Table():
                     projekt_manager = ""
                     opportunity_status = 0
 
-                f = {"status": opportunity_status, "zakazka_id": zakazka_id, "nazev":opportunity_name, "project_manager":projekt_manager, "values" : result[key]}
+                f = {"status": opportunity_status, "zakazka_id": zakazka_id,
+                    "nazev":opportunity_name, "project_manager":projekt_manager,
+                    "values" : result[key]}
                 table_body["opportunity"].append(f.copy())
         return table_body
 
@@ -158,4 +164,5 @@ class DateManager():
             self.week_end = "0" + str(week_end)
         else:
             self.week_end = str(week_end)
-        return {"week_start": self.week_start, "year_start": self.year_star, "week_end": self.week_end, "year_end": self.year_end}
+        return {"week_start": self.week_start, "year_start": self.year_star,
+                "week_end": self.week_end, "year_end": self.year_end}

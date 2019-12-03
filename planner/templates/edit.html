@@ -35,11 +35,7 @@
                         <tr>
                             <td>{{ table.body.projects[i].nazev }}</td>
                             {% for week in table.header.weeks -%}
-                                {% if table["body"]["projects"][i]["values"][week] != None %}
                                     <td><input onclick="this.select();"class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-project' }}" value={{ table["body"]["projects"][i]["values"][week] }}></td>
-                                {% else %}
-                                    <td><input onclick="this.select();"class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-project' }}" value=""></td>
-                                {% endif %}
                             {%- endfor %}
                             <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ i }}); compute_sum();">X</button></td>
                         </tr>
@@ -49,11 +45,8 @@
                         <tr>
                             <td ><i>{{ table.body.opportunity[i].nazev }}</i></td>
                             {% for week in table.header.weeks -%}
-                                {% if table["body"]["opportunity"][i]["values"][week] != None %}
+
                                     <td><input onclick="this.select();"class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-opportunity' }}" value="{{ table["body"]["opportunity"][i]["values"][week] }}"></td>
-                                {% else %}
-                                    <td><input onclick="this.select();"class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-opportunity' }}" value=""></td>
-                                {% endif %}
                                 {%- endfor %}
                             <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{table.body.projects | length + i }}); compute_sum();">X</button></td>
                         </tr>
