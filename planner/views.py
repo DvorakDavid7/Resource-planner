@@ -8,7 +8,7 @@ import requests
 
 from planner.models import DateManager, Table
 from planner.sql import SQL
-
+import time
 
 sql = SQL()
 dateManager = DateManager()
@@ -154,27 +154,18 @@ def edit(user_id):
                 modified_by = session["user"]['preferred_username']
                 if type == "project":
                     if default_value != receve_value:
-                        if default_value == "":
-                            sql.write_insert_row_project(user_id, default_field[j]["zakazka_id"],
-                            int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
-
-                            print(user_id, default_field[j]["zakazka_id"], default_field[j]["project_id"], rok, week, planhod, modified_by)
-                        else:
-                            sql.write_modify_changes_project(user_id, default_field[j]["zakazka_id"],
-                            int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
-
-                            print(user_id, default_field[j]["zakazka_id"], default_field[j]["project_id"], rok, week, planhod, modified_by)
+                        print(type)
+                        sql.delete_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week)
+                        sql.write_insert_row_project(user_id, default_field[j]["zakazka_id"],
+                        int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
+                        print(user_id, default_field[j]["zakazka_id"], default_field[j]["project_id"], rok, week, planhod, modified_by)
 
                 elif type == "opportunity":
                     if default_value != receve_value:
-                        if default_value == "":
-                            sql.write_insert_row_opportunity(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
-
-                            print(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
-                        else:
-                            sql.write_modify_changes_opportunity(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
-
-                            print(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
+                        print(type)
+                        sql.delete_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week)
+                        sql.write_insert_row_opportunity(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
+                        print(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
     test = table.complete_edit_table(user_id)
     return render_template("edit.html",table = test, user_id = user_id)
 

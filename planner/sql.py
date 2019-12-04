@@ -107,7 +107,7 @@ class SQL:
 
 
     def write_modify_changes_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy): # AND ModifiedBy = \'{ModifiedBy}\' WHERE
-        query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod} WHERE
+        query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
                 PracovnikID = \'{PracovnikID}\' AND
                 ZakazkaID = \'{ZakazkaID}\' AND
                 ProjektID = {ProjektID} AND
@@ -118,7 +118,7 @@ class SQL:
 
 
     def write_modify_changes_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
-        query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod} WHERE
+        query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
                 PracovnikID = \'{PracovnikID}\' AND
                 ZakazkaID = \'{ZakazkaID}\' AND
                 Rok = {Rok} AND
@@ -137,5 +137,16 @@ class SQL:
     def write_insert_row_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
         query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)
                 VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
+        self.cursor.execute(query)
+        self.cnxn.commit()
+
+
+    def delete_row(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden):
+        query = f'''DELETE FROM {self.data_resources["Zapis"]} WHERE
+                PracovnikID = \'{PracovnikID}\' AND
+                ZakazkaID = \'{ZakazkaID}\' AND
+                ProjektID = {ProjektID} AND
+                Rok = {Rok} AND
+                Tyden = {Tyden}'''
         self.cursor.execute(query)
         self.cnxn.commit()
