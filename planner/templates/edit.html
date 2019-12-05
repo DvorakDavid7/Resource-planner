@@ -1,142 +1,169 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-        <title>Main table</title>
-    <body>
-        <div class="navbar">
-            <button class="btn btn-light" onclick="window.location.href='/table'" type="button" name="button"><span><img class="trask-logo" src="{{ url_for('static', filename = 'images/backward.png') }}"></span></button>
-            <h3>Edit plan: {{ user_id }}</h3>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <title>Edit</title>
+
+<body>
+    <div class="navbar">
+        <button class="btn btn-light" onclick="window.location.href='/table'" type="button" name="button"><span><img
+                    class="trask-logo" src="{{ url_for('static', filename = 'images/backward.png') }}"></span></button>
+        <h3>Edit plan: {{ user_id }}</h3>
+
+    </div>
+    <br></br>
+
+    <form id="mydata" method="POST" action="">
+        <div class="table-container">
+            <p class="status"></p>
+            <p>status = {{ status }}</p>
+            <script type="text/javascript">
+                var text = {{ status }}
+                console.log(text);
+            </script>
+            <table id="myTable">
+                <thead>
+                    <tr>
+                        <td>Week:</td>
+                        {% for i in range(table.header.weeks | length) -%}
+                        <td class=center>
+                            {{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}
+                        </td>
+                        {%- endfor %}
+                    </tr>
+                    <tr>
+                        <td>Dates:</td>
+                        {% for date in table.header.dates -%}
+                        <td>{{ date }}</td>
+                        {%- endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(table.body.projects | length) -%}
+                    <tr>
+                        <td>{{ table.body.projects[i].nazev + ' (' + table.body.projects[i].project_manager + ')' }}</td>
+                        {% for week in table.header.weeks -%}
+                        <td><input onclick="this.select();" class="edit_input data-row" onkeyup="compute_sum()"
+                                name="{{ i | string + "-" + week | string + '-project' }}"
+                                value={{ table["body"]["projects"][i]["values"][week] }}></td>
+                        {%- endfor %}
+                        <td><button class="btn btn-danger btn-sm" type="button"
+                                onclick="delete_row({{ i }}); compute_sum();">X</button></td>
+                    </tr>
+                    {%- endfor %}
+
+                    {% for i in range(table.body.opportunity | length) -%}
+                    <tr>
+                        <td><i>{{ table.body.opportunity[i].nazev  + ' (' + table.body.opportunity[i].project_manager + ')' }}</i></td>
+                        {% for week in table.header.weeks -%}
+
+                        <td><input onclick="this.select();" class="edit_input data-row" onkeyup="compute_sum()"
+                                name="{{ i | string + "-" + week | string + '-opportunity' }}"
+                                value="{{ table["body"]["opportunity"][i]["values"][week] }}"></td>
+                        {%- endfor %}
+                        <td><button class="btn btn-danger btn-sm" type="button"
+                                onclick="delete_row({{table.body.projects | length + i }}); compute_sum();">X</button>
+                        </td>
+                    </tr>
+                    {%- endfor %}
+                    <tr>
+                        <td>sum:</td>
+                        {% for i in range(table.header.weeks | length) -%}
+                        <td class="sum"></td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary btn-lg" type="button" onclick="send_data()">Save Changes</button>
         </div>
-        <br></br>
-        <form id="mydata" method="POST" action="">
-            <div class="table-container">
-                <table id="myTable">
-                    <thead>
-                        <tr>
-                            <td>Week:</td>
-                            {% for i in range(table.header.weeks | length) -%}
-                                <td class = center>{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</td>
-                            {%- endfor %}
-                        </tr>
-                        <tr>
-                            <td>Dates:</td>
-                            {% for date in table.header.dates -%}
-                                <td>{{ date }}</td>
-                            {%- endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for i in range(table.body.projects | length) -%}
-                        <tr>
-                            <td>{{ table.body.projects[i].nazev }}</td>
-                            {% for week in table.header.weeks -%}
-                                    <td><input onclick="this.select();"class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-project' }}" value={{ table["body"]["projects"][i]["values"][week] }}></td>
-                            {%- endfor %}
-                            <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ i }}); compute_sum();">X</button></td>
-                        </tr>
-                        {%- endfor %}
-
-                        {% for i in range(table.body.opportunity | length) -%}
-                        <tr>
-                            <td ><i>{{ table.body.opportunity[i].nazev }}</i></td>
-                            {% for week in table.header.weeks -%}
-
-                                    <td><input onclick="this.select();"class="edit_input data-row" onkeyup="compute_sum()" name="{{ i | string + "-" + week | string + '-opportunity' }}" value="{{ table["body"]["opportunity"][i]["values"][week] }}"></td>
-                                {%- endfor %}
-                            <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{table.body.projects | length + i }}); compute_sum();">X</button></td>
-                        </tr>
-                        {%- endfor %}
-
-                        <tr>
-                            <td>sum:</td>
-                            {% for i in range(table.header.weeks | length) -%}
-                                <td class="sum"></td>
-                            {% endfor %}
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="btn btn-primary btn-lg" type="button" onclick="send_data()">Save Changes</button>
-            </div>
 
 
-        </form>
-        <script type="text/javascript">
-            function send_data(){
-                var xhr = new XMLHttpRequest()
-                var form = document.getElementById("mydata");
-                var table = {{ table | tojson() }}
-                xhr.open('POST', '/edit/{{ user_id }}', true);
-                xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-                var type = ""
-                var data = {}
-                var row, column;
+    </form>
+    <script type="text/javascript">
+        function send_data() {
+            var xhr = new XMLHttpRequest()
+            var form = document.getElementById("mydata");
+            var table = {{ table | tojson() }}
+        xhr.open('POST', '/edit/{{ user_id }}', true);
+        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+        var type = ""
+        var data = {}
+        var row, column;
+        var status = document.getElementsByClassName("status")[0];
+        status.innerHTML = "loading..."
+        for (var i = 0; i < form.elements.length; i++) {
+            row = Number(form.elements[i].name.split("-")[0])
+            column = Number(form.elements[i].name.split("-")[1])
+            type = form.elements[i].name.split("-")[2]
+            if (form.elements[i].name != "" && type == "project") {
+                table.body.projects[row].values[column] = form.elements[i].value
+            }
+            if (form.elements[i].name != "" && type == "opportunity") {
+                table.body.opportunity[row].values[column] = form.elements[i].value
+            }
+        }
+        xhr.send(JSON.stringify(table));
+        setTimeout(function(){ status.innerHTML = ""}, 5000);
 
-                for (var i = 0; i < form.elements.length; i++) {
-                    row = Number(form.elements[i].name.split("-")[0])
-                    column = Number(form.elements[i].name.split("-")[1])
-                    type = form.elements[i].name.split("-")[2]
-                    if (form.elements[i].name != "" && type == "project"){
-                        table.body.projects[row].values[column] = form.elements[i].value
-                    }
-                    if (form.elements[i].name != "" && type == "opportunity"){
-                        table.body.opportunity[row].values[column] = form.elements[i].value
-                    }
-                }
-                xhr.send(JSON.stringify(table));
-                alert("Changes saved!");
-                location.reload();
+        }
+
+        function compute_sum() {
+        var table = {{ table | tojson() }}
+        var weeks = table.header.weeks;
+        var element = document.getElementsByClassName("sum");
+        var rows = document.getElementsByClassName("data-row");
+
+
+        var q = 0;
+        for (var i = 0; i < weeks.length; i++) {
+            var sum = 0;
+            for (var j = q; j < (table.body.projects.length + table.body.opportunity.length) * weeks.length; j = j + weeks.length) {
+                sum = sum + Number(rows[j].value);
+            }
+            element[i].innerHTML = sum;
+            working_hours = table.header.working_hours[weeks[q]]
+            if (sum > working_hours) {
+                element[i].classList.add("over");
+                element[i].classList.remove("optimal");
+                element[i].classList.remove("less");
+            } else if (sum == working_hours) {
+                element[i].classList.add("optimal");
+                element[i].classList.remove("over");
+                element[i].classList.remove("less");
+            } else if (sum < working_hours && sum >= 0) {
+                element[i].classList.add("less");
+                element[i].classList.remove("optimal");
+                element[i].classList.remove("over");
+            }
+            q++;
+        }
             }
 
-            function compute_sum(){
-                var table = {{ table | tojson() }}
-                var weeks = table.header.weeks;
-                var element = document.getElementsByClassName("sum");
-                var rows = document.getElementsByClassName("data-row");
-
-
-                var q = 0;
-                for (var i = 0; i < weeks.length; i++) {
-                    var sum = 0;
-                    for (var j = q; j < (table.body.projects.length + table.body.opportunity.length) * weeks.length ; j = j + weeks.length){
-                        sum = sum + Number(rows[j].value);
-                    }
-                    element[i].innerHTML = sum;
-                    working_hours = table.header.working_hours[weeks[q]]
-                    if (sum > working_hours) {
-                        element[i].classList.add("over");
-                        element[i].classList.remove("optimal");
-                        element[i].classList.remove("less");
-                    } else if (sum == working_hours){
-                        element[i].classList.add("optimal");
-                        element[i].classList.remove("over");
-                        element[i].classList.remove("less");
-                    } else if (sum < working_hours && sum >= 0) {
-                        element[i].classList.add("less");
-                        element[i].classList.remove("optimal");
-                        element[i].classList.remove("over");
-                    }
-                    q++;
-                }
+        function delete_row(id) {
+        var table = {{ table | tojson() }}
+        var weeks = table.header.weeks;
+        var elements = document.getElementsByClassName("data-row")
+        for (var i = id * weeks.length; i < (id * weeks.length + weeks.length); i++) {
+            elements[i].value = ""
+        }
             }
+        compute_sum()
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
-            function delete_row(id){
-                var table = {{ table | tojson() }}
-                var weeks = table.header.weeks;
-                var elements = document.getElementsByClassName("data-row")
-                for (var i = id * weeks.length; i < (id * weeks.length + weeks.length); i++){
-                    elements[i].value = ""
-                }
-            }
-            compute_sum()
-        </script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
 
-    </body>
 </html>

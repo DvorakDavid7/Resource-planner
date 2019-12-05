@@ -1,5 +1,3 @@
-import planner
-from planner.sql import SQL
 from datetime import datetime, timedelta, date
 
 
@@ -8,7 +6,6 @@ class Table():
         self.sql = sql
         self.dateManager = dateManager
         self.weeks = []
-
 
     def set_date_range(self, current_day, range=5):
         self.current_day = current_day
@@ -20,11 +17,10 @@ class Table():
 
     def set_department(self, department):
         if len(department) == 2:
-            self.department = department #str(('IA', 'CC'))
+            self.department = department  # str(('IA', 'CC'))
         else:
             department = str(tuple(department.split(" ")))
             self.department = department
-
 
     def complete_overwie_table(self):
         table = {"header": {}, "body": []}
@@ -33,7 +29,6 @@ class Table():
         table["header"] = header.copy()
         table["body"] = body
         return table
-
 
     def complete_edit_table(self, user_id):
         table = {"header": {}, "body": {"projects": [], "opportunity": []}}
@@ -44,24 +39,27 @@ class Table():
         table["body"]["opportunity"] = body["opportunity"]
         return table
 
-
     def generate_header(self):
-        table_header = {"year_start": "", "year_end":"", "weeks": [], "working_hours": {}, "dates": []}
-        data = self.sql.read_DatumTyden(self.year_start, self.week_start, self.year_end, self.week_end)
+        table_header = {"year_start": "", "year_end": "",
+                        "weeks": [], "working_hours": {}, "dates": []}
+        data = self.sql.read_DatumTyden(
+            self.year_start, self.week_start, self.year_end, self.week_end)
         self.weeks = []
         for record in data:
             self.weeks.append(int(record[0].split("-")[1]))
-            table_header["working_hours"][int(record[0].split("-")[1])] = str(record[2])
-            table_header["dates"].append(record[1].replace("(", "").replace(")", ""))
+            table_header["working_hours"][int(
+                record[0].split("-")[1])] = str(record[2])
+            table_header["dates"].append(
+                record[1].replace("(", "").replace(")", ""))
         table_header["weeks"] = self.weeks
-        table_header["year_start"] =self.year_start
+        table_header["year_start"] = self.year_start
         table_header["year_end"] = self.year_end
         return table_header
 
-
     def generate_overwie(self):
         table_body = []
-        result = {"id": "", "user_id": "", "deparment": "", "name": "", "values":{}}
+        result = {"id": "", "user_id": "",
+                  "deparment": "", "name": "", "values": {}}
         plan = {}
         name_list_table = self.sql.read_Department(self.department)
         for i in range(len(name_list_table)):
@@ -69,7 +67,7 @@ class Table():
             for week in self.weeks:
                 plan[week] = ""
             worker_plan_table = self.sql.read_WorkerSummaryPlan(user_id, self.year_start,
-                                            self.week_start, self.year_end, self.week_end)
+                                                                self.week_start, self.year_end, self.week_end)
             for row in worker_plan_table:
                 plan[row[0]] = row[1]
             result["id"] = i
@@ -80,24 +78,26 @@ class Table():
             table_body.append(result.copy())
         return table_body
 
-
-    def generate_edit(self,user_id):
+    def generate_edit(self, user_id):
         table_body = {"projects": [], "opportunity": []}
         result = {}
         plan = {}
         worker_plan_table = self.sql.read_WorkerPlan(user_id, self.year_start,
-                                    self.week_start, self.year_end, self.week_end)
+                                                     self.week_start, self.year_end, self.week_end)
         for week in self.weeks:
             plan[week] = ""
-        for row in worker_plan_table: # {"project_id": {"41": x, "42": y, ...}, "project_id": {"41": x, "42": y, ...}, ...}
-            zakazka_id = row[0];projekt_id = row[1];rok = row[2];tyden = row[3];planovano = row[4]
+        for row in worker_plan_table:
+            zakazka_id = row[0]
+            projekt_id = row[1]
+            tyden = row[3]
+            planovano = row[4]
             current_value = 0
             key = str(projekt_id) + "~" + str(zakazka_id)
             if key in result:
                 current_value = result[key][int(tyden)]
             else:
                 result[key] = plan.copy()
-            if current_value and current_value != 0:
+            if current_value and planovano and current_value != 0:
                 result[key][tyden] = planovano + current_value
             else:
                 result[key][tyden] = planovano
@@ -107,15 +107,16 @@ class Table():
             if project_id != "None":  # projekt
                 project_informations = self.sql.read_projects(project_id)
                 project_name = project_informations[0][0]
-                projekt_manager = project_informations[0][1]
+                projekt_manager = project_informations[0][1] if project_informations[0][1] != None else ""
                 zakazka_id = project_informations[0][2]
                 f = {"project_id": project_id, "zakazka_id": zakazka_id,
-                    "nazev":project_name, "project_manager":projekt_manager,
-                     "values" : result[key]}
+                     "nazev": project_name, "project_manager": projekt_manager,
+                     "values": result[key]}
                 table_body["projects"].append(f.copy())
             else:   # příležitost
                 try:
-                    opportunity_informations = self.sql.read_opportunity(zakazka_id)
+                    opportunity_informations = self.sql.read_opportunity(
+                        zakazka_id)
                     opportunity_name = opportunity_informations[0][0]
                     projekt_manager = opportunity_informations[0][1]
                     opportunity_status = opportunity_informations[0][2]
@@ -126,12 +127,10 @@ class Table():
                     opportunity_status = 0
 
                 f = {"status": opportunity_status, "zakazka_id": zakazka_id,
-                    "nazev":opportunity_name, "project_manager":projekt_manager,
-                    "values" : result[key]}
+                     "nazev": opportunity_name, "project_manager": projekt_manager,
+                     "values": result[key]}
                 table_body["opportunity"].append(f.copy())
         return table_body
-
-
 
 
 class DateManager():
@@ -140,7 +139,7 @@ class DateManager():
 
     @staticmethod
     def day_to_week_number(datestring):
-        day = datestring                        #  '07.11.2019'
+        day = datestring  # '07.11.2019'
         dt = datetime.strptime(day, '%Y-%m-%d')
         wk = dt.isocalendar()[1]
         return wk

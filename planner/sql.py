@@ -3,6 +3,7 @@ import pyodbc
 
 class SQL:
     '''write and read data from database'''
+
     def __init__(self):
         CONECTION_STRING = '''Driver={ODBC Driver 17 for SQL Server};
                             Server=tcp:dwhdbsrv.database.windows.net,1433;
@@ -12,7 +13,6 @@ class SQL:
                             TrustServerCertificate=no;
                             Connection Timeout=30;
                             Authentication=ActiveDirectoryPassword'''
-
 
         self.cnxn = pyodbc.connect(CONECTION_STRING)
         self.cursor = self.cnxn.cursor()
@@ -37,8 +37,7 @@ class SQL:
             data.append(row)
         return data  # [(x,x,x), (x,x,x), ...]
 
-
-    def read_Department(self, department): # name list from department table
+    def read_Department(self, department):  # name list from department table
         data = []
         query1 = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.data_resources['NameList']}
                 WHERE OddeleniID IN {department}'''
@@ -52,7 +51,6 @@ class SQL:
         for row in table:
             data.append(row)
         return data  # [(x,x,x), (x,x,x), ...]
-
 
     def read_WorkerSummaryPlan(self, name, year_start, week_start, year_end, week_end):
         data = []
@@ -68,7 +66,6 @@ class SQL:
             data.append(row)
         return data  # [(x,x), (x,x), ...]
 
-
     def read_projects(self, project_id):
         data = []
         query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno], [ZakazkaID] FROM {self.data_resources["ProjektySeznam"]}
@@ -77,7 +74,6 @@ class SQL:
         for row in table:
             data.append(row)
         return data  # [(x,x,x), (x,x,x), ...]
-
 
     def read_opportunity(self, zakazka_id):
         data = []
@@ -106,47 +102,56 @@ class SQL:
         return data  # [(x,x), (x,x), ...]
 
 
-    def write_modify_changes_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy): # AND ModifiedBy = \'{ModifiedBy}\' WHERE
-        query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
-                PracovnikID = \'{PracovnikID}\' AND
-                ZakazkaID = \'{ZakazkaID}\' AND
-                ProjektID = {ProjektID} AND
-                Rok = {Rok} AND
-                Tyden = {Tyden}'''
-        self.cursor.execute(query)
-        self.cnxn.commit()
-
-
-    def write_modify_changes_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
-        query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
-                PracovnikID = \'{PracovnikID}\' AND
-                ZakazkaID = \'{ZakazkaID}\' AND
-                Rok = {Rok} AND
-                Tyden = {Tyden}'''
-        self.cursor.execute(query)
-        self.cnxn.commit()
-
-
-    def write_insert_row_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
+    def insert_row(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
         query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy)
                 VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {ProjektID}, {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
         self.cursor.execute(query)
         self.cnxn.commit()
 
 
-    def write_insert_row_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
-        query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)
-                VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
-        self.cursor.execute(query)
-        self.cnxn.commit()
-
-
     def delete_row(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden):
-        query = f'''DELETE FROM {self.data_resources["Zapis"]} WHERE
+        query1 = f'''DELETE FROM {self.data_resources["Zapis"]} WHERE
                 PracovnikID = \'{PracovnikID}\' AND
                 ZakazkaID = \'{ZakazkaID}\' AND
                 ProjektID = {ProjektID} AND
                 Rok = {Rok} AND
                 Tyden = {Tyden}'''
-        self.cursor.execute(query)
+        query2 = f'''DELETE FROM {self.data_resources["Zapis"]} WHERE
+                PracovnikID = \'{PracovnikID}\' AND
+                ZakazkaID = \'{ZakazkaID}\' AND
+                ProjektID IS NULL AND
+                Rok = {Rok} AND
+                Tyden = {Tyden}'''
+        if ProjektID == "NULL":
+            self.cursor.execute(query2)
+        else:
+            self.cursor.execute(query1)
         self.cnxn.commit()
+
+
+    # def write_insert_row_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
+    #     query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)
+    #             VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
+    #     self.cursor.execute(query)
+    #     self.cnxn.commit()
+
+
+    # AND ModifiedBy = \'{ModifiedBy}\' WHERE
+    # def write_modify_changes_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
+    #     query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
+    #             PracovnikID = \'{PracovnikID}\' AND
+    #             ZakazkaID = \'{ZakazkaID}\' AND
+    #             ProjektID = {ProjektID} AND
+    #             Rok = {Rok} AND
+    #             Tyden = {Tyden}'''
+    #     self.cursor.execute(query)
+    #     self.cnxn.commit()
+    #
+    # def write_modify_changes_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
+    #     query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
+    #             PracovnikID = \'{PracovnikID}\' AND
+    #             ZakazkaID = \'{ZakazkaID}\' AND
+    #             Rok = {Rok} AND
+    #             Tyden = {Tyden}'''
+    #     self.cursor.execute(query)
+    #     self.cnxn.commit()

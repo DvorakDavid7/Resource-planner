@@ -25,6 +25,7 @@ def index():
         return redirect(url_for("login"))
     return render_template('index.html', user=session["user"], version=msal.__version__)
 
+
 @app.route("/login")
 def login():
     session["state"] = str(uuid.uuid4())
@@ -36,7 +37,9 @@ def login():
     return render_template('login.html', redirect=auth_url)
     # return "<a href='%s'>Login with Microsoft Identity</a>" % auth_url
 
-@app.route(app_config.REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
+
+# Its absolute URL must match your app's redirect_uri set in AAD
+@app.route(app_config.REDIRECT_PATH)
 def authorized():
     if request.args.get('state') == session.get("state"):
         cache = _load_cache()
@@ -51,12 +54,14 @@ def authorized():
         _save_cache(cache)
     return redirect(url_for("index"))
 
+
 @app.route("/logout")
 def logout():
     session.clear()  # Wipe out user and its token cache from session
     return redirect(  # Also logout from your tenant's web session
         app_config.AUTHORITY + "/oauth2/v2.0/logout" +
         "?post_logout_redirect_uri=" + url_for("index", _external=True))
+
 
 @app.route("/graphcall")
 def graphcall():
@@ -66,10 +71,11 @@ def graphcall():
     graph_data = requests.get(  # Use token to call downstream service
         app_config.ENDPOINT,
         headers={'Authorization': 'Bearer ' + token['access_token']},
-        ).json()
+    ).json()
     return render_template('display.html', result=graph_data)
 
-@app.route('/table', methods = ["GET", "POST"])
+
+@app.route('/table', methods=["GET", "POST"])
 def table_view():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
@@ -78,12 +84,12 @@ def table_view():
         req = request.form.get("switch")
         if req == "back":
             print(req)
-            table.current_day -= datetime.timedelta(days = 7 * 10)
+            table.current_day -= datetime.timedelta(days=7 * 10)
             table.set_date_range(table.current_day)
 
         elif req == "forward":
             print(req)
-            table.current_day += datetime.timedelta(days = 7 * 10)
+            table.current_day += datetime.timedelta(days=7 * 10)
             table.set_date_range(table.current_day)
 
         elif request.form.get("date"):
@@ -102,7 +108,8 @@ def table_view():
             date = datetime.datetime.strptime(d + '-1', '%G-W%V-%u')
             date = str(date).split(" ")[0]
             date = date.split("-")
-            table.set_date_range(datetime.date(int(date[0]), int(date[1]), int(date[2])))
+            table.set_date_range(datetime.date(
+                int(date[0]), int(date[1]), int(date[2])))
 
         elif request.form.get("home") == "home":
             print(request.form.get("home"))
@@ -113,10 +120,10 @@ def table_view():
             table.set_department(departments)
 
     test = table.complete_overwie_table()
-    return render_template("table.html",table = test, departments = table.department)
+    return render_template("table.html", table=test, departments=table.department)
 
 
-@app.route('/edit/<string:user_id>', methods = ["GET", "POST"])
+@app.route('/edit/<string:user_id>', methods=["GET", "POST"])
 def edit(user_id):
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
@@ -144,7 +151,7 @@ def edit(user_id):
                     rok = reference["header"]["year_start"]
                 else:
                     if week > reference["header"]["weeks"][len(reference["header"]["weeks"]) - 1]:
-                         rok = reference["header"]["year_start"]
+                        rok = reference["header"]["year_start"]
                     else:
                         rok = reference["header"]["year_end"]
                 try:
@@ -154,20 +161,19 @@ def edit(user_id):
                 modified_by = session["user"]['preferred_username']
                 if type == "project":
                     if default_value != receve_value:
-                        print(type)
                         sql.delete_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week)
-                        sql.write_insert_row_project(user_id, default_field[j]["zakazka_id"],
-                        int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
+                        if receve_value != "":
+                            sql.insert_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
                         print(user_id, default_field[j]["zakazka_id"], default_field[j]["project_id"], rok, week, planhod, modified_by)
 
                 elif type == "opportunity":
                     if default_value != receve_value:
-                        print(type)
                         sql.delete_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week)
-                        sql.write_insert_row_opportunity(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
-                        print(user_id, default_field[j]["zakazka_id"], rok, week,planhod, modified_by)
+                        if receve_value != "":
+                            sql.insert_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week, planhod, modified_by)
+                        print(user_id, default_field[j]["zakazka_id"], rok, week, planhod, modified_by)
     test = table.complete_edit_table(user_id)
-    return render_template("edit.html",table = test, user_id = user_id)
+    return render_template("edit.html", table=test, user_id=user_id, status=status)
 
 
 def _load_cache():
@@ -176,14 +182,17 @@ def _load_cache():
         cache.deserialize(session["token_cache"])
     return cache
 
+
 def _save_cache(cache):
     if cache.has_state_changed:
         session["token_cache"] = cache.serialize()
+
 
 def _build_msal_app(cache=None):
     return msal.ConfidentialClientApplication(
         app_config.CLIENT_ID, authority=app_config.AUTHORITY,
         client_credential=app_config.CLIENT_SECRET, token_cache=cache)
+
 
 def _get_token_from_cache(scope=None):
     cache = _load_cache()  # This web app maintains one cache per session
