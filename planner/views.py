@@ -173,7 +173,7 @@ def edit(user_id):
                             sql.insert_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week, planhod, modified_by)
                         print(user_id, default_field[j]["zakazka_id"], rok, week, planhod, modified_by)
     test = table.complete_edit_table(user_id)
-    return render_template("edit.html", table=test, user_id=user_id, status=status)
+    return render_template("edit.html", table=test, user_id=user_id)
 
 
 def _load_cache():

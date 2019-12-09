@@ -42,8 +42,8 @@ class Table():
     def generate_header(self):
         table_header = {"year_start": "", "year_end": "",
                         "weeks": [], "working_hours": {}, "dates": []}
-        data = self.sql.read_DatumTyden(
-            self.year_start, self.week_start, self.year_end, self.week_end)
+        data = self.sql.read_DatumTyden(self.year_start, self.week_start,
+                                        self.year_end, self.week_end)
         self.weeks = []
         for record in data:
             self.weeks.append(int(record[0].split("-")[1]))
@@ -115,8 +115,7 @@ class Table():
                 table_body["projects"].append(f.copy())
             else:   # příležitost
                 try:
-                    opportunity_informations = self.sql.read_opportunity(
-                        zakazka_id)
+                    opportunity_informations = self.sql.read_opportunity(zakazka_id)
                     opportunity_name = opportunity_informations[0][0]
                     projekt_manager = opportunity_informations[0][1]
                     opportunity_status = opportunity_informations[0][2]
