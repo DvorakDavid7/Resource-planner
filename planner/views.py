@@ -1,6 +1,6 @@
 import uuid
 from planner import app
-from flask import render_template, session, request, redirect, url_for, json
+from flask import render_template, session, request, redirect, url_for, json, flash, jsonify, make_response
 import msal
 import app_config
 import datetime
@@ -129,6 +129,7 @@ def edit(user_id):
     if not token:
         return redirect(url_for("login"))
     if request.method == "POST":
+        req = request.get_json()
         reference = table.complete_edit_table(user_id)
         receve_data = json.loads(str(request.get_data().decode('utf-8')))
         project_length = len(reference["body"]["projects"])
@@ -138,12 +139,12 @@ def edit(user_id):
                 default_field = reference["body"]["projects"]
                 receve_field = receve_data["body"]["projects"]
                 j = i
-                type = "project"
+                type_ = "project"
             else:
                 default_field = reference["body"]["opportunity"]
                 receve_field = receve_data["body"]["opportunity"]
                 j = i - project_length
-                type = "opportunity"
+                type_ = "opportunity"
             for week in table.weeks:
                 default_value = str(default_field[j]["values"][week])
                 receve_value = str(receve_field[j]["values"][str(week)])
@@ -159,19 +160,24 @@ def edit(user_id):
                 except:
                     planhod = "NULL"
                 modified_by = session["user"]['preferred_username']
-                if type == "project":
-                    if default_value != receve_value:
-                        sql.delete_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week)
-                        if receve_value != "":
-                            sql.insert_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
-                        print(user_id, default_field[j]["zakazka_id"], default_field[j]["project_id"], rok, week, planhod, modified_by)
 
-                elif type == "opportunity":
-                    if default_value != receve_value:
-                        sql.delete_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week)
-                        if receve_value != "":
-                            sql.insert_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week, planhod, modified_by)
-                        print(user_id, default_field[j]["zakazka_id"], rok, week, planhod, modified_by)
+                try:
+                    if type_ == "project":
+                        if default_value != receve_value:
+                            sql.delete_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week)
+                            if receve_value != "":
+                                sql.insert_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
+                            print(user_id, default_field[j]["zakazka_id"], default_field[j]["project_id"], rok, week, planhod, modified_by)
+                    elif type_ == "opportunity":
+                        if default_value != receve_value:
+                            sql.delete_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week)
+                            if receve_value != "":
+                                sql.insert_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week, planhod, modified_by)
+                            print(user_id, default_field[j]["zakazka_id"], rok, week, planhod, modified_by)
+                    status = 200
+                except Exception as err:
+                    status = 500
+        return make_response(jsonify({"message": "response"}), status)
     test = table.complete_edit_table(user_id)
     return render_template("edit.html", table=test, user_id=user_id)
 

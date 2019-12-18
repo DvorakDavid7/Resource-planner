@@ -1,20 +1,12 @@
-import pyodbc
+import pypyodbc
+
+from app_config import CONECTION_STRING
 
 
 class SQL:
     '''write and read data from database'''
-
     def __init__(self):
-        CONECTION_STRING = '''Driver={ODBC Driver 17 for SQL Server};
-                            Server=tcp:dwhdbsrv.database.windows.net,1433;
-                            Database=DWH-DB;Uid=ddvorak@trask.cz;
-                            Pwd=2gHmDME6;
-                            Encrypt=yes;
-                            TrustServerCertificate=no;
-                            Connection Timeout=30;
-                            Authentication=ActiveDirectoryPassword'''
-
-        self.cnxn = pyodbc.connect(CONECTION_STRING)
+        self.cnxn = pypyodbc.connect(CONECTION_STRING)
         self.cursor = self.cnxn.cursor()
         self.data_resources = {
             "datumTyden": "[dbo].[View_ResourcePlanner_DatumTyden]",
@@ -127,31 +119,3 @@ class SQL:
         else:
             self.cursor.execute(query1)
         self.cnxn.commit()
-
-
-    # def write_insert_row_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
-    #     query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)
-    #             VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
-    #     self.cursor.execute(query)
-    #     self.cnxn.commit()
-
-
-    # AND ModifiedBy = \'{ModifiedBy}\' WHERE
-    # def write_modify_changes_project(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
-    #     query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
-    #             PracovnikID = \'{PracovnikID}\' AND
-    #             ZakazkaID = \'{ZakazkaID}\' AND
-    #             ProjektID = {ProjektID} AND
-    #             Rok = {Rok} AND
-    #             Tyden = {Tyden}'''
-    #     self.cursor.execute(query)
-    #     self.cnxn.commit()
-    #
-    # def write_modify_changes_opportunity(self, PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy):
-    #     query = f'''UPDATE {self.data_resources['Zapis']} SET PlanHod = {PlanHod}, ModifiedBy = \'{ModifiedBy}\' WHERE
-    #             PracovnikID = \'{PracovnikID}\' AND
-    #             ZakazkaID = \'{ZakazkaID}\' AND
-    #             Rok = {Rok} AND
-    #             Tyden = {Tyden}'''
-    #     self.cursor.execute(query)
-    #     self.cnxn.commit()
