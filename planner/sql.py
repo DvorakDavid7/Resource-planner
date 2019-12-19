@@ -14,10 +14,10 @@ class SQL:
             "SummaryPlan": "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]",
             "ProjektySeznam": "[dbo].[View_ResourcePlanner_ProjektySeznam]",
             "PrilezitostiSeznam": "[dbo].[View_ResourcePlanner_PrilezitostiSeznam]",
-            # "PracovnikPlan": "[dbo].[PracovnikPlan]",
-            "PracovnikPlan": "[dbo].[PracovnikPlan_TEST]",
-
-            "Zapis": "[dbo].[PracovnikPlan_TEST]",
+            "PracovnikPlan": "[dbo].[PracovnikPlan]",
+            # "PracovnikPlan": "[dbo].[PracovnikPlan_TEST]",
+            # "Zapis": "[dbo].[PracovnikPlan_TEST]",
+            "Zapis": "[dbo].[PracovnikPlan]",
         }
 
     def read_DatumTyden(self, year_start, week_start, year_end, week_end):
@@ -95,20 +95,26 @@ class SQL:
 
 
     def insert_row(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
-        query = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy)
-                VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {ProjektID}, {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
-        self.cursor.execute(query)
+        query1 = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy)
+                VALUES (\'{PracovnikID}\', {ProjektID}, {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
+        
+        query2 = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)
+                VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
+        if ProjektID == "NULL":
+            self.cursor.execute(query2)
+        elif ZakazkaID == "NULL":
+            self.cursor.execute(query1)
         self.cnxn.commit()
 
 
     def delete_row(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden):
-        query1 = f'''DELETE FROM {self.data_resources["Zapis"]} WHERE
+        query1 = f'''DELETE FROM {self.data_resources['Zapis']} WHERE
                 PracovnikID = \'{PracovnikID}\' AND
-                ZakazkaID = \'{ZakazkaID}\' AND
+                ZakazkaID IS NULL AND
                 ProjektID = {ProjektID} AND
                 Rok = {Rok} AND
                 Tyden = {Tyden}'''
-        query2 = f'''DELETE FROM {self.data_resources["Zapis"]} WHERE
+        query2 = f'''DELETE FROM {self.data_resources['Zapis']} WHERE
                 PracovnikID = \'{PracovnikID}\' AND
                 ZakazkaID = \'{ZakazkaID}\' AND
                 ProjektID IS NULL AND
@@ -116,6 +122,6 @@ class SQL:
                 Tyden = {Tyden}'''
         if ProjektID == "NULL":
             self.cursor.execute(query2)
-        else:
+        elif ZakazkaID == "NULL":
             self.cursor.execute(query1)
         self.cnxn.commit()

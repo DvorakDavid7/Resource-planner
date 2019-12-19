@@ -160,14 +160,13 @@ def edit(user_id):
                 except:
                     planhod = "NULL"
                 modified_by = session["user"]['preferred_username']
-
                 try:
                     if type_ == "project":
                         if default_value != receve_value:
-                            sql.delete_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week)
+                            sql.delete_row(user_id, "NULL", int(default_field[j]["project_id"]), rok, week)
                             if receve_value != "":
-                                sql.insert_row(user_id, default_field[j]["zakazka_id"], int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
-                            print(user_id, default_field[j]["zakazka_id"], default_field[j]["project_id"], rok, week, planhod, modified_by)
+                                sql.insert_row(user_id, "NULL", int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
+                            print(user_id, "NULL", int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
                     elif type_ == "opportunity":
                         if default_value != receve_value:
                             sql.delete_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week)
