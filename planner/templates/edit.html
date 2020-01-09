@@ -18,6 +18,22 @@
     
     <br></br>
     <p id="status">status: ready</p>
+
+    <div class="table-container">
+        <div class="dropdown">
+            <button type="button" onclick="myFunction()" class="btn btn-primary btn-lg">Add new project</button>
+            <div id="myDropdown" class="dropdown-content">
+                <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+                {% for i in range(project_list | length) %}
+                    <a onclick="myFunction(); add_new_project_extend('{{ project_list[i][0] }}', '{{ project_list[i][1] }}', '{{ project_list[i][2] }}', '{{ project_list[i][3] }}');">{{ project_list[i][2] }}</a>  
+                {% endfor %}
+                {% for i in range(opportunity_list | length) %}
+                    <i><a onclick="myFunction(); add_new_project_extend('{{ opportunity_list[i][0] }}', '{{ opportunity_list[i][1] }}', '{{ opportunity_list[i][2] }}', '{{ opportunity_list[i][3] }}');">{{ opportunity_list[i][2] }}</a></i>  
+               {% endfor %}
+              </div>
+          </div>
+    </div>
+
     <form id="mydata" method="POST" action="">
         <div class="table-container">
             <p class="status"></p>
@@ -78,6 +94,60 @@
         </div>
     </form>
     <script type="text/javascript">
+
+        function add_new_project_extend(project_id, zakazka_id, cid, project_manager)
+        {
+            let table = {{ table | tojson() }};
+            let values = {};
+            let form_field = document.getElementById("form_field");
+
+            for (let i = 0; i < table.header.weeks.length; i++)
+            {
+                values[table.header.weeks[i]] = 0;
+            }
+            let new_record = {"nazev": cid,                    
+                            "opportunity_id": zakazka_id,
+                            "project_id": project_id,
+                            "project_manager": project_manager,
+                            "values": values};
+            fetch(`${window.origin}/edit/{{ user_id }}`, {
+                method:"POST",
+                credentials: "include",
+                body:JSON.stringify({"request_type": "add_new_project", "data": new_record}),
+                cache:"no-cache",
+                headers:new Headers({
+                    "content-type":"application/json"
+                })
+            })
+            .then(function(response){
+                if (response.status !== 200)
+                {
+                    alert("something is wrong, please try it again");
+                }
+                location.reload();
+            })
+        }
+
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        function filterFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                txtValue = a[i].textContent || a[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+
         function send_data_advanced()
         {
             var table = {{ table | tojson() }};
@@ -101,11 +171,11 @@
             }
             status.innerHTML = "status: loading..."
             fetch(`${window.origin}/edit/{{ user_id }}`, {
-                method:"POST",
+                method: "POST",
                 credentials: "include",
-                body:JSON.stringify(table),
-                cache:"no-cache",
-                headers:new Headers({
+                body: JSON.stringify({"request_type":"save_changes", "data": table}),
+                cache: "no-cache",
+                headers: new Headers({
                     "content-type":"application/json"
                 })
             })

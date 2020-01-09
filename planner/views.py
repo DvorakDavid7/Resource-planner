@@ -128,57 +128,92 @@ def edit(user_id):
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
+    sql.connect_to_database()
     if request.method == "POST":
-        req = request.get_json()
-        reference = table.complete_edit_table(user_id)
-        receve_data = json.loads(str(request.get_data().decode('utf-8')))
-        project_length = len(reference["body"]["projects"])
-        opportunity_length = len(reference["body"]["opportunity"])
-        for i in range(project_length + opportunity_length):
-            if i < project_length:
-                default_field = reference["body"]["projects"]
-                receve_field = receve_data["body"]["projects"]
-                j = i
-                type_ = "project"
+        receive_data = json.loads(str(request.get_data().decode('utf-8')))
+        if receive_data["request_type"] == "add_new_project":
+            add_new_project_into_database(receive_data["data"], user_id)
+        elif receive_data["request_type"] == "save_changes":
+            save_data_into_database(receive_data["data"], user_id)
+
+    data = table.complete_edit_table(user_id)
+    project_list = sql.read_project_list()
+    opportunity_list = sql.read_opportunity_list()
+    return render_template("edit.html", table=data, user_id=user_id,
+                           project_list=project_list, opportunity_list=opportunity_list)
+
+
+def validate_data(request_form):
+    pass
+
+
+def add_new_project_into_database(requested_data, user_id):
+    print(requested_data)
+    opportunity_id = requested_data["opportunity_id"]
+    project_id = requested_data["project_id"]
+    if project_id != "None":
+        opportunity_id = "NULL"
+    else:
+        project_id = "NULL"
+    year = 2020
+    week = 1
+    planed_hours = 0
+    modified_by = session["user"]['preferred_username']
+    sql.insert_row(user_id, opportunity_id, project_id, year, week, planed_hours, modified_by)
+
+
+def save_data_into_database(requested_data, user_id):
+    receive_data = requested_data
+    reference = table.complete_edit_table(user_id)
+    project_length = len(reference["body"]["projects"])
+    opportunity_length = len(reference["body"]["opportunity"])
+    for i in range(project_length + opportunity_length):
+        if i < project_length:
+            default_field = reference["body"]["projects"]
+            receive_field = receive_data["body"]["projects"]
+            j = i
+            type_ = "project"
+        else:
+            default_field = reference["body"]["opportunity"]
+            receive_field = receive_data["body"]["opportunity"]
+            j = i - project_length
+            type_ = "opportunity"
+        for week in table.weeks:
+            default_value = str(default_field[j]["values"][week])
+            receive_value = str(receive_field[j]["values"][str(week)])
+            if reference["header"]["year_start"] == reference["header"]["year_end"]:
+                rok = reference["header"]["year_start"]
             else:
-                default_field = reference["body"]["opportunity"]
-                receve_field = receve_data["body"]["opportunity"]
-                j = i - project_length
-                type_ = "opportunity"
-            for week in table.weeks:
-                default_value = str(default_field[j]["values"][week])
-                receve_value = str(receve_field[j]["values"][str(week)])
-                if reference["header"]["year_start"] == reference["header"]["year_end"]:
+                if week > reference["header"]["weeks"][len(reference["header"]["weeks"]) - 1]:
                     rok = reference["header"]["year_start"]
                 else:
-                    if week > reference["header"]["weeks"][len(reference["header"]["weeks"]) - 1]:
-                        rok = reference["header"]["year_start"]
-                    else:
-                        rok = reference["header"]["year_end"]
-                try:
-                    planhod = int(receve_value)
-                except:
-                    planhod = "NULL"
-                modified_by = session["user"]['preferred_username']
-                try:
-                    if type_ == "project":
-                        if default_value != receve_value:
-                            sql.delete_row(user_id, "NULL", int(default_field[j]["project_id"]), rok, week)
-                            if receve_value != "":
-                                sql.insert_row(user_id, "NULL", int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
-                            print(user_id, "NULL", int(default_field[j]["project_id"]), rok, week, planhod, modified_by)
-                    elif type_ == "opportunity":
-                        if default_value != receve_value:
-                            sql.delete_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week)
-                            if receve_value != "":
-                                sql.insert_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week, planhod, modified_by)
-                            print(user_id, default_field[j]["zakazka_id"], rok, week, planhod, modified_by)
-                    status = 200
-                except Exception as err:
-                    status = 500
-        return make_response(jsonify({"message": "response"}), status)
-    test = table.complete_edit_table(user_id)
-    return render_template("edit.html", table=test, user_id=user_id)
+                    rok = reference["header"]["year_end"]
+            try:
+                planed_hours = int(receive_value)
+            except ValueError:
+                planed_hours = "NULL"
+            modified_by = session["user"]['preferred_username']
+            try:
+                if type_ == "project":
+                    if default_value != receive_value:
+                        sql.delete_row(user_id, "NULL", int(default_field[j]["project_id"]), rok, week)
+                        if receive_value != "":
+                            sql.insert_row(user_id, "NULL", int(default_field[j]["project_id"]),
+                                           rok, week, planed_hours, modified_by)
+                        print(user_id, "NULL", int(default_field[j]["project_id"]),
+                              rok, week, planed_hours, modified_by)
+                elif type_ == "opportunity":
+                    if default_value != receive_value:
+                        sql.delete_row(user_id, default_field[j]["zakazka_id"], "NULL", rok, week)
+                        if receive_value != "":
+                            sql.insert_row(user_id, default_field[j]["zakazka_id"],
+                                           "NULL", rok, week, planed_hours, modified_by)
+                        print(user_id, default_field[j]["zakazka_id"], rok, week, planed_hours, modified_by)
+                status = 200
+            except Exception:
+                status = 500
+    return make_response(jsonify({"message": "response"}), status)
+
 
 
 def _load_cache():

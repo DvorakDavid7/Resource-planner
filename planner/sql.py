@@ -1,12 +1,12 @@
 import pypyodbc
 
-from app_config import CONECTION_STRING
+from app_config import CONNECTION_STRING
 
 
 class SQL:
     '''write and read data from database'''
     def __init__(self):
-        self.cnxn = pypyodbc.connect(CONECTION_STRING)
+        self.cnxn = pypyodbc.connect(CONNECTION_STRING)
         self.cursor = self.cnxn.cursor()
         self.data_resources = {
             "datumTyden": "[dbo].[View_ResourcePlanner_DatumTyden]",
@@ -14,11 +14,15 @@ class SQL:
             "SummaryPlan": "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]",
             "ProjektySeznam": "[dbo].[View_ResourcePlanner_ProjektySeznam]",
             "PrilezitostiSeznam": "[dbo].[View_ResourcePlanner_PrilezitostiSeznam]",
-            "PracovnikPlan": "[dbo].[PracovnikPlan]",
-            # "PracovnikPlan": "[dbo].[PracovnikPlan_TEST]",
-            # "Zapis": "[dbo].[PracovnikPlan_TEST]",
-            "Zapis": "[dbo].[PracovnikPlan]",
+            # "PracovnikPlan": "[dbo].[PracovnikPlan]",
+            "PracovnikPlan": "[dbo].[PracovnikPlan_TEST]",
+            "Zapis": "[dbo].[PracovnikPlan_TEST]",
+            # "Zapis": "[dbo].[PracovnikPlan]",
         }
+
+    def connect_to_database(self):
+        self.cnxn = pypyodbc.connect(CONNECTION_STRING)
+        self.cursor = self.cnxn.cursor()
 
     def read_DatumTyden(self, year_start, week_start, year_end, week_end):
         data = []
@@ -97,7 +101,7 @@ class SQL:
     def insert_row(self, PracovnikID, ZakazkaID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy):
         query1 = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy)
                 VALUES (\'{PracovnikID}\', {ProjektID}, {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
-        
+
         query2 = f'''INSERT INTO {self.data_resources['Zapis']} (PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)
                 VALUES (\'{PracovnikID}\', \'{ZakazkaID}\', {Rok}, {Tyden}, {PlanHod}, \'{ModifiedBy}\');'''
         if ProjektID == "NULL":
@@ -125,3 +129,20 @@ class SQL:
         elif ZakazkaID == "NULL":
             self.cursor.execute(query1)
         self.cnxn.commit()
+
+
+    def read_project_list(self):
+        data = []
+        query = '''SELECT [ProjektID] ,[ZakazkaID] ,[CID+Nazev], [ProjektovyManazerJmeno] FROM [dbo].[View_ResourcePlanner_ProjektySeznam]'''
+        table = self.cursor.execute(query)
+        for row in table:
+            data.append(row)
+        return data  # [(x,x,x), (x,x,x), ...]
+
+    def read_opportunity_list(self):
+        data = []
+        query = '''SELECT [ProjektID] ,[ZakazkaID] ,[CID+Nazev], [ProjektovyManazerJmeno] FROM [dbo].[View_ResourcePlanner_PrilezitostiSeznam]'''
+        table = self.cursor.execute(query)
+        for row in table:
+            data.append(row)
+        return data  # [(x,x,x), (x,x,x), ...]
