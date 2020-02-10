@@ -7,7 +7,8 @@
     <input id="user_id" type="text" placeholder="Enter userID">
     <button onclick="set_user_id()" type="button">Submit</button>
 </div>
-{{ user_id }}
+<span id="user_id_value">{{ user_id }}</span>
+
 
 
 <div class="dropdown">
@@ -18,6 +19,7 @@
     </div>
 </div>
 
+<div>{{ table.header.year_start }} / {{ table.header.year_end }}</div>
 <table id="edit-table" border="1">
     <thead>
         <tr>

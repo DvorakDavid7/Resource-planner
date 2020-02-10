@@ -74,18 +74,13 @@ class Controller:
         if receive_data["request_type"] == "set_range":
             self.set_start_end_dates(receive_data["data"]["year_start"], receive_data["data"]["year_end"],
                                      receive_data["data"]["week_start"], receive_data["data"]["week_end"])
-            return True
         elif receive_data["request_type"] == "set_date":
             if receive_data["data"]["input_type"] == "set_week":
                 self.set_header_based_on_week_number(receive_data["data"]["week"], receive_data["data"]["year"])
             elif receive_data["data"]["input_type"] == "set_date":
                 self.set_header_based_on_date(receive_data["data"]["day"], receive_data["data"]["month"],
                                               receive_data["data"]["year"])
-            return True
         elif receive_data["request_type"] == "move":
             self.set_header_based_on_move(receive_data["data"]["direction"], receive_data["data"]["week_start"],
                                           receive_data["data"]["week_end"], receive_data["data"]["year_start"],
                                           receive_data["data"]["year_end"])
-            return True
-        else:
-            return False

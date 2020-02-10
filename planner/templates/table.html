@@ -47,10 +47,11 @@
             </td>
             {% for week in table.header.weeks%}
             {% set week = week | int %}
-                <td>{{ table.body[i]["values"][week] }}</td>
+                <td class="data">{{ table.body[i]["values"][week] }}</td>
             {% endfor %}
         </tr>
         {%- endfor %}
     </tbody>
 </table>
+<script>coloring_table({{ table | tojson() }}, 'ddvorak@trask.cz')</script>
 {% endblock content%}

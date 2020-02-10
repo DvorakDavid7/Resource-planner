@@ -14,9 +14,54 @@ class EditController(Controller):
         self.week_end = request_parameters["week_end"]
         self.user_id = user_id
         self.table_header = {"year_start": "", "year_end": "", "weeks": [], "working_hours": {}, "dates": []}
-
-    def generate_edit_data(self) -> {}:
+    
+    # GET
+    def index(self, user_id):
         self.generate_table_header()
+        data = self.generate_edit_body()
+        return render_template("edit.html", title="Edit Page", table=data, user_id=user_id)
+    
+    # POST
+    def save_changes(self, receive_data):
+        self.make_changes(receive_data["data"], "mbendik")    # session["user"]['preferred_username']
+        position = receive_data["position"]
+        self.set_start_end_dates(position["year_start"], position["year_end"],
+                                                position["week_start"], position["week_end"])
+        self.generate_table_header()
+        data = self.generate_edit_body()
+        new_table = render_template("edit.html", title="Edit Page", table=data,
+                                    url_root=request.url_root, user_id=self.user_id)
+        return make_response(jsonify({"new_table": new_table}), 200)
+    
+    # POST
+    def show_project_list(self):
+        project_list =  {"projects": self.read_model.read_project_list("project"),
+                        "opportunities": self.read_model.read_project_list("opportunity")}
+        return make_response(jsonify({"data": project_list}), 200)
+
+    # POST
+    def add_new_project(self, receive_data):
+        write_model = WriteModel()
+        position = receive_data["position"]
+        self.set_start_end_dates(position["year_start"], position["year_end"], position["week_start"], position["week_end"])
+        write_model.insert_row(receive_data["data"]["task_type"], self.user_id, receive_data["data"]["identifier"], position["year_start"], position["week_start"], 0, "ddvorak")  # session["user"]['preferred_username']
+        self.generate_table_header()
+        data = self.generate_edit_body()
+        new_table = render_template("edit.html", title="Edit Page", table=data,
+                                    url_root=request.url_root, user_id=self.user_id)
+        return make_response(jsonify({"new_table": new_table}), 200)
+    
+    # POST
+    def navigation_request_handler(self, request_data):
+        self.navigation_handler(request_data)
+        self.generate_table_header()
+        data = self.generate_edit_body()
+        new_table = render_template("edit.html", title="Edit Page", table=data,
+                                    url_root=request.url_root, user_id=self.user_id)
+        return make_response(jsonify({"new_table": new_table}), 200)
+    
+
+    def generate_edit_body(self) -> {}:
         projects = self.__id_values("project")
         opportunity = self.__id_values("opportunity")
         for row in projects:
@@ -55,8 +100,6 @@ class EditController(Controller):
             result.append({"id": id_key,  "values": result_row[id_key]})
         return result
 
-    # post handlers
-
     def make_changes(self, changes, modified_by):
         write_model = WriteModel()
         for change in changes:
@@ -64,17 +107,3 @@ class EditController(Controller):
             if change["value"] != "":
                 write_model.insert_row(change["type"], self.user_id, change["id"], change["year"], change["week"],
                                        change["value"], modified_by)
-
-    def generate_response(self):
-        data = self.generate_edit_data()
-        new_table = render_template("edit.html", title="Edit Page", table=data,
-                                    url_root=request.url_root, user_id=self.user_id)
-        return make_response(jsonify({"new_table": new_table}), 200)
-
-    def project_list(self):
-        return {"projects": self.read_model.read_project_list("project"),
-                "opportunities": self.read_model.read_project_list("opportunity")}
-
-    def add_new_project(self, task_type, identifier, modified_by, year, week):
-        write_model = WriteModel()
-        write_model.insert_row(task_type, self.user_id, identifier, year, week, 0, modified_by)

@@ -1,0 +1,24 @@
+{
+    "data": [
+        {
+            "color": "red",
+            "sign": "over",
+            "value": "1"
+        },
+        {
+            "color": "green",
+            "sign": "over",
+            "value": "0"
+        },
+        {
+            "color": "orange",
+            "sign": "less",
+            "value": "500"
+        },
+        {
+            "color": "blue",
+            "sign": "less",
+            "value": "10"
+        }
+    ]
+}

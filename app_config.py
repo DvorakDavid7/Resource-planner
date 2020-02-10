@@ -29,8 +29,8 @@ SESSION_TYPE = "filesystem"  # So token cache will be stored in server-side sess
 CONNECTION_STRING = '''Driver={ODBC Driver 17 for SQL Server};
                     Server=tcp:dwhdbsrv.database.windows.net,1433;
                     Database=DWH-DB;Uid=ddvorak@trask.cz;
-                    Pwd=2gHmDME6;
+                    
                     Encrypt=yes;
                     TrustServerCertificate=no;
                     Connection Timeout=30;
-                    Authentication=ActiveDirectoryPassword'''
+                    Authentication=ActiveDirectoryInteractive'''

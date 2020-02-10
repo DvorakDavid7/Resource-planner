@@ -29,7 +29,7 @@ class ReadModel(Model):
         else:
             parameter = f"OddeleniID IN {department}"
         query = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.data_resources['name_list']}
-                WHERE {parameter}'''
+                WHERE {parameter} ORDER BY ([CeleJmeno])'''
         table = self.cursor.execute(query)
         for row in table:
             data.append(row)
@@ -92,7 +92,7 @@ class ReadModel(Model):
             condition = "Status = \'active\'"
         else:
             resource = self.data_resources["opportunity_list"]
-            condition = "Status = 2"
+            condition = "Status = 0"
         query = f'''SELECT [ProjektID] ,[ZakazkaID] ,[CID+Nazev], [ProjektovyManazerJmeno] 
                 FROM {resource} WHERE {condition}'''
         table = self.cursor.execute(query)

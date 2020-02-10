@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eeb5fe57-ac11-47c3-a455-fd1812ef1179" name="Default Changelist" comment="" />
+    <list default="true" id="eeb5fe57-ac11-47c3-a455-fd1812ef1179" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flask_session/a9144da451673a4e4af471c89159abba" beforeDir="false" afterPath="$PROJECT_DIR$/flask_session/a9144da451673a4e4af471c89159abba" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flask_session/f81d6d943da0fc5bdac568ab6a481a80" beforeDir="false" afterPath="$PROJECT_DIR$/flask_session/f81d6d943da0fc5bdac568ab6a481a80" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/Controllers/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/Controllers/Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/Controllers/EditController.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/Controllers/EditController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/Controllers/TableController.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/Controllers/TableController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/Models/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/Models/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/Models/ReadModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/Models/ReadModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/Views/EditView.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/Views/EditView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/static/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/planner/static/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/templates/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/planner/templates/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/templates/layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/planner/templates/layout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/templates/table.html" beforeDir="false" afterPath="$PROJECT_DIR$/planner/templates/table.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +30,9 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1WA4rXjtIJaOU55OoF1oNUSRMoX" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -95,52 +114,52 @@
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
     <state x="92" y="-988" width="1736" height="856" key="DiffContextDialog/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578935462715" />
-    <state width="1899" height="231" key="GridCell.Tab.0.bottom" timestamp="1578996907697">
+    <state width="1899" height="311" key="GridCell.Tab.0.bottom" timestamp="1581323575739">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="231" key="GridCell.Tab.0.bottom/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578996907697" />
+    <state width="1899" height="311" key="GridCell.Tab.0.bottom/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575739" />
     <state width="1515" height="371" key="GridCell.Tab.0.bottom/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196726" />
     <state width="1515" height="303" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1578859346006" />
-    <state width="1899" height="231" key="GridCell.Tab.0.center" timestamp="1578996907695">
+    <state width="1899" height="311" key="GridCell.Tab.0.center" timestamp="1581323575739">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="231" key="GridCell.Tab.0.center/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578996907695" />
+    <state width="1899" height="311" key="GridCell.Tab.0.center/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575739" />
     <state width="1515" height="371" key="GridCell.Tab.0.center/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196726" />
     <state width="1515" height="303" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1578859346006" />
-    <state width="1899" height="231" key="GridCell.Tab.0.left" timestamp="1578996907695">
+    <state width="1899" height="311" key="GridCell.Tab.0.left" timestamp="1581323575739">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="231" key="GridCell.Tab.0.left/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578996907695" />
+    <state width="1899" height="311" key="GridCell.Tab.0.left/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575739" />
     <state width="1515" height="371" key="GridCell.Tab.0.left/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196726" />
     <state width="1515" height="303" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1578859346006" />
-    <state width="1899" height="231" key="GridCell.Tab.0.right" timestamp="1578996907695">
+    <state width="1899" height="311" key="GridCell.Tab.0.right" timestamp="1581323575739">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="231" key="GridCell.Tab.0.right/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578996907695" />
+    <state width="1899" height="311" key="GridCell.Tab.0.right/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575739" />
     <state width="1515" height="371" key="GridCell.Tab.0.right/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196726" />
     <state width="1515" height="303" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1578859346006" />
-    <state width="1899" height="342" key="GridCell.Tab.1.bottom" timestamp="1578943252838">
+    <state width="1899" height="311" key="GridCell.Tab.1.bottom" timestamp="1581323575740">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="342" key="GridCell.Tab.1.bottom/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578943252838" />
+    <state width="1899" height="311" key="GridCell.Tab.1.bottom/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575740" />
     <state width="1899" height="491" key="GridCell.Tab.1.bottom/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196579" />
     <state width="1515" height="303" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1578859346007" />
-    <state width="1899" height="342" key="GridCell.Tab.1.center" timestamp="1578943252838">
+    <state width="1899" height="311" key="GridCell.Tab.1.center" timestamp="1581323575740">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="342" key="GridCell.Tab.1.center/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578943252838" />
+    <state width="1899" height="311" key="GridCell.Tab.1.center/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575740" />
     <state width="1899" height="491" key="GridCell.Tab.1.center/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196579" />
     <state width="1515" height="303" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1578859346006" />
-    <state width="1899" height="342" key="GridCell.Tab.1.left" timestamp="1578943252838">
+    <state width="1899" height="311" key="GridCell.Tab.1.left" timestamp="1581323575740">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="342" key="GridCell.Tab.1.left/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578943252838" />
+    <state width="1899" height="311" key="GridCell.Tab.1.left/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575740" />
     <state width="1899" height="491" key="GridCell.Tab.1.left/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196579" />
     <state width="1515" height="303" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1578859346006" />
-    <state width="1899" height="342" key="GridCell.Tab.1.right" timestamp="1578943252838">
+    <state width="1899" height="311" key="GridCell.Tab.1.right" timestamp="1581323575740">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state width="1899" height="342" key="GridCell.Tab.1.right/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578943252838" />
+    <state width="1899" height="311" key="GridCell.Tab.1.right/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1581323575740" />
     <state width="1899" height="491" key="GridCell.Tab.1.right/0.0.1536.824/0.-1080.1920.1040@0.0.1536.824" timestamp="1578661196579" />
     <state width="1515" height="303" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1578859346006" />
     <state x="461" y="-917" key="SettingsEditor" timestamp="1578590677424">
@@ -162,5 +181,16 @@
     </state>
     <state x="623" y="-855" width="672" height="678" key="search.everywhere.popup/0.0.1536.824/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1578893826531" />
     <state x="498" y="178" width="672" height="538" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1578851316367" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/planner/Controllers/ColorSettingController.py</url>
+          <line>24</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
