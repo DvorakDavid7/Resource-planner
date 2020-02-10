@@ -19,6 +19,11 @@
             "color": "blue",
             "sign": "less",
             "value": "10"
+        },
+        {
+            "color": "brown",
+            "sign": "less",
+            "value": "20"
         }
     ]
 }

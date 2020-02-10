@@ -1,7 +1,7 @@
-from planner.Models.Model import Model
+from planner.Sql.SqlMain import SqlMain
 
 
-class ReadModel(Model):
+class SqlRead(SqlMain):
     def __init__(self):
         super().__init__()
         super().connect_to_database()

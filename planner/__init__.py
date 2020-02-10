@@ -1,7 +1,6 @@
 import uuid
 import msal
-from flask import (Flask, json, jsonify, make_response, redirect,
-                   render_template, request, session, url_for)
+from flask import (Flask, json, redirect, render_template, request, session, url_for)
 from flask_session import Session
 
 import app_config
@@ -21,6 +20,7 @@ def index():
         return redirect(url_for("login"))
     return render_template('index.html', user=session["user"], version=msal.__version__)
 
+
 @app.route("/login")
 def login():
     session["state"] = str(uuid.uuid4())
@@ -31,6 +31,7 @@ def login():
         redirect_uri=url_for("authorized", _external=True))
     return render_template('login.html', redirect=auth_url)
     # return "<a href='%s'>Login with Microsoft Identity</a>" % auth_url
+
 
 # Its absolute URL must match your app's redirect_uri set in AAD
 @app.route(app_config.REDIRECT_PATH)
@@ -48,6 +49,7 @@ def authorized():
         _save_cache(cache)
     return redirect(url_for("index"))
 
+
 @app.route("/logout")
 def logout():
     session.clear()  # Wipe out user and its token cache from session
@@ -55,12 +57,13 @@ def logout():
         app_config.AUTHORITY + "/oauth2/v2.0/logout" +
         "?post_logout_redirect_uri=" + url_for("index", _external=True))
 
+
 # TABLE
 
 @app.route('/table_test', methods=["GET"])
 def table_get():
-    tableController = TableController()
-    return tableController.index(session["user"]['preferred_username'])
+    return TableController.index()
+
 
 @app.route('/table_test/navigation_request_handler', methods=["POST"])
 def table_navigation():
@@ -68,64 +71,60 @@ def table_navigation():
     tableController = TableController()
     return tableController.navigation_request_handler(receive_data)
 
+
 @app.route('/table_test/set_department', methods=["POST"])
 def table_set_department():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
-    tableController = TableController()
-    return tableController.set_department_request_handler(receive_data)
+    return TableController.set_department_request_handler(receive_data)
 
 
 # EDIT
 
 @app.route('/edit/<string:user_id>', methods=["GET"])
 def edit(user_id):
-    editController = EditController(user_id, request.args)
-    return editController.index(user_id)
+    return EditController.index(user_id, request.args)
+
 
 @app.route('/edit/save_changes/<string:user_id>', methods=["POST"])
 def edit_save_changes(user_id):
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
-    editController = EditController(user_id, request.args)
-    return editController.save_changes(receive_data)
+    return EditController.save_changes(receive_data, session["user"]['preferred_username'], user_id)
+
 
 @app.route('/edit/show_project_list/<string:user_id>', methods=["POST"])
 def edit_show_project_list(user_id):
-    editController = EditController(user_id, request.args)
-    return editController.show_project_list()
+    return EditController.show_project_list()
+
 
 @app.route('/edit/add_new_project/<string:user_id>', methods=["POST"])
 def add_new_project(user_id):
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
-    editController = EditController(user_id, request.args)
-    return editController.add_new_project(receive_data)
+    return EditController.add_new_project(user_id, receive_data, session["user"]['preferred_username'])
+
 
 @app.route('/edit/navigation_request_handler/<string:user_id>', methods=["POST"])
 def edit_navigation(user_id):
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
-    editController = EditController(user_id, request.args)
-    return editController.navigation_request_handler(receive_data)
+    editController = EditController()
+    return editController.navigation_request_handler(user_id, receive_data)
 
 
 # COLOR SETTING
 
 @app.route('/color_setting', methods=["GET"])
 def color_setting():
-    colorSettingController = ColorSettingController()
-    return colorSettingController.index()
+    return ColorSettingController.index()
+
 
 @app.route('/color_setting/save', methods=["POST"])
 def color_setting_save():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
-    colorSettingController = ColorSettingController()
-    return colorSettingController.save(receive_data)
+    return ColorSettingController.save(receive_data)
+
 
 @app.route('/color_setting/send_data', methods=["POST"])
 def color_setting_send_data():
-    colorSettingController = ColorSettingController()
-    return colorSettingController.send_data()
-
-
-
+    return ColorSettingController.send_data()
 
 
 def _load_cache():

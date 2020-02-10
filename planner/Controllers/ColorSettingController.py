@@ -1,27 +1,28 @@
-
 from flask import json, jsonify, make_response, render_template, request
-
 from planner.Controllers.Controller import Controller
 
 
 class ColorSettingController(Controller):
     def __init__(self):
         pass
-    
+
     # GET
-    def index(self):
+    @staticmethod
+    def index():
         with open("color_settings.txt", "r") as file:
             data = json.load(file)
         return render_template("color_seting.html", data=data)
 
     # POST
-    def save(self, request_data):
+    @staticmethod
+    def save(request_data):
         with open("color_settings.txt", "w") as file:
             json.dump(request_data["data"], file, indent=4)
         return "OK"
     
     # POST
-    def send_data(self,):
+    @staticmethod
+    def send_data():
         legend = {}
         positive = []
         negative = []
