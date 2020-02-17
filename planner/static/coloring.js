@@ -1,5 +1,5 @@
 
-function coloring_table(table, current_user){
+function coloring_table(table){
     fetch(window.location.origin + '/color_setting/send_data', {
         method:"POST",
     })
@@ -8,7 +8,7 @@ function coloring_table(table, current_user){
             console.log();
             let legend = receive_values.data.legend
             let values = receive_values.data.values
-            let data = document.getElementsByClassName("data");
+            let data = document.getElementsByClassName("data-coloring");
             for (let i = 0; i < data.length; i++) {
                 let q = 0
                 for (let j = i * table.header.weeks.length; j < (table.header.weeks.length)* (i + 1); j++) {

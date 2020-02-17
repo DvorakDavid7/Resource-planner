@@ -5,6 +5,7 @@ from flask_session import Session
 
 import app_config
 from planner.Controllers.EditController import EditController
+from planner.Controllers.GroupsController import GroupsController
 from planner.Controllers.TableController import TableController
 from planner.Controllers.ColorSettingController import ColorSettingController
 
@@ -60,19 +61,19 @@ def logout():
 
 # TABLE
 
-@app.route('/table_test', methods=["GET"])
+@app.route('/table', methods=["GET"])
 def table_get():
     return TableController.index()
 
 
-@app.route('/table_test/navigation_request_handler', methods=["POST"])
+@app.route('/table/navigation_request_handler', methods=["POST"])
 def table_navigation():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
     tableController = TableController()
     return tableController.navigation_request_handler(receive_data)
 
 
-@app.route('/table_test/set_department', methods=["POST"])
+@app.route('/table/set_department', methods=["POST"])
 def table_set_department():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
     return TableController.set_department_request_handler(receive_data)
@@ -107,6 +108,23 @@ def edit_navigation(user_id):
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
     editController = EditController()
     return editController.navigation_request_handler(user_id, receive_data)
+
+
+# GROUPS
+@app.route('/groups', methods=["GET"])
+def groups():
+    return GroupsController.index()
+
+
+@app.route('/groups/show_groups', methods=["POST"])
+def show_groups():
+    groupsController = GroupsController()
+    return groupsController.show_groups()
+
+
+@app.route('/groups/save_group', methods=["POST"])
+def groups_save_group():
+    return GroupsController.save_group(request.form)
 
 
 # COLOR SETTING

@@ -9,7 +9,7 @@
 </div>
 <span id="user_id_value">{{ user_id }}</span>
 
-
+<button type="button" onclick="go_back_to_table()">Back</button>
 
 <div class="dropdown">
     <button onclick="dropdown_toggle();show_data_list({{ table }});" class="dropbtn">Add new project</button>
@@ -42,11 +42,11 @@
             <td>{{ table.body.projects[i].name + ' (' + table.body.projects[i].project_manager + ')' }}</td>
             {% for week in table.header.weeks -%}
             {% set week = week | int %}
-            <td onkeyup="compute_sum({{ table }})" class="data" contenteditable="true">{{ table["body"]["projects"][i]["values"][week] }}</td>
+            <td onkeyup="compute_sum({{ table }}); coloring_table({{ table }});" class="data" contenteditable="true">{{ table["body"]["projects"][i]["values"][week] }}</td>
             {%- endfor %}
-            <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ i }}, {{ table.header }}); compute_sum({{ table }});">X</button></td>
-            <td><button class="btn btn-success btn-sm" onclick="auto_insert({{ i }}, {{ table }});compute_sum({{ table }});">A</button></td>
-            <td><input size="1" onkeyup="multiple_insert({{ i }}, {{ table.header }});compute_sum({{ table }});" class="multiple_insert" type="text"></td>
+            <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ i }}, {{ table.header }}); compute_sum({{ table }}); coloring_table({{ table }});">X</button></td>
+            <td><button class="btn btn-success btn-sm" onclick="auto_insert({{ i }}, {{ table }});compute_sum({{ table }}); coloring_table({{ table }});">A</button></td>
+            <td><input size="1" onkeyup="multiple_insert({{ i }}, {{ table.header }});compute_sum({{ table }}); coloring_table({{ table }});" class="multiple_insert" type="text"></td>
         </tr>
         {%- endfor %}
 
@@ -55,25 +55,27 @@
             <td><i>{{ table.body.opportunity[i].name  + ' (' + table.body.opportunity[i].project_manager + ')' }}</i></td>
             {% for week in table.header.weeks -%}
             {% set week = week | int %}
-            <td onkeyup="compute_sum({{ table }})" class="data" contenteditable="true">{{ table["body"]["opportunity"][i]["values"][week] }}</td>
+            <td onkeyup="compute_sum({{ table }}); coloring_table({{ table }});" class="data" contenteditable="true">{{ table["body"]["opportunity"][i]["values"][week] }}</td>
             {%- endfor %}
-            <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ table.body.projects | length + i }}, {{ table.header }}); compute_sum({{ table }});">X</button></td>
-            <td><button class="btn btn-success btn-sm" onclick="auto_insert({{ table.body.projects | length + i }}, {{ table }});compute_sum({{ table }});">A</button></td>
-            <td><input size="1" onkeyup="multiple_insert({{ table.body.projects | length + i }}, {{ table.header }});compute_sum({{ table }});" class="multiple_insert" type="text"></td>
+            <td><button class="btn btn-danger btn-sm" type="button" onclick="delete_row({{ table.body.projects | length + i }}, {{ table.header }}); compute_sum({{ table }}); coloring_table({{ table }})">X</button></td>
+            <td><button class="btn btn-success btn-sm" onclick="auto_insert({{ table.body.projects | length + i }}, {{ table }});compute_sum({{ table }}); coloring_table({{ table }})">A</button></td>
+            <td><input size="1" onkeyup="multiple_insert({{ table.body.projects | length + i }}, {{ table.header }});compute_sum({{ table }}); coloring_table({{ table }})" class="multiple_insert" type="text"></td>
         </tr>
         {%- endfor %}
         <tr>
             <td>sum:</td>
             {% for i in range(table.header.weeks | length) -%}
-            <td class="sum"></td>
+            <td class="sum data-coloring"></td>
             {% endfor %}
         </tr>
     </tbody>
 </table>
 <button type="button" onclick="send_changes_from_edit({{ table }})">Save Changes</button>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script>compute_sum({{ table | tojson() }})</script>
 <script>
+    compute_sum({{ table | tojson() }})
+    coloring_table({{ table | tojson() }})
+
     $('.data').on('focus', function() {
       var cell = this;
       var range, selection;

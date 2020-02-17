@@ -1,1 +1,210 @@
-{"test": ["nkolkova", "pmarek", "mbendik", "akolarik"], "test2": ["poleno", "nemam", "pocitat"], "IA": ["pmarek", "nkolkova", "akolarik", "mbendik"], "952": ["nkolkova", "pmarek"]}
+{
+    "IA": [
+        [
+            "mbendik",
+            "IA",
+            "Bendík Marián"
+        ],
+        [
+            "pmarek",
+            "IA",
+            "Marek Petr"
+        ],
+        [
+            "nkolkova",
+            "IA",
+            "Kolková Natálie"
+        ],
+        [
+            "akolarik",
+            "IA",
+            "Kolařík Adam"
+        ]
+    ],
+    "tes2": [
+        [
+            "akolarik",
+            "IA",
+            "Kolařík Adam"
+        ],
+        [
+            "akretov",
+            "IA",
+            "Kretov Anton"
+        ],
+        [
+            "dhofman",
+            "IA",
+            "Hofman Daniel"
+        ],
+        [
+            "dlavor",
+            "IA",
+            "Lavor Daniel"
+        ],
+        [
+            "dpavelka",
+            "IA",
+            "Pavelka Daniel"
+        ],
+        [
+            "dsoukup",
+            "IA",
+            "Soukup Denis"
+        ],
+        [
+            "fnovak",
+            "IA",
+            "Novák František"
+        ],
+        [
+            "jadam",
+            "IA",
+            "Adam Jiří"
+        ],
+        [
+            "jdriml",
+            "IA",
+            "Driml Jan"
+        ],
+        [
+            "jkafka",
+            "IA",
+            "Kafka Jaroslav"
+        ],
+        [
+            "jmotejlek",
+            "IA",
+            "Motejlek Jiří"
+        ],
+        [
+            "jnejdl",
+            "IA",
+            "Nejdl Jakub"
+        ],
+        [
+            "jnohacek",
+            "IA",
+            "Noháček Jiří"
+        ],
+        [
+            "jpatocka",
+            "IA",
+            "Patočka Jan"
+        ],
+        [
+            "jpisk",
+            "IA",
+            "Pisk Jiří"
+        ]
+    ],
+    "test": [
+        [
+            "pmarek",
+            "IA",
+            "Marek Petr"
+        ],
+        [
+            "nkolkova",
+            "IA",
+            "Kolková Natálie"
+        ],
+        [
+            "mbendik",
+            "IA",
+            "Bendík Marián"
+        ]
+    ],
+    "test_name": [
+        [
+            "abakalar",
+            "ED",
+            "Bakalár Adrián"
+        ],
+        [
+            "abalavajderova",
+            "EX",
+            "Balavajderová Alice"
+        ],
+        [
+            "abrezik",
+            "SD",
+            "Březík Adam"
+        ],
+        [
+            "abudarkova",
+            "BR",
+            "Buďárková Anna"
+        ],
+        [
+            "agevorgian",
+            "SD",
+            "Gevorgian Artur"
+        ],
+        [
+            "agorgolova",
+            "PD",
+            "Gorgolová Alena"
+        ],
+        [
+            "ahajkova",
+            "CC",
+            "Hájková Alexandra"
+        ],
+        [
+            "ahruska",
+            "IS",
+            "Hruška Adam"
+        ],
+        [
+            "aklimcikova",
+            "SD",
+            "Klimčíková Andrea"
+        ],
+        [
+            "akolarik",
+            "IA",
+            "Kolařík Adam"
+        ],
+        [
+            "akretov",
+            "IA",
+            "Kretov Anton"
+        ],
+        [
+            "akulhanek",
+            "EX",
+            "Kulhánek Aleš"
+        ],
+        [
+            "akulhavy",
+            "SD",
+            "Kulhavý Adam"
+        ],
+        [
+            "amika",
+            "SD",
+            "Míka Antonín"
+        ],
+        [
+            "amoravek",
+            "BI",
+            "Morávek Adam"
+        ],
+        [
+            "apilosov",
+            "SD",
+            "Pilosov Anton"
+        ],
+        [
+            "arastseluev",
+            "SD",
+            "Rastseluev Alexey"
+        ],
+        [
+            "areznikova",
+            "EX",
+            "Řezníková Alena"
+        ]
+    ]
+}

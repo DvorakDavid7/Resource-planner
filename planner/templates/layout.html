@@ -13,17 +13,17 @@
         Range:
         <input id="data_from" type="text" placeholder="week/year"> to
         <input id="data_to" type="text" placeholder="week/year">
-        <button onclick="set_range()" type="button">Set Range</button>
+        <button onclick="set_range({{ table }})" type="button">Set Range</button>
       </span>
       <span>
         Date:
         <input id="week" type="text" placeholder="week/year"> or
         <input id="date" type="text" placeholder="mm/dd/yyyy">
-        <button onclick="set_date()" type="button">Navigate</button>
+        <button onclick="set_date({{ table }})" type="button">Navigate</button>
       </span>
       <span>
-        <button onclick="move('left', {{ table.header }})" type="button"><----</button>
-        <button onclick="move('right', {{ table.header }})"type="button">-----></button>
+        <button onclick="move('left', {{ table }})" type="button"><----</button>
+        <button onclick="move('right', {{ table }})"type="button">-----></button>
       </span>
     </div>
     <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>

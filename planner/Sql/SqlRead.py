@@ -99,3 +99,12 @@ class SqlRead(SqlMain):
         for row in table:
             data.append(row)
         return data
+
+    def read_user_details(self, user_id):
+        data = []
+        query = f'''SELECT [OddeleniID] ,[CeleJmeno] FROM {self.data_resources["name_list"]} WHERE
+                PracovnikID = \'{user_id}\''''
+        table = self.cursor.execute(query)
+        for row in table:
+            data.append(row)
+        return data

@@ -175,3 +175,24 @@ function show_data_list(table){
         });
     })
 }
+
+
+function go_back_to_table(){
+    let name_list = localStorage.getItem("name_list").split(",");
+    let data = []
+    for (let i = 0; i < name_list.length; i = i + 3){
+        data.push([name_list[i], name_list[i + 1], name_list[i + 2]])
+    }
+    fetch(window.location.origin + '/table/set_department', {
+        method:"POST",
+        body:JSON.stringify({"request_type": "set_name_list", "data": data}),
+    })
+    .then(function(response){
+        response.json().then(function(data) {            
+            document.open();
+            document.write(data.new_table)
+            document.close();
+            history.pushState({}, null, window.location.origin + '/table');
+        });
+    })
+}

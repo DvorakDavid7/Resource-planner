@@ -1,6 +1,6 @@
 function set_department(){
     let data = document.getElementById("department").value;
-    fetch(window.location.origin + '/table_test/set_department', {
+    fetch(window.location.origin + '/table/set_department', {
         method:"POST",
         credentials: "include",
         body:JSON.stringify({"request_type": "set_department", "data": data}),
@@ -66,12 +66,8 @@ function dropdown_toggle() {
 }
 
 function show_groups(){
-    fetch(`${window.location.href}`, {
-        method:"POST",
-        credentials: "include",
-        body:JSON.stringify({"request_type": "show_groups", "data": ""}),
-        cache:"no-cache",
-        headers:new Headers({"content-type":"application/json"})
+    fetch(window.location.origin + '/groups/show_groups', {
+        method:"POST"
     })
     .then(function(response){
         response.json().then(function(data) {
@@ -88,7 +84,7 @@ function show_groups(){
 
 function choose_group(group){
     dropdown_toggle()
-    fetch(`${window.location.href}`, {
+    fetch(window.location.origin + '/table/set_department', {
         method:"POST",
         credentials: "include",
         body:JSON.stringify({"request_type": "load_groups", "data": group}),
@@ -103,3 +99,4 @@ function choose_group(group){
         });
     })
 }
+

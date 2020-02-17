@@ -38,4 +38,4 @@ class TableModel(Model):
             self.name_list = self.sqlRead.read_department(department)
 
     def set_name_list_group(self, group):
-        pass
+        self.name_list = group

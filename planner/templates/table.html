@@ -42,16 +42,24 @@
         <tr>
             {% set weeks_len = table.header.weeks | length %}
             <td class="item_for_search">
-                <a href="{{ url_root }}edit/{{ table.body[i].user_id }}?year_start={{ table.header.year_start }}&year_end={{ table.header.year_end }}&week_start={{ table.header.weeks[0] }}&week_end={{ table.header.weeks[weeks_len - 1] }}">
-                {{ table.body[i].name + ' (' +  table.body[i].department + ')' }}</a>
+                <button onclick="go_to_edit('{{ url_root }}edit/{{ table.body[i].user_id }}?year_start={{ table.header.year_start }}&year_end={{ table.header.year_end }}&week_start={{ table.header.weeks[0] }}&week_end={{ table.header.weeks[weeks_len - 1] }}', {{ table }})" type="button" class="btn btn-link text-left">{{ table.body[i].name + ' (' +  table.body[i].department + ')' }}</button>
             </td>
             {% for week in table.header.weeks%}
             {% set week = week | int %}
-                <td class="data">{{ table.body[i]["values"][week] }}</td>
+                <td class="data-coloring">{{ table.body[i]["values"][week] }}</td>
             {% endfor %}
         </tr>
         {%- endfor %}
     </tbody>
 </table>
-<script>coloring_table({{ table | tojson() }}, 'ddvorak@trask.cz')</script>
+<script>
+coloring_table({{ table | tojson() }})
+
+function go_to_edit(url, table) {
+    localStorage.setItem("name_list", get_name_list(table));    
+    window.location = url
+}
+
+
+</script>
 {% endblock content%}
