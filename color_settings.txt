@@ -1,29 +1,29 @@
 {
     "data": [
         {
-            "color": "red",
-            "sign": "over",
-            "value": "1"
-        },
-        {
             "color": "green",
             "sign": "over",
             "value": "0"
         },
         {
+            "color": "green",
+            "sign": "over",
+            "value": "5"
+        },
+        {
             "color": "orange",
             "sign": "less",
-            "value": "500"
-        },
-        {
-            "color": "blue",
-            "sign": "less",
-            "value": "10"
-        },
-        {
-            "color": "brown",
-            "sign": "less",
             "value": "20"
+        },
+        {
+            "color": "red",
+            "sign": "less",
+            "value": "1000"
+        },
+        {
+            "color": "white",
+            "sign": "over",
+            "value": "6"
         }
     ]
 }

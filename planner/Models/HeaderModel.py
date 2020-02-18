@@ -9,7 +9,9 @@ class HeaderModel(Model):
         self.year_end = ""
         self.week_start = ""
         self.week_end = ""
-        self.table_header = {"year_start": "", "year_end": "", "weeks": [], "working_hours": {}, "dates": []}
+        self.table_header = {"current_week": "", "current_year": "", "year_start": "", "year_end": "",
+                             "weeks": [], "working_hours": {}, "dates": []}
+        self.set_default_dates()
 
     def generate_table_header(self):
         data = self.sqlRead.read_date_week(self.year_start, self.week_start, self.year_end, self.week_end)
@@ -27,21 +29,19 @@ class HeaderModel(Model):
         self.week_start = week_start
         self.week_end = week_end
 
-    def set_header_based_on_week_number(self, week, year):
-        date_range = 10
-        week_start = (int(week) - date_range) % 53
-        week_end = (int(week) + date_range) % 53
-        if week_start > week_end:
-            self.year_end = str(int(year) + 1)
-        else:
-            self.year_end = str(year)
-        self.year_start = str(year)
-        self.week_start = str(week_start)
-        self.week_end = str(week_end)
+    def set_header_based_on_week_number(self, week, year, up, down):
+        d = f"{year}-W{week}"
+        date_from_week = datetime.datetime.strptime(d + '-1', "%Y-W%W-%w")
+        date_start = date_from_week - datetime.timedelta(weeks=down+1)
+        date_end = date_from_week + datetime.timedelta(weeks=up+1)
+        self.year_start = str(date_start.year)
+        self.year_end = str(date_end.year)
+        self.week_start = str(date_start.isocalendar()[1])
+        self.week_end = str(date_end.isocalendar()[1])
 
     def set_header_based_on_date(self, day, month, year):
         week = datetime.date(int(year), int(month), int(day)).isocalendar()[1]
-        self.set_header_based_on_week_number(week, year)
+        self.set_header_based_on_week_number(week, year, 10, 10)
 
     def set_header_based_on_move(self, direction, week_start, week_end, year_start, year_end):
         date_range = 10
@@ -69,3 +69,12 @@ class HeaderModel(Model):
                 self.year_start = year_start
         self.week_start = str(self.week_start)
         self.week_end = str(self.week_end)
+
+    def set_default_dates(self):
+        current_day = datetime.date.today()
+        current_year = datetime.datetime.now().year
+        dt = datetime.datetime.strptime(str(current_day), '%Y-%m-%d')
+        week = str(dt.isocalendar()[1])
+        self.set_header_based_on_week_number(int(week), int(current_year), 16, 2)
+        self.table_header["current_week"] = "0" + week if len(week) == 1 else week
+        self.table_header["current_year"] = str(current_year)

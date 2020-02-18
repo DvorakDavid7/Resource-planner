@@ -2,31 +2,37 @@
 
 {% block content%}
 <br>
-<div id="set_department">
-    <input id="department" type="text" placeholder="Enter Departmet(s)">
-    <button onclick="set_department()" type="button">Submit</button>
-</div>
-<div id="searching">
-    <input size="40" id="search" type="text" onkeyup="tableSearch()" placeholder="Search for names..">
-</div>
-<div id="groups">
-    <div class="dropdown">
-        <button onclick="dropdown_toggle(); show_groups();" class="dropbtn">Choose group</button>
-        <div id="myDropdown" class="dropdown-content">
-            <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-            <div class="dropdown_list" id="dropdown">
+<div id="set_department" class="form-inline">
+    <input class="form-control" size="40" id="search" type="text" onkeyup="tableSearch()" placeholder="Search for names..">
+    <div style="margin-left: 2%;">
+        <input class="form-control" id="department" type="text" placeholder="Enter Departmet(s)">
+        <button class="btn btn-primary" onclick="set_department()" type="button">Submit</button>
+    </div>
+    <div style="margin-left: 2%;">
+        <div class="dropdown">
+            <button class="btn btn-primary" onclick="dropdown_toggle(); show_groups();" class="dropbtn">Choose group <img src="{{ url_for('static', filename='images/down-arrow.png') }}" alt=""></button>
+            <div id="myDropdown" class="dropdown-content">
+                <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+                <div class="dropdown_list" id="dropdown">
+                </div>
             </div>
         </div>
     </div>
+    <div style="margin-left: 2%;">
+        years: {{ table.header["year_start"] }} / {{ table.header["year_end"] }}
+    </div>
 </div>
+
 <table id="table" border="1">
     <thead>
         <tr>
             <th>Week:</th>
             {% for i in range(table.header.weeks | length) -%}
-            <th>
-                {{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}
-            </th>
+                {% if table.header.weeks[i] | string == table.header["current_week"] %}
+                    <th class="current-week">{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</th>
+                {% else %}
+                    <th>{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</th>
+                {% endif %}
             {%- endfor %}
         </tr>
         <tr>
@@ -46,7 +52,7 @@
             </td>
             {% for week in table.header.weeks%}
             {% set week = week | int %}
-                <td class="data-coloring">{{ table.body[i]["values"][week] }}</td>
+                <td class="data-coloring text-center">{{ table.body[i]["values"][week] }}</td>
             {% endfor %}
         </tr>
         {%- endfor %}

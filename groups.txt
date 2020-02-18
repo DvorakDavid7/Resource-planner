@@ -1,20 +1,5 @@
 {
-    "IA": [
-        [
-            "mbendik",
-            "IA",
-            "Bendík Marián"
-        ],
-        [
-            "pmarek",
-            "IA",
-            "Marek Petr"
-        ],
-        [
-            "nkolkova",
-            "IA",
-            "Kolková Natálie"
-        ],
+    "fsdfds": [
         [
             "akolarik",
             "IA",
@@ -115,6 +100,28 @@
             "Bendík Marián"
         ]
     ],
+    "test group": [
+        [
+            "akolarik",
+            "IA",
+            "Kolařík Adam"
+        ],
+        [
+            "mbendik",
+            "IA",
+            "Bendík Marián"
+        ],
+        [
+            "nkolkova",
+            "IA",
+            "Kolková Natálie"
+        ],
+        [
+            "pmarek",
+            "IA",
+            "Marek Petr"
+        ]
+    ],
     "test_name": [
         [
             "abakalar",
@@ -205,6 +212,30 @@
             "areznikova",
             "EX",
             "Řezníková Alena"
+        ]
+    ],
+    "tetestsetse": [
+        [
+            "pmarek",
+            "IA",
+            "Marek Petr"
+        ]
+    ],
+    "total test": [
+        [
+            "nkolkova",
+            "IA",
+            "Kolková Natálie"
+        ],
+        [
+            "pmarek",
+            "IA",
+            "Marek Petr"
+        ],
+        [
+            "akolarik",
+            "IA",
+            "Kolařík Adam"
         ]
     ]
 }

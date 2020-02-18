@@ -10,7 +10,21 @@ from planner.Controllers.TableController import TableController
 from planner.Controllers.ColorSettingController import ColorSettingController
 
 
+# v Azure webapp aplikace bezi za reverse proxy, ktera terminuje SSL,
+# je ale potreba prebrat spravne schema, jinak by Flask generoval spatny url (http na misto https)
+class ReverseProxied(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        scheme = environ.get('HTTP_X_FORWARDED_PROTO')
+        if scheme:
+            environ['wsgi.url_scheme'] = scheme
+        return self.app(environ, start_response)
+
+
 app = Flask(__name__)
+app.wsgi_app = ReverseProxied(app.wsgi_app)
 app.config.from_object(app_config)
 Session(app)
 
@@ -60,9 +74,11 @@ def logout():
 
 
 # TABLE
-
 @app.route('/table', methods=["GET"])
 def table_get():
+    token = _get_token_from_cache(app_config.SCOPE)
+    if not token:
+        return redirect(url_for("login"))
     return TableController.index()
 
 
@@ -83,6 +99,9 @@ def table_set_department():
 
 @app.route('/edit/<string:user_id>', methods=["GET"])
 def edit(user_id):
+    token = _get_token_from_cache(app_config.SCOPE)
+    if not token:
+        return redirect(url_for("login"))
     return EditController.index(user_id, request.args)
 
 
@@ -113,6 +132,9 @@ def edit_navigation(user_id):
 # GROUPS
 @app.route('/groups', methods=["GET"])
 def groups():
+    token = _get_token_from_cache(app_config.SCOPE)
+    if not token:
+        return redirect(url_for("login"))
     return GroupsController.index()
 
 
@@ -127,10 +149,23 @@ def groups_save_group():
     return GroupsController.save_group(request.form)
 
 
-# COLOR SETTING
+@app.route('/groups/delete_group', methods=["POST"])
+def groups_delete_group():
+    receive_data = json.loads(str(request.get_data().decode('utf-8')))
+    return GroupsController.delete_group(receive_data)
 
+
+@app.route('/groups/group_members', methods=["POST"])
+def groups_group_members():
+    receive_data = json.loads(str(request.get_data().decode('utf-8')))
+    return GroupsController.group_members(receive_data)
+
+# COLOR SETTING
 @app.route('/color_setting', methods=["GET"])
 def color_setting():
+    token = _get_token_from_cache(app_config.SCOPE)
+    if not token:
+        return redirect(url_for("login"))
     return ColorSettingController.index()
 
 
@@ -170,3 +205,4 @@ def _get_token_from_cache(scope=None):
     if accounts:  # So all account(s) belong to the current signed-in user
         result = cca.acquire_token_silent(scope, account=accounts[0])
         _save_cache(cache)
+        return result

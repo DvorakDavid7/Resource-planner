@@ -11,7 +11,7 @@ class Controller:
                                             receive_data["data"]["week_start"], receive_data["data"]["week_end"])
         elif receive_data["request_type"] == "set_date":
             if receive_data["data"]["input_type"] == "set_week":
-                headerModel.set_header_based_on_week_number(receive_data["data"]["week"], receive_data["data"]["year"])
+                headerModel.set_header_based_on_week_number(receive_data["data"]["week"], receive_data["data"]["year"], 10, 10)
             elif receive_data["data"]["input_type"] == "set_date":
                 headerModel.set_header_based_on_date(receive_data["data"]["day"], receive_data["data"]["month"],
                                                      receive_data["data"]["year"])

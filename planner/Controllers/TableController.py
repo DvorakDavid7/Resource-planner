@@ -12,7 +12,8 @@ class TableController(Controller):
     @staticmethod
     def index():
         headerModel = HeaderModel()
-        headerModel.set_start_end_dates("2020", "2020", "1", "21")
+        headerModel.set_default_dates()
+        # headerModel.set_start_end_dates("2020", "2020", "1", "21")
         headerModel.generate_table_header()
 
         tableModel = TableModel(headerModel)
@@ -26,7 +27,8 @@ class TableController(Controller):
     @staticmethod
     def set_department_request_handler(request_data):
         headerModel = HeaderModel()
-        headerModel.set_start_end_dates("2020", "2020", "1", "21")
+        headerModel.set_default_dates()
+        # headerModel.set_start_end_dates("2020", "2020", "1", "21")
         headerModel.generate_table_header()
         tableModel = TableModel(headerModel)
         if request_data["request_type"] == "set_department":
