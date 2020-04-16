@@ -1,17 +1,16 @@
-# Notes for My Paper
+Notes for My Paper {#notes-for-my-paper .unnumbered}
+==================
 
-Don’t forget to include \(E = mc^2\) examples of topicalization. They
-look like this:
+Don't forget to include $E = mc^2$ examples of topicalization. They look
+like this:
 
-<span> </span>
+How to handle topicalization {#how-to-handle-topicalization .unnumbered}
+----------------------------
 
-## How to handle topicalization
+I'll just assume a tree structure like ().
 
-I’ll just assume a tree structure like ().
-
-<span> </span>
-
-## Mood
+Mood {#mood .unnumbered}
+----
 
 Mood changes when there is a topic, as well as when there is
 WH-movement. *Irrealis* is the mood when there is a non-subject topic or
