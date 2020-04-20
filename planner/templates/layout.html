@@ -11,19 +11,19 @@
       <nav class=class="navbar navbar-light" style="background-color: #e3f2fd;">
         <div id="navigation-bar" class="form-inline">
           <a class="navbar-brand" href="{{ url_for('index') }}"><img class="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt=""></a>
-          <span style="margin-left: 2%;"> 
+          <span style="margin-left: 1%;"> 
             Range:
             <input class="form-control" id="data_from" type="text" placeholder="week/year"> to
             <input class="form-control" id="data_to" type="text" placeholder="week/year">
             <button class="btn btn-primary" onclick="set_range({{ table }})" type="button">Set Range</button>
           </span>
-          <span style="margin-left: 2%;">
+          <span style="margin-left: 1%;">
             Date:
             <input class="form-control" id="week" type="text" placeholder="week/year"> or
             <input class="form-control" id="date" type="text" placeholder="mm/dd/yyyy">
             <button class="btn btn-primary" onclick="set_date({{ table }})" type="button">Navigate</button>
           </span>
-          <span style="margin-left: 2%;">
+          <span style="margin-left: 1%;">
             <button class="btn btn-primary" onclick="move('left', {{ table }})" type="button"><-----</button>
             <button class="btn btn-primary" onclick="move('right', {{ table }})"type="button">-----></button>
           </span>

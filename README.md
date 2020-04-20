@@ -1,18 +1,21 @@
-Notes for My Paper {#notes-for-my-paper .unnumbered}
-==================
+# Resource planner app
 
-Don't forget to include $E = mc^2$ examples of topicalization. They look
-like this:
+## Local installation
+1) Turn on VPN
 
-How to handle topicalization {#how-to-handle-topicalization .unnumbered}
-----------------------------
+2) set virtual evirnment
+```PowerShell
+py -3 -m venv venv
+venv\scripts\activate
+```
 
-I'll just assume a tree structure like ().
+3) Install rewuirements
+```PowerShell
+pip install -r requirements.txt
+```
 
-Mood {#mood .unnumbered}
-----
-
-Mood changes when there is a topic, as well as when there is
-WH-movement. *Irrealis* is the mood when there is a non-subject topic or
-WH-phrase in Comp. *Realis* is the mood when there is a subject topic or
-WH-phrase.
+4) Install Flask app (optional)
+```PowerShell
+$env:FLASK_APP = "application.py"
+python -m flask run
+```
