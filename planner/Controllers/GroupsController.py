@@ -11,14 +11,14 @@ class GroupsController(Controller):
 
     @staticmethod
     def index():
-        with open("groups.txt", "r", encoding='utf8') as file:
+        with open("data/groups.txt", "r", encoding='utf8') as file:
             data = json.load(file)
         return render_template("groups.html", groups=data.keys())
 
     @staticmethod
     def show_groups():
         result = []
-        with open("groups.txt", "r", encoding='utf8') as file:
+        with open("data/groups.txt", "r", encoding='utf8') as file:
             data = json.load(file)
         for key in data.keys():
             result.append(key)
@@ -44,20 +44,20 @@ class GroupsController(Controller):
                 <h1>Error: \"{str(err)}\" Be sure to enter the correct user ids and delete
                 ALL blank lines and try it again</h1
                 '''
-        with open("groups.txt", "r", encoding='utf8') as file:
+        with open("data/groups.txt", "r", encoding='utf8') as file:
             data = json.load(file)
             data[group_name] = name_list
-        with open("groups.txt", "w", encoding='utf8') as file:
+        with open("data/groups.txt", "w", encoding='utf8') as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
         return redirect('/groups')
 
     @staticmethod
     def delete_group(receive_data):
         key = receive_data["data"]
-        with open("groups.txt", "r", encoding='utf8') as file:
+        with open("data/groups.txt", "r", encoding='utf8') as file:
             data = json.load(file)
             del data[key]
-        with open("groups.txt", "w", encoding='utf8') as file:
+        with open("data/groups.txt", "w", encoding='utf8') as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
         return "OK"
 
@@ -65,7 +65,7 @@ class GroupsController(Controller):
     def group_members(receive_data):
         names = []
         group = receive_data["data"]
-        with open("groups.txt", "r", encoding='utf8') as file:
+        with open("data/groups.txt", "r", encoding='utf8') as file:
             data = json.load(file)
         for name in data[group]:
             names.append([name[2], name[1]])

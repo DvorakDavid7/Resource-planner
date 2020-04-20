@@ -9,14 +9,14 @@ class ColorSettingController(Controller):
     # GET
     @staticmethod
     def index():
-        with open("color_settings.txt", "r") as file:
+        with open("data/color_settings.txt", "r") as file:
             data = json.load(file)
         return render_template("color_seting.html", data=data)
 
     # POST
     @staticmethod
     def save(request_data):
-        with open("color_settings.txt", "w") as file:
+        with open("data/color_settings.txt", "w") as file:
             json.dump(request_data["data"], file, indent=4)
         return "OK"
     
@@ -26,7 +26,7 @@ class ColorSettingController(Controller):
         legend = {}
         positive = []
         negative = []
-        with open("color_settings.txt", "r") as file:
+        with open("data/color_settings.txt", "r") as file:
             data = json.load(file)
         for record in data["data"]:
             if record["sign"] == "less":

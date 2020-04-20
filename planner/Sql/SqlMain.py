@@ -11,8 +11,8 @@ class SqlMain:
             "date_week": "[dbo].[View_ResourcePlanner_DatumTyden]",
             "name_list": "[dbo].[View_ResourcePlanner_Department]",
             "summary_plan": "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]",
-            "worker_plan": "[dbo].[PracovnikPlan]",
-            "entry": "[dbo].[PracovnikPlan]",
+            "worker_plan": "[dbo].[PracovnikPlan_TEST]",
+            "entry": "[dbo].[PracovnikPlan_TEST]",
             "project_list": "[dbo].[View_ResourcePlanner_ProjektySeznam]",
             "opportunity_list": "[dbo].[View_ResourcePlanner_PrilezitostiSeznam]",
         }
