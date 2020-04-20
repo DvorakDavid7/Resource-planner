@@ -9,7 +9,7 @@ py -3 -m venv venv
 venv\scripts\activate
 ```
 
-3) Install rewuirements
+3) Install requirements
 ```PowerShell
 pip install -r requirements.txt
 ```
