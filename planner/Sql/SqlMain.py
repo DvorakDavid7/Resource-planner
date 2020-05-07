@@ -15,6 +15,10 @@ class SqlMain:
             "entry": "[dbo].[PracovnikPlan_TEST]",
             "project_list": "[dbo].[View_ResourcePlanner_ProjektySeznam]",
             "opportunity_list": "[dbo].[View_ResourcePlanner_PrilezitostiSeznam]",
+
+            "phases": "[dbo].[View_ResourcePlanner_Projekty_Faze_Seznam]",
+            "projects_workers": "[dbo].[View_ResourcePlanner_Projekty_Pracovnik_Seznam]",
+            "pracovnik_plan_ftfp": "[dbo].[PracovnikPlanFtfp]"
         }
 
     def connect_to_database(self):

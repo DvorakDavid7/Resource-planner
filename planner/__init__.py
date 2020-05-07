@@ -8,7 +8,7 @@ from planner.Controllers.EditController import EditController
 from planner.Controllers.GroupsController import GroupsController
 from planner.Controllers.TableController import TableController
 from planner.Controllers.ColorSettingController import ColorSettingController
-
+from planner.Controllers.FinanceController import FinanceController
 
 # v Azure webapp aplikace bezi za reverse proxy, ktera terminuje SSL,
 # je ale potreba prebrat spravne schema, jinak by Flask generoval spatny url (http na misto https)
@@ -179,6 +179,30 @@ def color_setting_save():
 def color_setting_send_data():
     return ColorSettingController.send_data()
 
+
+# FINACE OVERVIEW
+@app.route('/finance', methods=["GET"])
+def finance():
+    return FinanceController.index()
+
+
+@app.route('/finance/projects', methods=["GET"])
+def projects():
+    return FinanceController().project_list()
+
+
+@app.route('/finance/data/<string:project_id>/', methods=["GET"])
+def table_data(project_id):
+    return FinanceController().finance_table(project_id)
+
+
+@app.route('/finance/save_changes', methods=["POST"])
+def save_changes():
+    receive_data = json.loads(str(request.get_data().decode('utf-8')))
+    return FinanceController().save_changes(receive_data, session["user"]['preferred_username'])
+    
+
+# OTHER FUNCTIONS
 
 def _load_cache():
     cache = msal.SerializableTokenCache()

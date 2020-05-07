@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 flask_session/
 .vscode/
+test.py

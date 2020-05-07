@@ -90,10 +90,12 @@ class SqlRead(SqlMain):
         if data_for == "project":
             resource = self.data_resources["project_list"]
             condition = "Status = \'active\'"
+            rows = "[ProjektID], [ZakazkaID], [CID+Nazev], [ProjektovyManazerJmeno], [DeliveryManazerJmeno]"
         else:
             resource = self.data_resources["opportunity_list"]
             condition = "Status = 0"
-        query = f'''SELECT [ProjektID] ,[ZakazkaID] ,[CID+Nazev], [ProjektovyManazerJmeno] 
+            rows = "[ProjektID], [ZakazkaID], [CID+Nazev], [ProjektovyManazerJmeno]"
+        query = f'''SELECT {rows}
                 FROM {resource} WHERE {condition}'''
         table = self.cursor.execute(query)
         for row in table:
@@ -108,3 +110,29 @@ class SqlRead(SqlMain):
         for row in table:
             data.append(row)
         return data
+
+    def read_phases(self, project_id: str) -> list:
+        data = []
+        query = f'''SELECT [ProjektID], [FazeID], [FazeNazev]
+                FROM {self.data_resources["phases"]} WHERE ProjektID = {project_id} AND Status = \'active\''''
+        table = self.cursor.execute(query)
+        for row in table:
+            data.append(row)
+        return data
+
+    def read_project_worker_list(self, project_id: str) -> list:
+        data = []
+        query = f'''SELECT [ProjektID], [PracovnikID], [PracovnikCeleJmeno], [RoleID], [RoleNazev]
+                FROM {self.data_resources["projects_workers"]} WHERE ProjektID = {project_id}'''
+        table = self.cursor.execute(query)
+        for row in table:
+            data.append(row)
+        return data
+
+    def read_planHod_worker_phase(self, pracovnik_id: str, phase_id: str) -> int:  # return planHod
+        data = []
+        query = f'''SELECT [PlanHod] FROM {self.data_resources["pracovnik_plan_ftfp"]}
+                WHERE PracovnikID = \'{pracovnik_id}\' AND FazeID = {phase_id}'''
+        table = self.cursor.execute(query)
+        for row in table:
+            return int(row[0])

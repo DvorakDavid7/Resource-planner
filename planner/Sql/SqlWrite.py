@@ -26,3 +26,17 @@ class SqlWrite(SqlMain):
                 VALUES (\'{user_id}\', {identifier}, {year}, {week}, {planned_hours}, \'{modified_by}\');'''
         self.cursor.execute(query)
         self.connection.commit()
+
+    
+    def insert_row_ftfp(self, worker_id, project_id, phase_id, planned_hours, modified_by):
+        query = f'''INSERT INTO {self.data_resources["pracovnik_plan_ftfp"]} (PracovnikID, ProjektID, FazeID, PlanHod, ModifiedBy)
+                VALUES (\'{worker_id}\', {project_id}, {phase_id}, {planned_hours}, \'{modified_by}\');'''
+        self.cursor.execute(query)
+        self.connection.commit()
+
+
+    def delete_row_ftfp(self, worker_id, project_id, phase):
+        query = f'''DELETE FROM {self.data_resources["pracovnik_plan_ftfp"]} WHERE
+                PracovnikID = \'{worker_id}\' AND ProjektID = {project_id} AND FazeID = {phase}'''
+        self.cursor.execute(query)
+        self.connection.commit()
