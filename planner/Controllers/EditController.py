@@ -25,7 +25,7 @@ class EditController(Controller):
         editModel = EditModel(headerModel, user_id)
         editModel.generate_edit_body()
         table = {"header": headerModel.table_header, "body": editModel.edit_table}
-        return render_template("edit.html", title="Edit Page", table=table, user_id=user_id)
+        return render_template("NavLayout/edit.html", title="Edit Page", table=table, user_id=user_id)
     
     # POST
     @staticmethod

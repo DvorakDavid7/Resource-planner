@@ -1,9 +1,9 @@
-{% extends "layout.html" %}
+{% extends "NavLayout/layout.html" %}
 
 {% block content%}
 <br>
 <div id="set_department" class="form-inline">
-    <input class="form-control" size="40" id="search" type="text" onkeyup="tableSearch()" placeholder="Search for names..">
+    {% include 'components/searchbox.html' %}
     <div style="margin-left: 2%;">
         <input class="form-control" id="department" type="text" placeholder="Enter Departmet(s)">
         <button class="btn btn-primary" onclick="set_department()" type="button">Submit</button>

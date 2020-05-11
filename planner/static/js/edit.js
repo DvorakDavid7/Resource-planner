@@ -1,5 +1,5 @@
 
-function send_data(table){
+function generate_changes(table){
     let weeks = table.header.weeks;
     let table_values = document.getElementsByClassName("data")    
     let origin_value = 0, current_value = 0;
@@ -36,7 +36,7 @@ function send_data(table){
 
 
 function send_changes_from_edit(table){
-    let data = send_data(table)
+    let data = generate_changes(table)
     let user_id = document.getElementById("user_id_value").innerHTML
     let current_position = {"year_start": table.header.year_start, "year_end": table.header.year_end,
                             "week_start": table.header.weeks[0], "week_end": table.header.weeks.pop()}      

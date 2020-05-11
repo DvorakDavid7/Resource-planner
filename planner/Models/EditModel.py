@@ -1,3 +1,4 @@
+from typing import List
 from planner.Models.Model import Model
 
 
@@ -23,7 +24,7 @@ class EditModel(Model):
         self.edit_table["projects"] = projects
         self.edit_table["opportunity"] = opportunity
 
-    def __id_values(self, data_for) -> []:
+    def __id_values(self, data_for) -> List:
         plan = {}
         result_row = {}
         result = []

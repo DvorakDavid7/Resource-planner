@@ -13,7 +13,7 @@ class GroupsController(Controller):
     def index():
         with open("data/groups.txt", "r", encoding='utf8') as file:
             data = json.load(file)
-        return render_template("groups.html", groups=data.keys())
+        return render_template("pages/groups.html", groups=data.keys())
 
     @staticmethod
     def show_groups():

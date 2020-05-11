@@ -9,6 +9,8 @@ from planner.Controllers.GroupsController import GroupsController
 from planner.Controllers.TableController import TableController
 from planner.Controllers.ColorSettingController import ColorSettingController
 from planner.Controllers.FinanceController import FinanceController
+from planner.Controllers.ProjectTableController import ProjectTableController
+from planner.Controllers.ProjectEditController import ProjectEditController
 
 # v Azure webapp aplikace bezi za reverse proxy, ktera terminuje SSL,
 # je ale potreba prebrat spravne schema, jinak by Flask generoval spatny url (http na misto https)
@@ -33,7 +35,7 @@ Session(app)
 def index():
     if not session.get("user"):
         return redirect(url_for("login"))
-    return render_template('index.html', user=session["user"], version=msal.__version__)
+    return render_template('pages/index.html', user=session["user"], version=msal.__version__)
 
 
 @app.route("/login")
@@ -44,7 +46,7 @@ def login():
                            # here we choose to also collect end user consent upfront
         state=session["state"],
         redirect_uri=url_for("authorized", _external=True))
-    return render_template('login.html', redirect=auth_url)
+    return render_template('pages/login.html', redirect=auth_url)
     # return "<a href='%s'>Login with Microsoft Identity</a>" % auth_url
 
 
@@ -187,20 +189,52 @@ def finance():
 
 
 @app.route('/finance/projects', methods=["GET"])
-def projects():
+def finance_projects():
     return FinanceController().project_list()
 
 
 @app.route('/finance/data/<string:project_id>/', methods=["GET"])
-def table_data(project_id):
+def finance_table_data(project_id):
     return FinanceController().finance_table(project_id)
 
 
 @app.route('/finance/save_changes', methods=["POST"])
-def save_changes():
+def finance_save_changes():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
     return FinanceController().save_changes(receive_data, session["user"]['preferred_username'])
-    
+
+
+# PROJECT TABLE
+@app.route('/projects', methods=["GET"])
+def projects():
+    return ProjectTableController().index()
+
+@app.route('/projects/test', methods=["POST"])
+def projects_test():
+    return ProjectTableController().test()
+
+
+# PROJECT EDIT
+@app.route('/project_edit/<string:project_id>', methods=["GET"])
+def project_edit(project_id):
+    return ProjectEditController.index(project_id, request.args)
+
+@app.route('/project_edit/get_names', methods=["GET"])
+def project_edit_get_names():
+    return ProjectEditController.get_names()
+
+
+@app.route('/project_edit/save_changes', methods=["POST"])
+def project_edit_save_changes():
+    receive_data = json.loads(str(request.get_data().decode('utf-8')))
+    return ProjectEditController.save_changes(receive_data, session["user"]['preferred_username'])
+
+
+@app.route('/project_edit/add_worker', methods=["POST"])
+def project_edit_add_worker():
+    receive_data = json.loads(str(request.get_data().decode('utf-8')))
+    return ProjectEditController.add_worker(receive_data, session["user"]['preferred_username'])
+
 
 # OTHER FUNCTIONS
 

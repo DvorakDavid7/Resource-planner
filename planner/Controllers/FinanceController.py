@@ -13,7 +13,7 @@ class FinanceController(Controller):
     # GET
     @staticmethod
     def index():
-        return send_file("../planner/templates/finance.html")
+        return send_file("../planner/templates/pages/finance.html")
 
     # GET
     @staticmethod

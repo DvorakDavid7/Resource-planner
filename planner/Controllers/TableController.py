@@ -21,7 +21,7 @@ class TableController(Controller):
         tableModel.generate_table_body()
 
         table = {"header": headerModel.table_header, "body": tableModel.table_body}
-        return render_template("table.html", title="Main Table", table=table, url_root=request.url_root)
+        return render_template("NavLayout/table.html", title="Main Table", table=table, url_root=request.url_root)
 
     # POST
     @staticmethod
@@ -34,7 +34,7 @@ class TableController(Controller):
         if request_data["request_type"] == "set_department":
             tableModel.set_name_list_department(request_data["data"])
         elif request_data["request_type"] == "load_groups":
-            with open("groups.txt", "r", encoding='utf8') as file:
+            with open("data/groups.txt", "r", encoding='utf8') as file:
                 data = json.load(file)
             tableModel.set_name_list_group(data[request_data["data"]])
         elif request_data["request_type"] == "set_name_list":

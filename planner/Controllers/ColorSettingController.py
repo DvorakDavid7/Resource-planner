@@ -11,7 +11,7 @@ class ColorSettingController(Controller):
     def index():
         with open("data/color_settings.txt", "r") as file:
             data = json.load(file)
-        return render_template("color_seting.html", data=data)
+        return render_template("pages/color_seting.html", data=data)
 
     # POST
     @staticmethod
