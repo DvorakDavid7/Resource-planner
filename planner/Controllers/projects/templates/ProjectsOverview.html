@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content%}
+<script>
+    let table_header = JSON.parse('{{ table.header | tojson }}')
+    let table_project_list = JSON.parse('{{ projectList | tojson }}')       
+</script>
+<input class="form-control" size="40" id="search" type="text" onkeyup="tableSearch()" placeholder="Search for names..">
+<div id="table-wrapper">
+    <table id="table" border="1">
+        <thead>
+            <tr>
+                <th>Week:</th>
+                {% for i in range(table.header.weeks | length) -%}
+                    {% if table.header.weeks[i] | string == table.header["current_week"] %}
+                        <th class="current-week">{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</th>
+                    {% else %}
+                        <th>{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</th>
+                    {% endif %}
+                {%- endfor %}
+            </tr>
+            <tr>
+                <td>Dates:</td>
+                {% for date in table.header.dates -%}
+                <td>{{ date }}</td>
+                {%- endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projectList %}
+                {% set weeks_len = table.header.weeks | length %}
+                <tr>
+                    <td class="item_for_search">
+                        <button onclick="setUrl('{{ project[0] }}')" class="project-select btn btn-link text-left">{{ project[2] }}</button>
+                    </td>
+    
+                    {% for i in range(weeks_len) -%}
+                        {% set project_id = project[0] | string %}
+    
+                        <td>{{ data[project_id][table.header.weeks[i] | int]  }}</td>
+    
+                    {%- endfor %}
+                </tr>
+    
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" src="{{ url_for('projects.static', filename='js/projects.js') }}"></script>
+{% endblock content%}

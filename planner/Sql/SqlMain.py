@@ -1,6 +1,6 @@
-from app_config import CONNECTION_STRING
 import pypyodbc
-
+from flask import current_app
+from app_config import DevConfig
 
 class SqlMain:
     def __init__(self):
@@ -21,11 +21,10 @@ class SqlMain:
             "pracovnik_plan_ftfp": "[dbo].[PracovnikPlanFtfp]"
         }
 
-    def connect_to_database(self):
+    def connect_to_database(self) -> None:
         try:
-            self.connection = pypyodbc.connect(CONNECTION_STRING)
+            # self.connection = pypyodbc.connect(current_app.config["CONNECTION_STRING"])
+            self.connection = pypyodbc.connect(DevConfig.CONNECTION_STRING)
             self.cursor = self.connection.cursor()
-            return True
         except pypyodbc.Error as err:
             print(f"Connection Error: {err}")
-            return False

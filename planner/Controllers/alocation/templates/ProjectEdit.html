@@ -1,0 +1,76 @@
+  
+{% extends "layout.html" %}
+
+{% block content%}
+
+<script>
+    let table_header = JSON.parse('{{ table.header | tojson }}')
+    let name_list = JSON.parse('{{ name_list | tojson }}')
+</script>
+
+<div id="data-div" data-test='{{ name_list | tojson }}'></div>
+<script>
+    let data = JSON.parse(document.getElementById("data-div").dataset.test);
+    console.log(data)
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onclick="get_names()">Add worker<span class="caret"></span></button>
+            <div id="menu" class="dropdown-menu w-100" style="height: auto; max-height: 500px; overflow-x: hidden;">
+                <input class="form-control" id="myInput" type="text" placeholder="Search..">
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="table" border="1">
+    <thead>
+        <tr>
+            <th>Week:</th>
+            {% for i in range(table.header.weeks | length) -%}
+                {% if table.header.weeks[i] | string == table.header["current_week"] %}
+                    <th class="current-week">{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</th>
+                {% else %}
+                    <th>{{ table.header.weeks[i] | string + ' (' +  table.header.working_hours[table.header.weeks[i]] + ')' }}</th>
+                {% endif %}
+            {%- endfor %}
+        </tr>
+        <tr>
+            <td>Dates:</td>
+            {% for date in table.header.dates -%}
+            <td>{{ date }}</td>
+            {%- endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for name in name_list %}
+            <tr>
+                <td>{{ name_mapper[name] }}</td>
+
+                {% for i in range(table.header.weeks | length) -%}
+
+                    <td class="text-center">
+
+                        <table style="margin: auto;">
+                            <tr>
+                                <td class="data text-center" style="width:40px" class="data" contenteditable="true" >{{ data[name][table.header.weeks[i] | int].planned  }}</td>
+                                <td class="text-center" style="font-size:65%">{{ data[name][table.header.weeks[i] | int].alocated  }}</td>
+                            </tr>
+                        </table>
+                    </td>
+
+                {%- endfor %}
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<button id="submit-changes" type="button">Save changes</button>
+
+
+<script type="text/javascript" src="{{ url_for('alocation.static', filename='js/project_edit.js') }}"></script>
+
+{% endblock content%}

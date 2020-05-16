@@ -23,7 +23,7 @@
         {
             "color": "white",
             "sign": "over",
-            "value": "6"
+            "value": "5"
         }
     ]
 }
