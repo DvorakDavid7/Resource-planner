@@ -10,20 +10,21 @@ class DepartmentTable(SqlMain):
         super().__init__()
         super().connect_to_database()
 
-        self.workerId: List[int] = []
+        self.workerId: List[str] = []
         self.department: List[str] = []
-        self.workerFullName: List[str] = []
+        self.fullName: List[str] = []
 
     def get_workers_names(self, department: str) -> None:
         condition = f"OddeleniID = '{department}'" if len(department) == 2 else f"OddeleniID IN {department}" 
 
-        query = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {DepartmentTable.DATA_RESOURCE}
+        query = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.DATA_RESOURCE}
                 WHERE {condition} ORDER BY ([CeleJmeno])'''
+        
         table = self.cursor.execute(query)
         for row in table:
             self.workerId.append(row[0])
             self.department.append(row[1])
-            self.workerFullName.append(row[2])
+            self.fullName.append(row[2])
     
     def get_user_details(self, workerId: str) -> None:  # DONE
         query = f'''SELECT [OddeleniID] ,[CeleJmeno] FROM {DepartmentTable.DATA_RESOURCE} WHERE
@@ -32,8 +33,8 @@ class DepartmentTable(SqlMain):
         table = self.cursor.execute(query)
         for row in table:
             self.department.append(row[0])
-            self.workerFullName.append(row[1])
+            self.fullName.append(row[1])
 
     def __str__(self) -> str:
-        return f'''workerId: {self.workerId}\ndepartment: {self.department}\nworkerFullName: {self.workerFullName}'''
+        return f'''workerId: {self.workerId}\ndepartment: {self.department}\nworkerFullName: {self.fullName}'''
 

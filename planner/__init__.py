@@ -29,6 +29,8 @@ def create_app(config_class):
     from planner.Controllers.alocation.alocation import alocation
     from planner.Controllers.home.home import home
 
+    from planner.Controllers.tests.tests import tests
+
     app.register_blueprint(table)
     app.register_blueprint(edit)
     app.register_blueprint(groups)
@@ -37,5 +39,5 @@ def create_app(config_class):
     app.register_blueprint(projects)
     app.register_blueprint(alocation)
     app.register_blueprint(home)
-
+    app.register_blueprint(tests)
     return app

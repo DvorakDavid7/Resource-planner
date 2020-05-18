@@ -1,3 +1,4 @@
+from planner.Models.DataModels.DateRange import DateRange
 from flask import Blueprint, render_template, request, json, jsonify, make_response
 from planner.Models.HeaderModel import HeaderModel
 from planner.Models.TableModel import TableModel
@@ -8,17 +9,17 @@ table = Blueprint("table", __name__, template_folder="templates", static_folder=
 @table.route('/table', methods=["GET"])
 @login_required
 def table_get():
-    headerModel = HeaderModel()
-    headerModel.set_default_dates()
-    # headerModel.set_start_end_dates("2020", "2020", "1", "21")
-    headerModel.generate_table_header()
+    date_range = DateRange("2020", "2020", "1", "22")
+    header = HeaderModel()
+    header.set_dateRange(date_range)
+    header.set_currents()
+    header.set_fromDatabese()
 
-    tableModel = TableModel(headerModel)
-    tableModel.set_name_list_department("IA")
-    tableModel.generate_table_body()
+    tableModel = TableModel(header)
+    tableModel.set_workerList("IA")
+    tableModel.set_values()    
 
-    table = {"header": headerModel.table_header, "body": tableModel.table_body}
-    return render_template("table.html", title="Main Table", table=table, url_root=request.url_root)
+    return render_template("table.html", header=header.toDict(), tableModel=tableModel.toDict())
 
 
 @table.route('/table/navigation_request_handler', methods=["POST"])
@@ -59,6 +60,7 @@ def table_set_department():
     table = {"header": headerModel.table_header, "body": tableModel.table_body}
     new_table = render_template("table.html", title="Main Table", table=table, url_root=request.url_root)
     return make_response(jsonify({"new_table": new_table}), 200)
+
 
 
 def navigation_handler(headerModel, receive_data):

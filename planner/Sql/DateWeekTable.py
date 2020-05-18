@@ -14,7 +14,7 @@ class DateWeekTable(SqlMain):
         self.year: List[int] = []
         self.week: List[str] = []
         self.weekRange: List[str] = []
-        self.numberOfHour: List[int] = []
+        self.numberOfHour: List[str] = []
 
     def read_date_week(self, dateRange: DateRange) -> None:
         week_start = dateRange.week_start if len(dateRange.week_start) != 1 else  "0" + dateRange.week_start
@@ -28,7 +28,7 @@ class DateWeekTable(SqlMain):
         for row in rows:
             self.week.append(row[0].split("-")[1])
             self.weekRange.append(row[1].replace("(", "").replace(")", ""))
-            self.numberOfHour.append(row[2])
+            self.numberOfHour.append(str(row[2]))
     
     def __str__(self) -> str:
         return f"weeks: {self.week}\nweekRange: {self.weekRange}\nnumberOfHours: {self.numberOfHour}"

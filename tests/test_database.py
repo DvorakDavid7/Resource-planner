@@ -3,7 +3,7 @@ from planner.Models.DataModels.DateRange import DateRange
 
 from planner.Sql.DateWeekTable import DateWeekTable
 from planner.Sql.DepartmentTable import DepartmentTable
-from planner.Sql.WorkerTables.WorkerSummaryTable import WorkerSumaryTable
+from planner.Sql.WorkerTables.WorkerSummaryTable import WorkerSummaryTable
 from planner.Sql.WorkerTables.WorkerPlanTable import WorkerPlanTable
 from planner.Sql.WorkerTables.WorkerFtfp import WorkerFtfpTable
 from planner.Sql.WorkerTables.WorkerTable import WorkerTable
@@ -39,9 +39,9 @@ class TestDatabase(unittest.TestCase):
 
 
     def test_read_worker_summary_plan(self) -> None:
-        table = WorkerSumaryTable()
+        table = WorkerSummaryTable()
         date_range = DateRange("2020", "2020", "1", "11")
-        table.read_worker_summary_plan("mbendik", date_range)
+        table.get_worker_summary_plan("mbendik", date_range)
         assert "planned: [133, 130, 130, 150, 80, 40, 40, 40, 80, 40, 40]" in table.__str__()
     
 
