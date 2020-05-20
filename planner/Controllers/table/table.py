@@ -12,7 +12,6 @@ def table_get():
     date_range = DateRange("2020", "2020", "1", "22")
     header = HeaderModel()
     header.set_dateRange(date_range)
-    header.set_currents()
     header.set_fromDatabese()
 
     tableModel = TableModel(header)

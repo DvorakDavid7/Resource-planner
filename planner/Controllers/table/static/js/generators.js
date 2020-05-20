@@ -1,32 +1,12 @@
 
-const header = JSON.parse(document.querySelector("#dataholder").dataset.header);
+let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 
-const tableModel = JSON.parse(document.querySelector("#dataholder").dataset.tablemodel);
-const workerList = tableModel.workerList
-const values = tableModel.values
+let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.tablemodel);
+let workerList = tableModel.workerList
+let values = tableModel.values
  
-
 const theader = document.querySelector("#header");
-const tbody = document.querySelector("#body");
-
-function headerGenerator() {
-    let weeksTr = document.createElement("tr");
-    let datesTr = document.createElement("tr");
-    weeksTr.append(document.createElement("td"))
-    datesTr.append(document.createElement("td"))
-    for (let i = 0; i < header.weeks.length; i++) {
-        let td = document.createElement("td");
-        td.innerHTML = `${header.weeks[i]} (${header.workingHours[i]})`
-        weeksTr.append(td)
-    }    
-    for (let i = 0; i < header.weeks.length; i++) {
-        let td = document.createElement("td");
-        td.innerHTML = header.dates[i]
-        datesTr.append(td)
-    } 
-    theader.append(weeksTr);
-    theader.append(datesTr);
-}
+const tbody = document.querySelector("#body")
 
 function bodyGenerator() {
     for (let j = 0; j < workerList.length; j++) {
@@ -45,7 +25,7 @@ function bodyGenerator() {
     }
 }
 
-headerGenerator()
+headerGenerator(header, theader)
 bodyGenerator()
 
 document.querySelectorAll(".btn-link").forEach((button) => {

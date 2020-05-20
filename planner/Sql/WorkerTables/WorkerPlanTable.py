@@ -7,41 +7,30 @@ class WorkerPlanTable(SqlMain):
  
     DATA_RESOURCE = "[dbo].[PracovnikPlan_TEST]" if DevConfig.ENV == "DEVELOPMENT" else "[dbo].[PracovnikPlan]"
     
-    workerId: List[str] = []
-    opportunityId: List[str] = []
-    projectId: List[str] = []
-    year: List[str] = []
-    week: List[str] = []
-    planned: List[str] = []
-    
     def __init__(self) -> None:
         super().__init__()
         super().connect_to_database()
+        self.workerId: List[str] = []
+        self.cid: List[str] = []
+        self.typeZpid: List[str] = []
+        self.year: List[str] = []
+        self.week: List[str] = []
+        self.planned: List[str] = []
 
 
-    def get_worker_plan(self, user_id: str, data_for: str, dateRange: DateRange) -> None:
-        if data_for == "project":
-            parameter = "ZakazkaID IS NULL"
-            task_row = "[ProjektID]"
-        else:
-            parameter = "ProjektID IS NULL"
-            task_row = "[ZakazkaID]"
-
+    def get_worker_plan(self, workerId: str, typZPID: str, dateRange: DateRange) -> None:
         condition = (f"Rok = {dateRange.year_start} AND Tyden BETWEEN {dateRange.week_start} AND {dateRange.week_end}" 
             if dateRange.year_start == dateRange.year_end 
             else  f"((Tyden >= {dateRange.week_start} AND Rok = {dateRange.year_start}) OR (Tyden <= {dateRange.week_end} AND Rok = {dateRange.year_end}))")
 
-        query = f'''SELECT {task_row}, [Tyden], [PlanHod]
-                FROM {WorkerPlanTable.DATA_RESOURCE}
-                WHERE {parameter} AND PracovnikID = '{user_id}' AND {condition}'''
+        query = f'''SELECT [ZakazkaID], [Tyden], [PlanHod]
+                FROM {self.DATA_RESOURCE}
+                WHERE TypZPID = {typZPID} AND PracovnikID = '{workerId}' AND {condition}'''
 
         table = self.cursor.execute(query)
         for row in table:
-            if data_for == "project":
-                self.projectId.append(row[0])
-            else:
-                self.opportunityId.append(row[0])
-            self.week.append(row[1])
+            self.cid.append(row[0])
+            self.week.append(str(row[1]))
             self.planned.append(row[2])
 
     
@@ -109,8 +98,7 @@ class WorkerPlanTable(SqlMain):
 
     
     def __str__(self) -> str:
-        return f'''projectId: {self.projectId}\n
-            opportunityId: {self.opportunityId}\n
+        return f'''cid: {self.cid}\n
             week: {self.week}\n
             planned: {self.planned}\n
             year: {self.year}\n

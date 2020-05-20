@@ -5,26 +5,25 @@ from planner.Models.EditModel import EditModel
 from planner.authentication import login_required
 from planner.Sql.SqlWrite import SqlWrite
 
+from planner.Models.HeaderModel import HeaderModel
+from planner.Models.DataModels.DateRange import DateRange
+from planner.Models.EditModel import EditModel
 
-edit = Blueprint("edit", __name__, template_folder="templates")
+edit = Blueprint("edit", __name__, template_folder="templates", static_folder="static", static_url_path='/edit/static')
 
 
 @edit.route('/edit/<string:user_id>', methods=["GET"])
 @login_required
 def edit_get(user_id):
-    request_parameters = request.args
-    headerModel = HeaderModel()
-    y_start = request_parameters["year_start"]
-    y_end = request_parameters["year_end"]
-    w_start = request_parameters["week_start"]
-    w_end = request_parameters["week_end"]
-    headerModel.set_start_end_dates(y_start, y_end, w_start, w_end)
-    headerModel.generate_table_header()
+    # date_range = DateRange(**request.args)
+    date_range = DateRange("2019", "2019", "30", "52")
+    header = HeaderModel()
+    header.set_dateRange(date_range)
+    header.set_fromDatabese()
 
-    editModel = EditModel(headerModel, user_id)
-    editModel.generate_edit_body()
-    table = {"header": headerModel.table_header, "body": editModel.edit_table}
-    return render_template("edit.html", title="Edit Page", table=table, user_id=user_id)
+    table = EditModel(header, user_id)
+    table.set_projectDetails()
+    return render_template("edit.html", body=table.toDict(), header=header.toDict())
 
 
 @edit.route('/edit/save_changes/<string:user_id>', methods=["POST"])
