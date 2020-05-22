@@ -1,46 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <title>{{ title }}</title>
-  </head>
-  <body>
-    <script>
-      
-    </script>
-    <nav class=class="navbar navbar-light" style="background-color: #e3f2fd;">
-      <div id="navigation-bar" class="form-inline">
-        <a class="navbar-brand" href="{{ url_for('home.index') }}"><img class="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt=""></a>
-        <span style="margin-left: 1%;"> 
-          Range:
-          <input class="form-control" id="data_from" type="text" placeholder="week/year"> to
-          <input class="form-control" id="data_to" type="text" placeholder="week/year">
-          <button class="btn btn-primary" onclick="set_range( JSON.parse('{{ table }}') )" type="button">Set Range</button>
-        </span>
-        <span style="margin-left: 1%;">
-          Date:
-          <input class="form-control" id="week" type="text" placeholder="week/year"> or
-          <input class="form-control" id="date" type="text" placeholder="mm/dd/yyyy">
-          <button class="btn btn-primary" onclick="set_date(JSON.parse('{{ table }}'))" type="button">Navigate</button>
-        </span>
-        <span style="margin-left: 1%;">
-          <button class="btn btn-primary" onclick="move('left', JSON.parse('{{ table }}'))" type="button"><-----</button>
-          <button class="btn btn-primary" onclick="move('right', JSON.parse('{{ table }}'))"type="button">-----></button>
-        </span>
-      </div>
-    </nav>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/navigation.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/edit.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/coloring.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <title>Resource Planner</title>
+</head>
 
-    {% block content %}{% endblock %}
-   
+<body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
+    
+    {% block content %}{% endblock %}
+
+</body>
 </html>

@@ -48,51 +48,41 @@ class WorkerPlanTable(SqlMain):
             self.week.append(row[2])
 
 
-    def get_workers_on_project(self, projectId: str, dateRange: DateRange) -> None:
+    def get_workers_on_project(self, cid: str, dateRange: DateRange) -> None:
         condition = (f"Rok = {dateRange.year_start} AND Tyden BETWEEN {dateRange.week_start} AND {dateRange.week_end}" 
             if dateRange.year_start == dateRange.year_end 
             else  f"((Tyden >= {dateRange.week_start} AND Rok = {dateRange.year_start}) OR (Tyden <= {dateRange.week_end} AND Rok = {dateRange.year_end}))")
 
-        query = f'''SELECT [PracovnikID], [Rok], [Tyden], [PlanHod] FROM {WorkerPlanTable.DATA_RESOURCE}
-                WHERE ProjektID = {projectId} AND {condition}'''
+        query = f'''SELECT [PracovnikID], [Rok], [Tyden], [PlanHod] FROM {self.DATA_RESOURCE}
+                WHERE ZakazkaID = '{cid}' AND {condition}'''
     
         table = self.cursor.execute(query)
         for row in table:
             self.workerId.append(row[0])
-            self.year.append(row[1])
-            self.week.append(row[2])
-            self.planned.append(row[3])
+            self.year.append(str(row[1]))
+            self.week.append(str(row[2]))
+            self.planned.append(str(row[3]))
         
 
-    def get_worker_alocation(self, worker_id: str, dateRange: DateRange) -> str:
-        query = f'''SELECT SUM(PlanHod) AS Alocation FROM {WorkerPlanTable.DATA_RESOURCE}
-                WHERE PracovnikID = \'{worker_id}\' and Rok = {dateRange.year_start} and Tyden = {dateRange.week_start}'''
+    def get_worker_alocation(self, workerId: str, year:str, week: str) -> str:
+        query = f'''SELECT SUM(PlanHod) AS Alocation FROM {self.DATA_RESOURCE}
+                WHERE PracovnikID = '{workerId}' and Rok = {year} and Tyden = {week}'''
         table = self.cursor.execute(query)
         result_list = table.fetchall()
         return str(result_list[0][0]) if result_list[0][0] else "" 
 
 
 
-    def delete_row(self, task_type: str, workerId: str, identifier: str, year: str, week: str) -> None:
-        if task_type == "project":
-            parameter = f"ZakazkaID IS NULL AND ProjektID = {identifier}"
-        else:
-            parameter = f"ZakazkaID = '{identifier}' AND ProjektID IS NULL"
-
-        query = f'''DELETE FROM {WorkerPlanTable.DATA_RESOURCE} WHERE
-                PracovnikID = \'{workerId}\' AND {parameter} AND Rok = {year} AND Tyden = {week}'''
+    def delete_row(self, workerId: str, cid: str, typeZpid: str, year: str, week: str) -> None:
+        query = f'''DELETE FROM {self.DATA_RESOURCE} WHERE
+                PracovnikID = '{workerId}' AND ZakazkaID = '{cid}' AND TypZPID = {typeZpid} AND Rok = {year} AND Tyden = {week}'''
         self.cursor.execute(query)
         self.connection.commit()
 
 
-    def insert_row(self, task_type: str, workerId: str, identifier: str, year: str, week: str, planned_hours: str, modified_by: str) -> None:
-        if task_type == "project":
-            rows = "(PracovnikID, ProjektID, Rok, Tyden, PlanHod, ModifiedBy)"
-        else:
-            rows = "(PracovnikID, ZakazkaID, Rok, Tyden, PlanHod, ModifiedBy)"
-            identifier = f"'{identifier}'"
-        query = f'''INSERT INTO {WorkerPlanTable.DATA_RESOURCE} {rows}
-                VALUES ('{workerId}', {identifier}, {year}, {week}, {planned_hours}, '{modified_by}');'''
+    def insert_row(self, workerId: str, cid: str, typeZpid: str, year: str, week: str, plannedHours: str, modifiedBy: str) -> None:
+        query = f'''INSERT INTO {self.DATA_RESOURCE} (PracovnikID, ZakazkaID, TypZPID, Rok, Tyden, PlanHod, ModifiedBy)
+                VALUES ('{workerId}', '{cid}', {typeZpid}, {year}, {week}, {plannedHours}, '{modifiedBy}');'''
         self.cursor.execute(query)
         self.connection.commit()
 
@@ -103,4 +93,3 @@ class WorkerPlanTable(SqlMain):
             planned: {self.planned}\n
             year: {self.year}\n
             workerId: {self.workerId}\n'''
-

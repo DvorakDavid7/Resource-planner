@@ -8,8 +8,6 @@ class HeaderModel(Model):
 
     def __init__(self) -> None:
         super().__init__()
-        self.dateWeekTable = DateWeekTable()
-
         self.dateRange: DateRange
         self.weeks: List[str] = []
         self.dates: List[str] = []
@@ -19,10 +17,11 @@ class HeaderModel(Model):
         self.dateRange = dateRange
 
     def set_fromDatabese(self):
-        self.dateWeekTable.read_date_week(self.dateRange)
-        self.weeks = self.dateWeekTable.week
-        self.dates = self.dateWeekTable.weekRange
-        self.workingHours = self.dateWeekTable.numberOfHour
+        dateWeekTable = DateWeekTable()
+        dateWeekTable.read_date_week(self.dateRange)
+        self.weeks = dateWeekTable.week
+        self.dates = dateWeekTable.weekRange
+        self.workingHours = dateWeekTable.numberOfHour
     
     def toDict(self) -> Dict:
         return {

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+
+{% block content%}
+
+<div id="dataholder" class="container-fluid" data-header='{{ header | tojson }}' data-projecttablemodel='{{ projectTableModel | tojson }}'>
+    <input class="form-control" id="search" type="text" placeholder="Search for names..">
+
+
+    <table id="table" border="1">
+
+        <thead id="header" class="text-center"></thead>
+
+        <tbody id="body"></tbody>
+        
+    </table>
+
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/generators.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/projects.js') }}"></script>
+
+{% endblock content%}

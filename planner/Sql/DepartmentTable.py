@@ -26,7 +26,7 @@ class DepartmentTable(SqlMain):
             self.department.append(row[1])
             self.fullName.append(row[2])
     
-    def get_user_details(self, workerId: str) -> None:  # DONE
+    def get_user_details(self, workerId: str) -> None:
         query = f'''SELECT [OddeleniID] ,[CeleJmeno] FROM {DepartmentTable.DATA_RESOURCE} WHERE
                 PracovnikID = '{workerId}'
                 '''

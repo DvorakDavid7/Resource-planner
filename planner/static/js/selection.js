@@ -51,13 +51,3 @@ const selection = Selection.create({
     inst.keepSelection();
     input.focus();
 });
-
-
-
-/**function remove selected are */
-function removeSelected() {
-    document.querySelectorAll(".selected").forEach((element) => {
-        element.classList.remove("selected"); 
-        input.blur()
-    });
-}

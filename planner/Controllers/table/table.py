@@ -4,7 +4,7 @@ from planner.Models.HeaderModel import HeaderModel
 from planner.Models.TableModel import TableModel
 from planner.authentication import login_required
 
-table = Blueprint("table", __name__, template_folder="templates", static_folder="static", static_url_path='/table/static')
+table = Blueprint("table", __name__, template_folder="templates")
 
 @table.route('/table', methods=["GET"])
 @login_required

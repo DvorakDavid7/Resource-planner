@@ -24,16 +24,15 @@ class ProjectTable(SqlMain):
             self.pmFullName.append(row[1])
     
     def get_project_list(self) -> None:
-        query = f'''SELECT [ProjektID], [ZakazkaID], [CID+Nazev], [ProjektovyManazerJmeno], [DeliveryManazerJmeno]
-                FROM {self.DATA_RESOURCE} WHERE Status = 'active'
+        query = f'''SELECT TOP (50) [ZakazkaID], [CID+NazevZakazkyCRM], [ProjektovyManazerJmeno], [DeliveryManazerJmeno]
+                FROM {self.DATA_RESOURCE}
                 '''
         table = self.cursor.execute(query)
         for row in table:
-
-            self.cid.append(row[1])
-            self.projectFullName.append(row[2])
-            self.pmFullName.append(row[3])
-            self.dmFullName.append(row[4])
+            self.cid.append(row[0])
+            self.projectFullName.append(row[1])
+            self.pmFullName.append(row[2])
+            self.dmFullName.append(row[3])
 
     def __str__(self) -> str:
         return f"cid: {self.cid}\nprojectFullName: {self.projectFullName}\npmFullName: {self.pmFullName}\ndmFullName: {self.dmFullName}"

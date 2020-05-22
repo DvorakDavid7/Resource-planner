@@ -10,28 +10,27 @@ from planner.Sql.DepartmentTable import DepartmentTable
 class TableModel(Model):
     def __init__(self, tableHeader: HeaderModel) -> None:
         super().__init__()
-        self.workerSummaryPlan = WorkerSummaryTable()
-        self.departmentTable = DepartmentTable()
-
         self.header = tableHeader
         self.workerList: List[Worker] = []
         self.values: Dict[str, Dict[str, str]] = {}
 
 
     def set_values(self) -> None:
+        workerSummaryPlan = WorkerSummaryTable()
         plan: Dict[str, str] = {}
         for week in self.header.weeks:
             plan[str(int(week))] = ""
         for worker in self.workerList:
-            self.workerSummaryPlan.get_worker_summary_plan(worker.id, self.header.dateRange)
-            for index, week in enumerate(self.workerSummaryPlan.weeks):
-                plan[week] = self.workerSummaryPlan.planned[index]
+            workerSummaryPlan.get_worker_summary_plan(worker.id, self.header.dateRange)
+            for index, week in enumerate(workerSummaryPlan.weeks):
+                plan[week] = workerSummaryPlan.planned[index]
             self.values[worker.id] = plan.copy()
 
     def set_workerList(self, department: str) -> None:
-        self.departmentTable.get_workers_names(department)
-        for i, workerId in enumerate(self.departmentTable.workerId):
-            worker = Worker(workerId, self.departmentTable.fullName[i], self.departmentTable.department[i])
+        departmentTable = DepartmentTable()
+        departmentTable.get_workers_names(department)
+        for i, workerId in enumerate(departmentTable.workerId):
+            worker = Worker(workerId, departmentTable.fullName[i], departmentTable.department[i])
             self.workerList.append(worker)
 
     def toDict(self) -> Dict:

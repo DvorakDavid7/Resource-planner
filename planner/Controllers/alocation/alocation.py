@@ -1,63 +1,71 @@
+from typing import List
 from flask import Blueprint, render_template, request, json, jsonify, make_response
 from planner.Models.HeaderModel import HeaderModel
 from planner.Models.ProjectEditModel import ProjectEditModel
-from planner.Sql.SqlRead import SqlRead
 from planner.Sql.SqlWrite import SqlWrite
+from planner.Models.DataModels.DateRange import DateRange
+from planner.Sql.DepartmentTable import DepartmentTable
+from planner.Models.DataModels.Worker import Worker
+from planner.Sql.WorkerTables.WorkerPlanTable import WorkerPlanTable
+
+
 
 alocation = Blueprint("alocation", __name__, template_folder="templates", static_folder="static", static_url_path='/alocation/static')
 
 
-@alocation.route('/project_edit/<string:project_id>', methods=["GET"])
-def project_edit(project_id):
+@alocation.route('/project_edit/<string:cid>', methods=["GET"])
+def project_edit(cid):
+    dateRange = DateRange(**request.args)
     headerModel = HeaderModel()
-    y_start = request.args["year_start"]
-    y_end = request.args["year_end"]
-    w_start = request.args["week_start"]
-    w_end = request.args["week_end"]
-    headerModel.set_start_end_dates(y_start, y_end, w_start, w_end)
-    headerModel.generate_table_header()
-
-    projectEditModel = ProjectEditModel(headerModel, project_id)
+    headerModel.set_dateRange(dateRange)
+    headerModel.set_fromDatabese()
     
-    table = {"header": headerModel.table_header}
-    data = projectEditModel.generate_edit_body(y_start, y_end, w_start, w_end, project_id)
-    body = data[0]
-    name_mapper = data[1]
-    name_list = list(body.keys())
-    return render_template("ProjectEdit.html", table=table, data=body, name_list=name_list, name_mapper=name_mapper)
+    projectEditModel = ProjectEditModel(headerModel, cid)
+    projectEditModel.set_values()
+
+    return render_template("ProjectEdit.html", header=headerModel.toDict(), model=projectEditModel.toDict())
+
 
 @alocation.route('/project_edit/get_names', methods=["GET"])
 def project_edit_get_names():
-    sql = SqlRead()
-    name_list = sql.read_department("IA")
-    return make_response(jsonify({"data": name_list}), 200)
+    workerList : List[Worker] = []
+    departmentTable = DepartmentTable()
+    departmentTable.get_workers_names("IA")
+    for i, workerId in enumerate(departmentTable.workerId):
+        worker = Worker(workerId, departmentTable.fullName[i], departmentTable.department[i])
+        workerList.append(worker)
+    nameList = {"workers": [worker.__dict__ for worker in workerList]}
+    return make_response(jsonify(nameList), 200)
 
 
 @alocation.route('/project_edit/save_changes', methods=["POST"])
 def project_edit_save_changes():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
-    modified_by = "ddvorak@trask.cz" # session["user"]['preferred_username']
-    print(receive_data)
-    write_model = SqlWrite()
+    table = WorkerPlanTable()
     try:
         for change in receive_data:
-            write_model.delete_row("project", change["worker_id"], change["project_id"], change["year"], change["week"])
-            print(change["value"])
-            if change["value"] != "":
-                write_model.insert_row("project", change["worker_id"], change["project_id"], change["year"], change["week"], change["value"], modified_by)
-        return make_response(jsonify({}), 200)
+            value = change["value"]
+            del change["value"]
+            change["typeZpid"] = "1"
+            table.delete_row(**change)
+            if value != "":
+                change["plannedHours"] = value
+                change["modifiedBy"] = "ddvorak@trask.cz"
+                table.insert_row(**change)
     except Exception as err:
         return make_response(jsonify({"err": err}), 400)
+    return make_response(jsonify({}), 200)
 
+   
 
 @alocation.route('/project_edit/add_worker', methods=["POST"])
 def project_edit_add_worker():
-    record = json.loads(str(request.get_data().decode('utf-8')))
-    modified_by = "ddvorak@trask.cz" # session["user"]['preferred_username']
-    write_model = SqlWrite()
-    print(record)
+    receive_data = json.loads(str(request.get_data().decode('utf-8')))
+    table = WorkerPlanTable()
     try:
-        write_model.insert_row("project", record["worker_id"], record["project_id"], record["year"], record["week"], record["value"], modified_by)
-        return make_response(jsonify({}), 200)
+        receive_data["modifiedBy"] = "ddvorak@trask.cz"
+        receive_data["typeZpid"] = "1"
+        table.insert_row(**receive_data)
     except Exception as err:
         return make_response(jsonify({"err": err}), 400)
+    return make_response(jsonify({}), 200)
