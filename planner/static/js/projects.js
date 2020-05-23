@@ -1,3 +1,6 @@
+import * as Generators from "./tools/generators.js";
+
+
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.projecttablemodel);
 let projectList = tableModel.projectList
@@ -8,8 +11,8 @@ const theader = document.querySelector("#header");
 const tbody = document.querySelector("#body")
 
 
-headerGenerator(header, theader)
-projectsTableGenerator(header, projectList, values, tbody)
+Generators.headerGenerator(header, theader)
+Generators.projectsTableGenerator(header, projectList, values, tbody)
 
 
 

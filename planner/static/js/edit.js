@@ -1,3 +1,9 @@
+import * as Generators from "./tools/generators.js";
+import * as TableFunctions from "./tools/tableFunctions.js"
+import * as Utils from "./tools/utils.js"
+import Selection from "@simonwep/selection-js"
+
+
 //dataholder JSON parser
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 let body = JSON.parse(document.querySelector("#dataholder").dataset.body);
@@ -21,20 +27,24 @@ const dropbtn = document.querySelector(".dropdown-toggle");
 const savebtn = document.querySelector("#save");
 
 // generator functions call
-headerGenerator(header, theader);
-editProjectsGenerator(projectList, projectValues, "1", projects);
-editProjectsGenerator(opportunityList, opportunityValues, "0", opportunities);
-sumGenerator(header, sum)
+Generators.headerGenerator(header, theader);
+Generators.editProjectsGenerator(header, projectList, projectValues, "1", projects);
+Generators.editProjectsGenerator(header, opportunityList, opportunityValues, "0", opportunities);
+Generators.sumGenerator(header, sum)
+let horizontalSum = TableFunctions.sumOfAll(header)
+document.querySelectorAll(".sum-value").forEach((element, index) => {
+    element.innerHTML = horizontalSum[index]
+})
 
 // save defualt values
 
-const defaultProjectValues = toMatrix(document.querySelectorAll(".project-data"))
-const defaultOpportunitysValues = toMatrix(document.querySelectorAll(".opportunity-data"))
+const defaultProjectValues = TableFunctions.toMatrix(document.querySelectorAll(".project-data"), header)
+const defaultOpportunitysValues = TableFunctions.toMatrix(document.querySelectorAll(".opportunity-data"), header)
 
 
 // Event listenners
 dropbtn.addEventListener("click", () => {
-    projectListGenerator(dropDown)
+    Generators.projectListGenerator(header, dropDown)
 })
 
 input.addEventListener("keyup", (e) => {
@@ -56,28 +66,28 @@ input.addEventListener("keyup", (e) => {
         });
     }
     // sum upgrade
-    let horizontalSum = sumOfAll()
+    let horizontalSum = TableFunctions.sumOfAll(header)
     document.querySelectorAll(".sum-value").forEach((element, index) => {
         element.innerHTML = horizontalSum[index]
     })
 })
 
 document.body.addEventListener('dblclick', function (e) {
-    removeSelected()
+    TableFunctions.removeSelected()
 });
 
 // make and save changes
 savebtn.addEventListener("click", () => {
     let changes = []
-    let currentProjectValues = toMatrix(document.querySelectorAll(".project-data"))
-    let currentOpportunityValues = toMatrix(document.querySelectorAll(".opportunity-data"))
+    let currentProjectValues = TableFunctions.toMatrix(document.querySelectorAll(".project-data"), header)
+    let currentOpportunityValues = TableFunctions.toMatrix(document.querySelectorAll(".opportunity-data"), header)
     let workerId = window.location.pathname.split("/").pop()
     for (let i = 0; i < currentProjectValues.length; i++) {
         for (let j = 0; j < currentProjectValues[i].length; j++) {
             if (currentProjectValues[i][j] !== defaultProjectValues[i][j]) {
                 let value = currentProjectValues[i][j]
                 let week = header.weeks[j]
-                let year = get_year(week)
+                let year = Utils.get_year(week, header)
                 changes.push({"workerId": workerId, "cid": projectList[i].cid, "typeZpid": "1", "year": year, "week": week, "value": value});
             }
         }
@@ -92,7 +102,7 @@ savebtn.addEventListener("click", () => {
             }
         }
     }
-    saveChanges(changes)
+    TableFunctions.saveChanges(changes)
 });
 
 
@@ -104,4 +114,59 @@ $(document).ready(function(){
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+});
+
+
+// Initialize selectionjs
+
+/**
+ * this is library from https://github.com/Simonwep/selection
+ * doc https://simonwep.github.io/selection/
+ */
+const selection = Selection.create({
+
+    // Class for the selection-area
+    class: 'selection',
+
+    // All elements in this container can be selected
+    selectables: ['.selectable'],
+
+    // The container is also the boundary in this case
+    boundaries: ['table']
+}).on('beforestart', evt => {
+    // removeSelected()
+    input.value = ""
+    return true
+
+}).on('start', ({inst, selected, oe}) => {
+
+    // Remove class if the user isn't pressing the control key or ⌘ key
+    if (!oe.ctrlKey && !oe.metaKey) {
+
+        // Unselect all elements
+        for (const el of selected) {
+            el.classList.remove('selected');
+            inst.removeFromSelection(el);
+        }
+
+        // Clear previous selection
+        inst.clearSelection();
+    }
+
+}).on('move', ({changed: {removed, added}}) => {
+    
+    // Add a custom class to the elements that where selected.
+    for (const el of added) {
+        el.classList.add('selected');
+    }
+
+    // Remove the class from elements that where removed
+    // since the last selection
+    for (const el of removed) {
+        el.classList.remove('selected');
+    }
+
+}).on('stop', ({inst}) => {
+    inst.keepSelection();
+    input.focus();
 });

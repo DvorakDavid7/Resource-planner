@@ -1,3 +1,5 @@
+import Selection from "@simonwep/selection-js"
+
 /**
  * this is library from https://github.com/Simonwep/selection
  * doc https://simonwep.github.io/selection/

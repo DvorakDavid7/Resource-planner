@@ -10,7 +10,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+
 downloads/
 eggs/
 .eggs/
@@ -103,3 +103,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 flask_session/
+
+node_modules/

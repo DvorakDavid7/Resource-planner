@@ -3,7 +3,7 @@
  * @param {NodeListOf<Element>} data
  * @returns {Array}
  */
-function toMatrix(data) {    
+export function toMatrix(data, header) {    
     let result = [], row = [];
     let counter = 0;   
     for (let i = 0; i < data.length; i++) {
@@ -24,7 +24,7 @@ function toMatrix(data) {
  * @param {Array} matrix
  * @returns {Array} 
  */
-function computeSum(matrix) {
+export function computeSum(matrix) {
     let result = []
     for (let j = 0; j < matrix[0].length; j++) {
         let sum = 0
@@ -38,9 +38,9 @@ function computeSum(matrix) {
 }
 
 /**Compute vertical sum of Projects and Opportunities */
-function sumOfAll() {
-    let matr1 = toMatrix(document.querySelectorAll(".project-data"))
-    let matr2 = toMatrix(document.querySelectorAll(".opportunity-data"))
+export function sumOfAll(header) {
+    let matr1 = toMatrix(document.querySelectorAll(".project-data"), header)
+    let matr2 = toMatrix(document.querySelectorAll(".opportunity-data"), header)
     let masterMatrix = []
     if (matr1.length != 0) {
         masterMatrix.push(computeSum(matr1))
@@ -53,7 +53,7 @@ function sumOfAll() {
 
 
 /**function remove selected area */
-function removeSelected() {
+export function removeSelected() {
     document.querySelectorAll(".selected").forEach((element) => {
         element.classList.remove("selected"); 
         input.blur()
@@ -61,7 +61,7 @@ function removeSelected() {
 }
 
 
-function saveChanges(changes) {
+export function saveChanges(changes) {
     fetch('/edit/save_changes/', {
         method: 'POST',
         body: JSON.stringify(changes),
@@ -70,43 +70,5 @@ function saveChanges(changes) {
     .then(data => {
         window.location.reload();
         console.log("succes", data);
-    })
-}
-
-
-function addProject(cid, typeZpid) {
-    let workerId = window.location.pathname.split("/").pop()
-    let year = header.dateRange.year_start
-    let week = header.weeks[0]
-    let plannedHours = "0"
-    let record = {"workerId": workerId, "cid": cid, "typeZpid": typeZpid, "year": year, "week": week, "plannedHours": plannedHours}
-    fetch('/edit/add_new_project/', {
-        method: 'POST',
-        body: JSON.stringify(record),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("succes", data);
-        window.location.reload();
-    })
-}
-
-function add_worker(worker_id) {
-    let record = {
-        "cid": window.location.pathname.split("/").pop(),
-        "workerId": worker_id,
-        "week": header.weeks[0],
-        "plannedHours": "0",
-        "year": header.dateRange.year_start
-    }
-    fetch('/project_edit/add_worker', {
-            method: 'POST',
-            body:JSON.stringify(record),
-        }
-    )
-    .then(response => response.json())
-    .then(data => {
-        console.log("succes", data);
-        location.reload();
     })
 }

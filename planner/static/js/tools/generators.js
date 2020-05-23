@@ -5,7 +5,7 @@
  * @param {Element} target target parent element
  * @param {any} header JSON from TableModel
  */
-function headerGenerator(header, target) {
+export function headerGenerator(header, target) {
     let weeksTr = document.createElement("tr");
     let datesTr = document.createElement("tr");
 
@@ -34,11 +34,11 @@ function headerGenerator(header, target) {
  * @param {JSON} values - values JSON
  * @param {Element} target - target element
  */
-function mainTableGenerator(header, list, values, target) {
+export function mainTableGenerator(header, list, values, target) {
     for (let j = 0; j < list.length; j++) {
         let tr = document.createElement("tr");
         let nameTd = document.createElement("td");
-        nameTd.innerHTML = `<button data-id='${list[j].id}' type='button' class='btn btn-link text-left'>${list[j].fullName} (${workerList[j].department})</button>`
+        nameTd.innerHTML = `<button data-id='${list[j].id}' type='button' class='btn btn-link text-left'>${list[j].fullName} (${list[j].department})</button>`
         nameTd.classList.add("item-for-search")
         tr.append(nameTd)
         for (let i = 0; i < header.weeks.length; i++) {
@@ -61,7 +61,7 @@ function mainTableGenerator(header, list, values, target) {
  * @param {Element} target Element for enbeding result
  * @param {String} typeZPID "1" - for projects "0" - for opportunities 
  */
-function editProjectsGenerator(list, values, typeZPID, target) {
+export function editProjectsGenerator(header, list, values, typeZPID, target) {
     for (let j = 0; j < list.length; j++) {
         let tr = document.createElement("tr");
         let projectNameTd = document.createElement("td");
@@ -97,14 +97,14 @@ function editProjectsGenerator(list, values, typeZPID, target) {
  * @param {any} header JSON from TableModel
  * @param {Element} target 
  */
-function sumGenerator(header, target) {
+export function sumGenerator(header, target) {
     let sumTr = document.createElement("tr");
     let td = document.createElement("td");
-    let verticalSum = sumOfAll();
+    // let verticalSum = sumOfAll();
     sumTr.append(td)
     for (let i = 0; i < header.weeks.length; i++) {
         let td = document.createElement("td");
-        td.innerHTML = verticalSum[i]
+        // td.innerHTML = verticalSum[i]
         td.classList.add("sum-value")
         td.classList.add("text-center")
         sumTr.append(td)
@@ -116,8 +116,8 @@ function sumGenerator(header, target) {
  * This function send GET request to server and then generate DropDown menu with projects and opportunities
  * @param {Element} target 
  */
-function projectListGenerator(target) {
-    if (dropDown.childElementCount !== 1) return;
+export function projectListGenerator(header, target) {
+    if (target.childElementCount !== 1) return;
     fetch("/edit/project_list")
     .then(response => response.json())
     .then(data => {
@@ -126,7 +126,7 @@ function projectListGenerator(target) {
             dropDownItem.innerHTML = `p: ${project.fullName}`;
             dropDownItem.classList.add("dropdown-item");
             dropDownItem.href = "javascript:;";
-            dropDownItem.addEventListener("click", () => addProject(project.cid, "1"))
+            dropDownItem.addEventListener("click", () => addProject(header, project.cid, "1"))
             target.append(dropDownItem)
         })
         data.opportunities.forEach((opportunity) => {
@@ -134,7 +134,7 @@ function projectListGenerator(target) {
             dropDownItem.innerHTML = `o: ${opportunity.fullName}`;
             dropDownItem.classList.add("dropdown-item");
             dropDownItem.href = "javascript:;";
-            dropDownItem.addEventListener("click", () => addProject(opportunity.cid, "0"))
+            dropDownItem.addEventListener("click", () => addProject(header, opportunity.cid, "0"))
             target.append(dropDownItem)
         })
     });
@@ -149,7 +149,7 @@ function projectListGenerator(target) {
  * @param {JSON} values - values JSON
  * @param {Element} target - target element
  */
-function projectsTableGenerator(header, list, values, target) {
+export function projectsTableGenerator(header, list, values, target) {
     for (let j = 0; j < list.length; j++) {
         let tr = document.createElement("tr");
         let nameTd = document.createElement("td");
@@ -173,7 +173,7 @@ function projectsTableGenerator(header, list, values, target) {
  * @param {*} values JSON of userIds: vals
  * @param {Element} target Element for enbeding result
  */
-function projectEditGenerator(list, values, target) {
+export function projectEditGenerator(header, list, values, target) {
     for (let j = 0; j < list.length; j++) {
         let tr = document.createElement("tr");
         let workerName = document.createElement("td");
@@ -223,8 +223,8 @@ function projectEditGenerator(list, values, target) {
  * This function send GET request to server and then generate DropDown menu with names
  * @param {Element} target 
  */
-function nameListGenerator(target) {
-    if (dropDown.childElementCount !== 1) return;
+export function nameListGenerator(target, header) {
+    if (target.childElementCount !== 1) return;
     fetch("/project_edit/get_names")
     .then(response => response.json())
     .then(data => {
@@ -233,8 +233,46 @@ function nameListGenerator(target) {
             dropDownItem.innerHTML = `${worker.fullName} (${worker.department})`;
             dropDownItem.classList.add("dropdown-item");
             dropDownItem.href = "javascript:;";
-            dropDownItem.addEventListener("click", () => add_worker(worker.id))
+            dropDownItem.addEventListener("click", () => add_worker(worker.id, header))
             target.append(dropDownItem)
         })
     });
+}
+
+function add_worker(worker_id, header) {
+    let record = {
+        "cid": window.location.pathname.split("/").pop(),
+        "workerId": worker_id,
+        "week": header.weeks[0],
+        "plannedHours": "0",
+        "year": header.dateRange.year_start
+    }
+    fetch('/project_edit/add_worker', {
+            method: 'POST',
+            body:JSON.stringify(record),
+        }
+    )
+    .then(response => response.json())
+    .then(data => {
+        console.log("succes", data);
+        location.reload();
+    })
+}
+
+
+function addProject(header, cid, typeZpid) {
+    let workerId = window.location.pathname.split("/").pop()
+    let year = header.dateRange.year_start
+    let week = header.weeks[0]
+    let plannedHours = "0"
+    let record = {"workerId": workerId, "cid": cid, "typeZpid": typeZpid, "year": year, "week": week, "plannedHours": plannedHours}
+    fetch('/edit/add_new_project/', {
+        method: 'POST',
+        body: JSON.stringify(record),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("succes", data);
+        window.location.reload();
+    })
 }

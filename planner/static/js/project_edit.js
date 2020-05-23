@@ -1,3 +1,7 @@
+import * as Generators from "./tools/generators.js";
+import * as TableFunctions from "./tools/tableFunctions.js"
+import * as Utils from "./tools/utils.js"
+
 
 // data parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
@@ -15,11 +19,11 @@ const dropbtn = document.querySelector(".dropdown-toggle");
 const dropDown = document.querySelector(".dropdown-menu");
 
 // generator functions call
-headerGenerator(header, theader);
-projectEditGenerator(nameList, values, tbody)
+Generators.headerGenerator(header, theader);
+Generators.projectEditGenerator(header, nameList, values, tbody)
 
 dropbtn.addEventListener("click", () => {
-    nameListGenerator(dropDown)
+    Generators.nameListGenerator(dropDown, header)
 })
 
 
@@ -35,11 +39,11 @@ $(document).ready(function(){
 
 
 let data = document.querySelectorAll(".data")
-let default_values = toMatrix(data)
+let default_values = TableFunctions.toMatrix(data, header)
 
 document.getElementById("submit-changes").addEventListener("click", () => {
     let data = document.querySelectorAll(".data")
-    let current_values = toMatrix(data)
+    let current_values = TableFunctions.toMatrix(data, header)
     let changes = []
     let cid = window.location.pathname.split("/").pop()
     for (let i = 0; i < current_values.length; i++) {
@@ -48,7 +52,7 @@ document.getElementById("submit-changes").addEventListener("click", () => {
                 let new_value = current_values[i][j]
                 let worker_id = nameList[i].id
                 let week = header.weeks[j]
-                let year = get_year(week)
+                let year = Utils.get_year(week, header)
                 changes.push({"cid": cid, "workerId": worker_id, "week": week, "value": new_value, "year": year});         
             }
         }
@@ -71,6 +75,16 @@ function send_changes(changes) {
         location.reload();
     })
 }
+
+
+
+
+
+
+
+
+
+
 
 
 // Dropdown
