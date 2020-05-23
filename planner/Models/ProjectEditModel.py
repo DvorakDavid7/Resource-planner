@@ -45,7 +45,10 @@ class ProjectEditModel(Model):
         for workerId in self.values.keys():
             departmentTable = DepartmentTable()
             departmentTable.get_user_details(workerId)
-            worker = Worker(workerId, departmentTable.fullName[0], departmentTable.department[0])
+            try:
+                worker = Worker(workerId, departmentTable.fullName[0], departmentTable.department[0])
+            except IndexError:
+                worker = Worker(workerId, workerId, "NULL!!!")
             self.nameList.append(worker)
 
 

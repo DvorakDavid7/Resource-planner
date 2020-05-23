@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, json, jsonify, make_response, send_file
 from planner.Models.ProjectsListModel import ProjectListModel
 from planner.Models.FinanceModel import FinanceModel
-from planner.Sql.SqlWrite import SqlWrite
 from planner.authentication import login_required
 
 

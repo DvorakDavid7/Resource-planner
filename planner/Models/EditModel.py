@@ -42,13 +42,19 @@ class EditModel(Model):
             tableOfProjects = ProjectTable()
             tableOfProjects.get_project_details(cid)
             if tableOfProjects.projectFullName:
-                project = Project(cid, tableOfProjects.projectFullName[0], tableOfProjects.pmFullName[0])
+                try:
+                    project = Project(cid, tableOfProjects.projectFullName[0], tableOfProjects.pmFullName[0])
+                except IndexError:
+                    project = Project(cid, cid, "NULL!!!")
                 self.projectList.append(project)
         for cid in self.opportunityValues.keys():
             tableOfOpportunities = OpportunityTable()
             tableOfOpportunities.get_opportunity_details(cid)
             if tableOfOpportunities.opportunityFullName:
-                opportunity = Project(cid, tableOfOpportunities.opportunityFullName[0], tableOfOpportunities.pmFullName[0])
+                try:
+                    opportunity = Project(cid, tableOfOpportunities.opportunityFullName[0], tableOfOpportunities.pmFullName[0])
+                except IndexError:
+                    opportunity = Project(cid, cid, "NULL!!!")
                 self.opportunityList.append(opportunity)
 
     def toDict(self) -> Dict:

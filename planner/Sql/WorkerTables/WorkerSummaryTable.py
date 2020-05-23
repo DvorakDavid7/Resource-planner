@@ -9,16 +9,15 @@ class WorkerSummaryTable(SqlMain):
                     if DevConfig.ENV == "DEVELOPMENT"
                     else "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]")
     
-    workerId: List[str] = []
-    workerFullName: List[str] = []
-    department: List[str] = []
-    years: List[str] = []
-    weeks: List[str] = []
-    planned: List[str] = []
-
     def __init__(self) -> None:
         super().__init__()
         super().connect_to_database()
+        self.workerId: List[str] = []
+        self.workerFullName: List[str] = []
+        self.department: List[str] = []
+        self.years: List[str] = []
+        self.weeks: List[str] = []
+        self.planned: List[str] = []
 
 
     def get_worker_summary_plan(self, workerId: str, dateRange: DateRange) -> None:

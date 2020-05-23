@@ -2,7 +2,6 @@ from typing import List
 from flask import Blueprint, render_template, request, json, jsonify, make_response
 from planner.Models.HeaderModel import HeaderModel
 from planner.Models.ProjectEditModel import ProjectEditModel
-from planner.Sql.SqlWrite import SqlWrite
 from planner.Models.DataModels.DateRange import DateRange
 from planner.Sql.DepartmentTable import DepartmentTable
 from planner.Models.DataModels.Worker import Worker

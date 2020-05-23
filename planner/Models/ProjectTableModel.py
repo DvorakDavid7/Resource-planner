@@ -16,16 +16,16 @@ class ProjectTableModel(Model):
 
     def set_values(self) -> None:
         plan: Dict = {}
-        projectSummaryTable = ProjectSummaryTable()
-
+        
         for week in self.tableHeader.weeks:
             plan[str(int(week))] = ""
 
         for project in self.projectList:
+            projectSummaryTable = ProjectSummaryTable()
+            self.values[project.cid] = plan.copy()
             projectSummaryTable.get_project_summary_plan(project.cid, self.tableHeader.dateRange)
             for index, week in enumerate(projectSummaryTable.week):
-                plan[week] = str(projectSummaryTable.planned[index])
-            self.values[project.cid] = plan.copy()
+                self.values[project.cid][week] = str(projectSummaryTable.planned[index])
 
     def set_projectList(self) -> None:
         projectTable = ProjectTable()

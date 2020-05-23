@@ -39,6 +39,7 @@ function mainTableGenerator(header, list, values, target) {
         let tr = document.createElement("tr");
         let nameTd = document.createElement("td");
         nameTd.innerHTML = `<button data-id='${list[j].id}' type='button' class='btn btn-link text-left'>${list[j].fullName} (${workerList[j].department})</button>`
+        nameTd.classList.add("item-for-search")
         tr.append(nameTd)
         for (let i = 0; i < header.weeks.length; i++) {
             let td = document.createElement("td");
@@ -75,7 +76,7 @@ function editProjectsGenerator(list, values, typeZPID, target) {
         for (let i = 0; i < header.weeks.length; i++) {
             let td = document.createElement("td");
             let cid = list[j].cid;
-            let week = header.weeks[i];
+            let week = String(Number(header.weeks[i]));
             td.innerHTML = values[cid][week];
             if (typeZPID === "1") {
                 td.classList.add("project-data")
@@ -192,7 +193,7 @@ function projectEditGenerator(list, values, target) {
             let plannedTd = document.createElement("td");
             let alocatedTd = document.createElement("td");
             let workerId = list[j].id;
-            let week = header.weeks[i];
+            let week = String(Number(header.weeks[i]))
 
             // planned styling
             plannedTd.innerHTML = values[workerId][week].planned;

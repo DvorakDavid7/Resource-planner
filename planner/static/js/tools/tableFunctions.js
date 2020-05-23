@@ -29,7 +29,6 @@ function computeSum(matrix) {
     for (let j = 0; j < matrix[0].length; j++) {
         let sum = 0
         for (let i = 0; i < matrix.length; i++) {
-            
             let value = matrix[i][j] != "" ? parseInt(matrix[i][j]) : 0
             sum += value
         }
@@ -43,8 +42,12 @@ function sumOfAll() {
     let matr1 = toMatrix(document.querySelectorAll(".project-data"))
     let matr2 = toMatrix(document.querySelectorAll(".opportunity-data"))
     let masterMatrix = []
-    masterMatrix.push(computeSum(matr1))
-    masterMatrix.push(computeSum(matr2))
+    if (matr1.length != 0) {
+        masterMatrix.push(computeSum(matr1))
+    }
+    if (matr2.length != 0) {
+        masterMatrix.push(computeSum(matr2))
+    }
     return computeSum(masterMatrix)
 }
 

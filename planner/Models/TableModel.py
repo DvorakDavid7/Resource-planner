@@ -16,15 +16,15 @@ class TableModel(Model):
 
 
     def set_values(self) -> None:
-        workerSummaryPlan = WorkerSummaryTable()
         plan: Dict[str, str] = {}
         for week in self.header.weeks:
             plan[str(int(week))] = ""
         for worker in self.workerList:
+            workerSummaryPlan = WorkerSummaryTable()
+            self.values[worker.id] = plan.copy()
             workerSummaryPlan.get_worker_summary_plan(worker.id, self.header.dateRange)
             for index, week in enumerate(workerSummaryPlan.weeks):
-                plan[week] = workerSummaryPlan.planned[index]
-            self.values[worker.id] = plan.copy()
+                self.values[worker.id][week] = workerSummaryPlan.planned[index]
 
     def set_workerList(self, department: str) -> None:
         departmentTable = DepartmentTable()

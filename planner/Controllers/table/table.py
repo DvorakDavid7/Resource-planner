@@ -18,7 +18,7 @@ def table_get():
     tableModel.set_workerList("IA")
     tableModel.set_values()    
 
-    return render_template("table.html", header=header.toDict(), tableModel=tableModel.toDict())
+    return render_template("table.html", header=header.toDict(), tableModel=tableModel.toDict(), mimetype='text/javascript')
 
 
 @table.route('/table/navigation_request_handler', methods=["POST"])
