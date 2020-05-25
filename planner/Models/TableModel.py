@@ -6,7 +6,6 @@ from planner.Sql.WorkerTables.WorkerSummaryTable import WorkerSummaryTable
 from planner.Sql.DepartmentTable import DepartmentTable
 
 
-
 class TableModel(Model):
     def __init__(self, tableHeader: HeaderModel) -> None:
         super().__init__()
@@ -17,14 +16,15 @@ class TableModel(Model):
 
     def set_values(self) -> None:
         plan: Dict[str, str] = {}
+        workerSummaryPlan = WorkerSummaryTable()
         for week in self.header.weeks:
             plan[str(int(week))] = ""
         for worker in self.workerList:
-            workerSummaryPlan = WorkerSummaryTable()
             self.values[worker.id] = plan.copy()
-            workerSummaryPlan.get_worker_summary_plan(worker.id, self.header.dateRange)
+            workerSummaryPlan.get_worker_summary_plan(worker.id, self.header.dateRange)  
             for index, week in enumerate(workerSummaryPlan.weeks):
                 self.values[worker.id][week] = workerSummaryPlan.planned[index]
+            workerSummaryPlan.clearTable()
 
     def set_workerList(self, department: str) -> None:
         departmentTable = DepartmentTable()

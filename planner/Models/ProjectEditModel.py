@@ -42,15 +42,15 @@ class ProjectEditModel(Model):
 
     def set_values(self):
         self.values = self.projectPlan()
+        departmentTable = DepartmentTable()
         for workerId in self.values.keys():
-            departmentTable = DepartmentTable()
             departmentTable.get_user_details(workerId)
             try:
                 worker = Worker(workerId, departmentTable.fullName[0], departmentTable.department[0])
             except IndexError:
                 worker = Worker(workerId, workerId, "NULL!!!")
             self.nameList.append(worker)
-
+            departmentTable.clearTable()
 
     def _current_year(self, week: int):     
         if week < int(self.header.dateRange.week_start):

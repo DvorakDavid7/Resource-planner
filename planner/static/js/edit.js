@@ -4,39 +4,45 @@ import * as Utils from "./tools/utils.js"
 import Selection from "@simonwep/selection-js"
 
 
-//dataholder JSON parser
+// dataholder JSON parser
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 let body = JSON.parse(document.querySelector("#dataholder").dataset.body);
 
-//projects init from body
+// def variables and consts
 let projectList = body.projects.projectList;
 let projectValues = body.projects.values;
-
-//opportunities init from body
 let opportunityList = body.opportunities.opportunityList;
 let opportunityValues = body.opportunities.values;
 
-//DOM Querries
+
+// Cunstome functions
+function computeSum() {
+    let horizontalSum = TableFunctions.sumOfAll(header)
+    document.querySelectorAll(".sum-value").forEach((element, index) => {
+        element.innerHTML = horizontalSum[index]
+    })
+}
+
+
+// DOM Querries
 const theader = document.querySelector("#header");
 const projects = document.querySelector("#projects");
-const sum = document.querySelector("#sum");
 const opportunities = document.querySelector("#opportunities");
-const input = document.querySelector("#multi-insert");
-const dropDown = document.querySelector(".dropdown-menu");
-const dropbtn = document.querySelector(".dropdown-toggle");
-const savebtn = document.querySelector("#save");
+const sum = document.querySelector("#sum");
 
 // generator functions call
 Generators.headerGenerator(header, theader);
 Generators.editProjectsGenerator(header, projectList, projectValues, "1", projects);
 Generators.editProjectsGenerator(header, opportunityList, opportunityValues, "0", opportunities);
-Generators.sumGenerator(header, sum)
-let horizontalSum = TableFunctions.sumOfAll(header)
-document.querySelectorAll(".sum-value").forEach((element, index) => {
-    element.innerHTML = horizontalSum[index]
-})
+Generators.sumGenerator(header, sum);
+computeSum();
 
-// save defualt values
+// DOM Querries
+const input = document.querySelector("#multi-insert");
+const dropDown = document.querySelector(".dropdown-menu");
+const dropbtn = document.querySelector(".dropdown-toggle");
+const savebtn = document.querySelector("#save");
+
 
 const defaultProjectValues = TableFunctions.toMatrix(document.querySelectorAll(".project-data"), header)
 const defaultOpportunitysValues = TableFunctions.toMatrix(document.querySelectorAll(".opportunity-data"), header)
@@ -66,10 +72,7 @@ input.addEventListener("keyup", (e) => {
         });
     }
     // sum upgrade
-    let horizontalSum = TableFunctions.sumOfAll(header)
-    document.querySelectorAll(".sum-value").forEach((element, index) => {
-        element.innerHTML = horizontalSum[index]
-    })
+    computeSum();
 })
 
 document.body.addEventListener('dblclick', function (e) {

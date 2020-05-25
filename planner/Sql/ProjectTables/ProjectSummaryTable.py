@@ -29,6 +29,12 @@ class ProjectSummaryTable(SqlMain):
             self.cid.append(row[0])
             self.week.append(str(row[1]))
             self.planned.append(row[2])
+    
+
+    def clearTable(self):
+        self.cid = []
+        self.week = []
+        self.planned = []
 
         
     def __str__(self) -> str:

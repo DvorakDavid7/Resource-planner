@@ -33,6 +33,12 @@ class ProjectTable(SqlMain):
             self.projectFullName.append(row[1])
             self.pmFullName.append(row[2])
             self.dmFullName.append(row[3])
+    
+    def clearTable(self):
+        self.cid = []
+        self.projectFullName = []
+        self.pmFullName = []
+        self.dmFullName = []
 
     def __str__(self) -> str:
         return f"cid: {self.cid}\nprojectFullName: {self.projectFullName}\npmFullName: {self.pmFullName}\ndmFullName: {self.dmFullName}"
@@ -70,6 +76,12 @@ class OpportunityTable(SqlMain):
             self.cid.append(row[0])
             self.opportunityFullName.append(row[1])
             self.pmFullName.append(row[2])
+    
+    def clearTable(self):
+        self.cid = []
+        self.opportunityFullName = []
+        self.pmFullName = []
+        self.status = []
 
     def __str__(self) -> str:
         return f"cid: {self.cid}\nopportunityFullName: {self.opportunityFullName}\npmFullName: {self.pmFullName}\nstatus: {self.status}"

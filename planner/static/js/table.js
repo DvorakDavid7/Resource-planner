@@ -1,24 +1,33 @@
 import * as Generators from "./tools/generators.js";
+import {tableSearch} from "./tools/tableFunctions.js";
+
 
 
 // data parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
-
 let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.tablemodel);
+
+
+// def variables
 let workerList = tableModel.workerList;
 let values = tableModel.values;
  
+
 // DOM queries
 const theader = document.querySelector("#header");
 const tbody = document.querySelector("#body");
-
 
 // Generators
 Generators.headerGenerator(header, theader);
 Generators.mainTableGenerator(header, workerList, values, tbody);
 
+// DOM queries
+const nameBtns = document.querySelectorAll(".btn-link");
+const searchInput = document.querySelector("#search");
 
-document.querySelectorAll(".btn-link").forEach((button) => {
+
+// Event listeners
+nameBtns.forEach((button) => {
     button.addEventListener("click", (e) => {
         let workerId = e.srcElement.dataset.id;
         let y_start = header.dateRange.year_start;
@@ -30,29 +39,6 @@ document.querySelectorAll(".btn-link").forEach((button) => {
     });
 });
 
-
-function tableSearch() {     
-    let input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("search");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("table");
-    tr = table.getElementsByTagName("tr");
-
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByClassName("item-for-search")[0];
-        if (td) {
-          txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-          }
-          else {
-              tr[i].style.display = "none";
-          }
-        }
-    }
-}
-
-
-document.querySelector("#search").addEventListener("keyup", () => {   
+searchInput.addEventListener("keyup", () => {   
     tableSearch();
 });

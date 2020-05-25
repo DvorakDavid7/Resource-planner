@@ -34,6 +34,11 @@ class DepartmentTable(SqlMain):
         for row in table:
             self.department.append(row[0])
             self.fullName.append(row[1])
+        
+    def clearTable(self):
+        self.workerId = []
+        self.department = []
+        self.fullName = []
 
     def __str__(self) -> str:
         return f'''workerId: {self.workerId}\ndepartment: {self.department}\nworkerFullName: {self.fullName}'''

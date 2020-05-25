@@ -1,48 +1,37 @@
 import * as Generators from "./tools/generators.js";
+import {tableSearch} from "./tools/tableFunctions.js";
 
 
+
+// Data Parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.projecttablemodel);
+
+
+// def variables
 let projectList = tableModel.projectList
 let values = tableModel.values
- 
+
+
 // DOM queries
 const theader = document.querySelector("#header");
 const tbody = document.querySelector("#body")
 
-
+// generators
 Generators.headerGenerator(header, theader)
 Generators.projectsTableGenerator(header, projectList, values, tbody)
 
+// DOM queries
+const searchInput = document.querySelector("#search");
+const nameBtns = document.querySelectorAll(".item-for-search")
 
 
-function tableSearch() {  
-    let input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("search");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("table");
-    tr = table.getElementsByTagName("tr");
-
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByClassName("item-for-search")[0];
-        if (td) {
-          txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-          }
-          else {
-              tr[i].style.display = "none";
-          }
-        }
-    }
-}
-
-
-document.querySelector("#search").addEventListener("keyup", () => {   
+// Event listeners
+searchInput.addEventListener("keyup", () => {   
     tableSearch()
 });
 
-document.querySelectorAll(".item-for-search").forEach((button) => {
+nameBtns.forEach((button) => {
     button.addEventListener("click", (e) => {
         let cid = e.srcElement.dataset.cid
         let y_start = header.dateRange.year_start

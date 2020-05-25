@@ -38,8 +38,10 @@ class EditModel(Model):
     def set_projectDetails(self):
         self.projectValues = self.workerPlan("1")
         self.opportunityValues = self.workerPlan("0")
+        tableOfProjects = ProjectTable()
+        tableOfOpportunities = OpportunityTable()
+        
         for cid in self.projectValues.keys():
-            tableOfProjects = ProjectTable()
             tableOfProjects.get_project_details(cid)
             if tableOfProjects.projectFullName:
                 try:
@@ -47,8 +49,9 @@ class EditModel(Model):
                 except IndexError:
                     project = Project(cid, cid, "NULL!!!")
                 self.projectList.append(project)
+            tableOfProjects.clearTable()
+
         for cid in self.opportunityValues.keys():
-            tableOfOpportunities = OpportunityTable()
             tableOfOpportunities.get_opportunity_details(cid)
             if tableOfOpportunities.opportunityFullName:
                 try:
@@ -56,6 +59,7 @@ class EditModel(Model):
                 except IndexError:
                     opportunity = Project(cid, cid, "NULL!!!")
                 self.opportunityList.append(opportunity)
+            tableOfOpportunities.clearTable()
 
     def toDict(self) -> Dict:
         return {

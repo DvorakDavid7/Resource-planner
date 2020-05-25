@@ -4,11 +4,14 @@ from planner.Models.HeaderModel import HeaderModel
 from planner.Models.TableModel import TableModel
 from planner.authentication import login_required
 
+import time
+
 table = Blueprint("table", __name__, template_folder="templates")
 
 @table.route('/table', methods=["GET"])
 @login_required
 def table_get():
+    start = time.time()
     date_range = DateRange("2020", "2020", "1", "22")
     header = HeaderModel()
     header.set_dateRange(date_range)
@@ -17,6 +20,7 @@ def table_get():
     tableModel = TableModel(header)
     tableModel.set_workerList("IA")
     tableModel.set_values()    
+    print(time.time() - start)
 
     return render_template("table.html", header=header.toDict(), tableModel=tableModel.toDict(), mimetype='text/javascript')
 

@@ -11,7 +11,8 @@ class WorkerSummaryTable(SqlMain):
     
     def __init__(self) -> None:
         super().__init__()
-        super().connect_to_database()
+        self.connect_to_database()
+
         self.workerId: List[str] = []
         self.workerFullName: List[str] = []
         self.department: List[str] = []
@@ -33,7 +34,15 @@ class WorkerSummaryTable(SqlMain):
             self.weeks.append(str(row[0]))
             self.planned.append(str(row[1]))
             self.years.append(str(row[2]))
+    
 
+    def clearTable(self):
+        self.workerId = []
+        self.workerFullName = []
+        self.department = []
+        self.years = []
+        self.weeks = []
+        self.planned = []
         
     def __str__(self) -> str:
         return f"week: {self.weeks}\nplanned: {self.planned}\nyears: {self.years}"
