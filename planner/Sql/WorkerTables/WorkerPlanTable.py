@@ -2,11 +2,10 @@ from typing import List
 from planner.Sql.SqlMain import SqlMain
 from planner.Models.DataModels.DateRange import DateRange
 from app_config import DevConfig
+from flask import current_app
 
 class WorkerPlanTable(SqlMain):
  
-    DATA_RESOURCE = "[dbo].[PracovnikPlan_TEST]" if DevConfig.ENV == "DEVELOPMENT" else "[dbo].[PracovnikPlan]"
-    
     def __init__(self) -> None:
         super().__init__()
         super().connect_to_database()
@@ -16,6 +15,8 @@ class WorkerPlanTable(SqlMain):
         self.year: List[str] = []
         self.week: List[str] = []
         self.planned: List[str] = []
+
+        self.DATA_RESOURCE = "[dbo].[PracovnikPlan_TEST]" if current_app.config["ENV"] != "PRODUCTION" else "[dbo].[PracovnikPlan]"
 
 
     def get_worker_plan(self, workerId: str, typZPID: str, dateRange: DateRange) -> None:
@@ -39,7 +40,7 @@ class WorkerPlanTable(SqlMain):
             if dateRange.year_start == dateRange.year_end 
             else  f"((Tyden >= {dateRange.week_start} AND Rok = {dateRange.year_start}) OR (Tyden <= {dateRange.week_end} AND Rok = {dateRange.year_end}))")
 
-        query = f'''SELECT [PlanHod], [Rok], [Tyden] FROM {WorkerPlanTable.DATA_RESOURCE}
+        query = f'''SELECT [PlanHod], [Rok], [Tyden] FROM {self.DATA_RESOURCE}
                 WHERE ProjektID = {project_id} AND {condition}'''
         table = self.cursor.execute(query)
         for row in table:

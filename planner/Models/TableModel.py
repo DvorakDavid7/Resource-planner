@@ -26,7 +26,7 @@ class TableModel(Model):
                 self.values[worker.id][week] = workerSummaryPlan.planned[index]
             workerSummaryPlan.clearTable()
 
-    def set_workerList(self, department: str) -> None:
+    def set_departmentWorkerList(self, department: str) -> None:
         departmentTable = DepartmentTable()
         departmentTable.get_workers_names(department)
         for i, workerId in enumerate(departmentTable.workerId):

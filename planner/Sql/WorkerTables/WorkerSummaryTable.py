@@ -2,13 +2,11 @@ from typing import List
 from planner.Sql.SqlMain import SqlMain
 from planner.Models.DataModels.DateRange import DateRange
 from app_config import DevConfig
+from flask import current_app
+
 
 class WorkerSummaryTable(SqlMain):
  
-    DATA_RESOURCE = ("[dbo].[View_ResourcePlanner_WorkerSummaryPlan_TEST]" 
-                    if DevConfig.ENV == "DEVELOPMENT"
-                    else "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]")
-    
     def __init__(self) -> None:
         super().__init__()
         self.connect_to_database()
@@ -19,6 +17,9 @@ class WorkerSummaryTable(SqlMain):
         self.years: List[str] = []
         self.weeks: List[str] = []
         self.planned: List[str] = []
+
+        self.DATA_RESOURCE = ("[dbo].[View_ResourcePlanner_WorkerSummaryPlan_TEST]" if current_app.config["ENV"] != "PRODUCTION"
+                            else "[dbo].[View_ResourcePlanner_WorkerSummaryPlan]")
 
 
     def get_worker_summary_plan(self, workerId: str, dateRange: DateRange) -> None:

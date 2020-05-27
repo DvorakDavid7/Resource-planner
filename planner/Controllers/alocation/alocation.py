@@ -6,13 +6,14 @@ from planner.Models.DataModels.DateRange import DateRange
 from planner.Sql.DepartmentTable import DepartmentTable
 from planner.Models.DataModels.Worker import Worker
 from planner.Sql.WorkerTables.WorkerPlanTable import WorkerPlanTable
-
+from planner.authentication import login_required
 
 
 alocation = Blueprint("alocation", __name__, template_folder="templates", static_folder="static", static_url_path='/alocation/static')
 
 
 @alocation.route('/project_edit/<string:cid>', methods=["GET"])
+@login_required
 def project_edit(cid):
     dateRange = DateRange(**request.args)
     headerModel = HeaderModel()
@@ -26,6 +27,7 @@ def project_edit(cid):
 
 
 @alocation.route('/project_edit/get_names', methods=["GET"])
+@login_required
 def project_edit_get_names():
     workerList : List[Worker] = []
     departmentTable = DepartmentTable()

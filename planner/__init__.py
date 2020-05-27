@@ -35,9 +35,9 @@ def create_app(config_class):
     app.register_blueprint(edit)
     app.register_blueprint(groups)
     app.register_blueprint(colours)
-    app.register_blueprint(finance)
+    # app.register_blueprint(finance)
     app.register_blueprint(projects)
     app.register_blueprint(alocation)
     app.register_blueprint(home)
-    app.register_blueprint(tests)
+    # app.register_blueprint(tests)
     return app

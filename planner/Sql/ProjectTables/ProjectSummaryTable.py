@@ -2,12 +2,9 @@ from typing import List
 from planner.Sql.SqlMain import SqlMain
 from planner.Models.DataModels.DateRange import DateRange
 from app_config import DevConfig
+from flask import current_app
 
 class ProjectSummaryTable(SqlMain):
- 
-    DATA_RESOURCE = ("[dbo].[View_ResourcePlanner_ProjektSummaryPlan_TEST]" 
-                    if DevConfig.ENV == "DEVELOPMENT"
-                    else "[dbo].[View_ResourcePlanner_ProjektSummaryPlan]")
 
     def __init__(self) -> None:
         super().__init__()
@@ -16,6 +13,8 @@ class ProjectSummaryTable(SqlMain):
         self.week: List[str] = []
         self.planned: List[str] = []
 
+        self.DATA_RESOURCE = ("[dbo].[View_ResourcePlanner_ProjektSummaryPlan_TEST]" if current_app.config["ENV"] != "PRODUCTION"
+                        else "[dbo].[View_ResourcePlanner_ProjektSummaryPlan]")
 
     def get_project_summary_plan(self, cid, dateRange: DateRange) -> None:
         condition = (f"Rok = {dateRange.year_start} AND Tyden BETWEEN {dateRange.week_start} AND {dateRange.week_end}" 

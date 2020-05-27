@@ -1,5 +1,6 @@
+from planner.Models.DataModels.Worker import Worker
 from planner.Models.DataModels.DateRange import DateRange
-from flask import Blueprint, render_template, request, json, jsonify, make_response
+from flask import Blueprint, render_template, request, json, jsonify, make_response, session
 from planner.Models.HeaderModel import HeaderModel
 from planner.Models.TableModel import TableModel
 from planner.authentication import login_required
@@ -18,35 +19,30 @@ def table_get():
     header.set_fromDatabese()
 
     tableModel = TableModel(header)
-    tableModel.set_workerList("IA")
+    tableModel.set_departmentWorkerList(session["user"]["department"])
     tableModel.set_values()    
     print(time.time() - start)
 
-    return render_template("table.html", header=header.toDict(), tableModel=tableModel.toDict(), mimetype='text/javascript')
+    return render_template("table.html", header=header.toDict(), tableModel=tableModel.toDict())
 
 
-@table.route('/table/navigation_request_handler', methods=["POST"])
+@table.route('/table/navigation/set_range', methods=["POST"])
 def table_navigation():
     request_data = json.loads(str(request.get_data().decode('utf-8')))
-    headerModel = HeaderModel()
-    headerModel.set_default_dates()
-    # headerModel.set_start_end_dates("2020", "2020", "1", "21")
-    headerModel.generate_table_header()
-    tableModel = TableModel(headerModel)
-    if request_data["request_type"] == "set_department":
-        tableModel.set_name_list_department(request_data["data"])
-    elif request_data["request_type"] == "load_groups":
-        with open("data/groups.txt", "r", encoding='utf8') as file:
-            data = json.load(file)
-        tableModel.set_name_list_group(data[request_data["data"]])
-    elif request_data["request_type"] == "set_name_list":
-        tableModel.set_name_list_group(request_data["data"])
-    else:
-        return "Bad Request"
-    tableModel.generate_table_body()
-    table = {"header": headerModel.table_header, "body": tableModel.table_body}
-    new_table = render_template("table.html", title="Main Table", table=table, url_root=request.url_root)
-    return make_response(jsonify({"new_table": new_table}), 200)
+    date_range = DateRange(**request_data["dateRange"])
+    header = HeaderModel()
+    header.set_dateRange(date_range)
+    header.set_fromDatabese()
+
+    tableModel = TableModel(header)
+    for record in request_data["nameList"]:
+        tableModel.workerList.append(Worker(**record)) 
+    tableModel.set_values()    
+    result = {
+        "tableModel": tableModel.toDict(),
+        "header": header.toDict()
+    }
+    return make_response(jsonify(result), 200)
 
 
 @table.route('/table/set_department', methods=["POST"])

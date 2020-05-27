@@ -3,6 +3,7 @@ import msal
 from flask import redirect, render_template, request, session, url_for, Blueprint
 from planner.authentication import _build_msal_app, _load_cache, _save_cache
 from flask import current_app
+from planner.Sql.DepartmentTable import DepartmentTable
 
 home = Blueprint("home", __name__, template_folder="templates")
 
@@ -10,6 +11,7 @@ home = Blueprint("home", __name__, template_folder="templates")
 def index():
     if not session.get("user"):
         return redirect(url_for("home.login"))
+    _add_user_department_to_session()
     return render_template('index.html', user=session["user"], version=msal.__version__)
 
 
@@ -48,3 +50,15 @@ def logout():
     return redirect(  # Also logout from your tenant's web session
         current_app.config["AUTHORITY"] + "/oauth2/v2.0/logout" +
         "?post_logout_redirect_uri=" + url_for("home.index", _external=True))
+
+
+
+def _add_user_department_to_session():
+    departmentTable = DepartmentTable()
+    userId = session["user"]["preferred_username"].split("@")[0]
+    departmentTable.get_user_details(userId)
+    try:
+        department = departmentTable.department[0]
+        session["user"]["department"] = "IA"    
+    except Exception as err:
+        pass

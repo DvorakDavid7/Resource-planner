@@ -23,8 +23,8 @@ class SqlMain:
 
     def connect_to_database(self) -> None:
         try:
-            # self.connection = pypyodbc.connect(current_app.config["CONNECTION_STRING"])
-            self.connection = pypyodbc.connect(DevConfig.CONNECTION_STRING)
+            self.connection = pypyodbc.connect(current_app.config["CONNECTION_STRING"])
+            # self.connection = pypyodbc.connect(DevConfig.CONNECTION_STRING)
             self.cursor = self.connection.cursor()
         except pypyodbc.Error as err:
             print(f"Connection Error: {err}")

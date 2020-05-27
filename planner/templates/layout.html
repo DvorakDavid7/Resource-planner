@@ -17,35 +17,33 @@
             </div>
     
             <div class="col-5">
-                <form id="form-1" class="form-inline">
+                <form id="range-form" class="form-inline">
                     <div class="form-group">
                         <span class="navbar-text mr-2">Range from:</span>
-                        <input class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                        <input id="data-range-from" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
                         <span class="navbar-text mr-2">To:</span>
-                        <input class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
-                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="button_1">Ser Range</button>
+                        <input id="data-range-to" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="button_1">Set Range</button>
                     </div>
                 </form>
             </div>
     
             <div class="col-4">
-                <form id="form-2" class="form-inline">
+                <form id="date-form" class="form-inline">
                     <div class="form-group">
-                        <input class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                        <input id="data-week" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
                         <span class="navbar-text mr-2">Or: </span>
-                        <input class="form-control mr-sm-2" placeholder="mm/dd/yyyy" aria-label="Search">
+                        <input id="data-date" size="10" class="form-control mr-sm-2" placeholder="mm/dd/yyyy" aria-label="Search">
                         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="button_2">Set week</button>
                     </div>
                 </form>
             </div>
     
             <div class="col-2">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <button class="btn btn-outline-primary" type="button"><----</button>
-                        <button class="btn btn-outline-primary" type="button">----></button>
-                    </div>
-                </form>
+                <div class="">
+                    <button class="btn btn-outline-primary" type="button"><----</button>
+                    <button class="btn btn-outline-primary" type="button">----></button>
+                </div>
             </div>
         </div>
     </nav>
@@ -58,8 +56,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     
     {% block content %}{% endblock %}
-
-
+    <!-- 
     <script>
         let form1 = document.querySelector("#form-1");
         let form2 = document.querySelector("#form-2");
@@ -72,6 +69,7 @@
             console.log(e.submitter.name);
         });
     </script>
+    -->
 
 </body>
 </html>

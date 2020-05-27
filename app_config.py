@@ -1,8 +1,11 @@
 import os
 
 
-class DevConfig():
-    ENV = "DEVELOPMENT"
+class BaseConfig():
+    ENV = "DEMO"
+
+
+class DevConfig(BaseConfig):
     CLIENT_SECRET = "gKx@XbR?C:_T345z3RghHus@Q?e2H.uh" # Our Quickstart uses this placeholder
     # In your production app, we recommend you to use other ways to store your secret,
     # such as KeyVault, or environment variable as described in Flask's documentation here
@@ -29,16 +32,10 @@ class DevConfig():
 
     SESSION_TYPE = "filesystem"  # So token cache will be stored in server-side session
 
-    CONNECTION_STRING = '''Driver={ODBC Driver 17 for SQL Server};
-                        Server=tcp:dwhdbsrv.database.windows.net,1433;
-                        Database=DWH-DB;Uid=ddvorak@trask.cz;
-                        Encrypt=yes;
-                        TrustServerCertificate=no;
-                        Connection Timeout=30;
-                        Authentication=ActiveDirectoryInteractive'''
+    CONNECTION_STRING = '''Driver={ODBC Driver 17 for SQL Server}; Server=tcp:dwhdbsrv.database.windows.net,1433;Database=DWH-DB;Uid=rpappservice;Pwd=Te8Sx.652kZb;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30'''
 
 
-class ProdConfig():
+class ProdConfig(BaseConfig):
     CLIENT_SECRET = os.getenv("CLIENT_SECRET")
     # if not CLIENT_SECRET:
     #     raise ValueError("Need to define CLIENT_SECRET environment variable")

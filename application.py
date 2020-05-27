@@ -1,7 +1,11 @@
 from planner import create_app
-from app_config import DevConfig
+import app_config
 
-app = create_app(DevConfig)
+
+app = create_app(app_config.ProdConfig)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)  # parametr debud = True okamžité provedení změny
+    if app.config["ENV"] != "PRODUCTION":
+        app.run(debug=True, port=5000)  # parametr debud = True okamžité provedení změny
+    else:
+        app.run()
