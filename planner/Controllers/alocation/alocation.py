@@ -15,7 +15,12 @@ alocation = Blueprint("alocation", __name__, template_folder="templates", static
 @alocation.route('/project_edit/<string:cid>', methods=["GET"])
 @login_required
 def project_edit(cid):
-    dateRange = DateRange(**request.args)
+    if request.args:
+        dateRange = DateRange(**request.args)
+    else:
+        dateRange = DateRange("", "", "", "")
+        dateRange.set_defaultRange()
+
     headerModel = HeaderModel()
     headerModel.set_dateRange(dateRange)
     headerModel.set_fromDatabese()

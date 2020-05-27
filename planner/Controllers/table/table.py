@@ -13,7 +13,8 @@ table = Blueprint("table", __name__, template_folder="templates")
 @login_required
 def table_get():
     start = time.time()
-    date_range = DateRange("2020", "2020", "1", "22")
+    date_range = DateRange("", "", "", "")
+    date_range.set_defaultRange()
     header = HeaderModel()
     header.set_dateRange(date_range)
     header.set_fromDatabese()
