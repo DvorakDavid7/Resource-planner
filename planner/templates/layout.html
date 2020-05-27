@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Resource Planner</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <div class="row container-fluid">
+            <div class="col-1">
+                <a href="/">
+                    <img class="img-fluid" src="../static/images/logo.png" width="100" height="60" alt="">
+                </a>
+            </div>
+    
+            <div class="col-5">
+                <form id="range-form" class="form-inline">
+                    <div class="form-group">
+                        <span class="navbar-text mr-2">Range from:</span>
+                        <input id="data-range-from" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                        <span class="navbar-text mr-2">To:</span>
+                        <input id="data-range-to" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="button_1">Set Range</button>
+                    </div>
+                </form>
+            </div>
+    
+            <div class="col-4">
+                <form id="date-form" class="form-inline">
+                    <div class="form-group">
+                        <input id="data-week" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                        <span class="navbar-text mr-2">Or: </span>
+                        <input id="data-date" size="10" class="form-control mr-sm-2" placeholder="mm/dd/yyyy" aria-label="Search">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="button_2">Set week</button>
+                    </div>
+                </form>
+            </div>
+    
+            <div class="col-2">
+                <div class="">
+                    <button class="btn btn-outline-primary" type="button"><----</button>
+                    <button class="btn btn-outline-primary" type="button">----></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
+    {% block content %}{% endblock %}
+    <!-- 
+    <script>
+        let form1 = document.querySelector("#form-1");
+        let form2 = document.querySelector("#form-2");
+        form1.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log(e.submitter.name);
+        });
+        form2.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log(e.submitter.name);
+        });
+    </script>
+    -->
+
+</body>
+</html>

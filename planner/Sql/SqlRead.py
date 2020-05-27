@@ -7,7 +7,7 @@ class SqlRead(SqlMain):
         super().__init__()
         super().connect_to_database()
 
-    def read_date_week(self, year_start: str, week_start: str, year_end: str, week_end: str) -> List:
+    def read_date_week(self, year_start: str, week_start: str, year_end: str, week_end: str) -> List:  # DONE
         data = []
         if len(week_start) == 1:
             week_start = "0" + week_start
@@ -23,7 +23,7 @@ class SqlRead(SqlMain):
             data.append((week, begin_end_dates, working_hours))
         return data
 
-    def read_department(self, department: str) -> List:
+    def read_department(self, department: str) -> List:   # DONE
         data = []
         if len(department) == 2:
             parameter = f"OddeleniID = \'{department}\'"
@@ -36,7 +36,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_worker_summary_plan(self, name, year_start, week_start, year_end, week_end) -> List:
+    def read_worker_summary_plan(self, name, year_start, week_start, year_end, week_end) -> List:   # DONE
         data = []
         if year_start == year_end:
             condition = f"Rok = {year_start} AND Tyden BETWEEN {week_start} AND {week_end}"
@@ -49,7 +49,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_worker_plan(self, data_for, user_id, year_start, week_start, year_end, week_end) -> List:
+    def read_worker_plan(self, data_for, user_id, year_start, week_start, year_end, week_end) -> List:  # DONE
         data = []
         if data_for == "project":
             parameter = "ZakazkaID IS NULL"
@@ -69,7 +69,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_edit_data_details(self, data_for, identifier) -> List:
+    def read_edit_data_details(self, data_for, identifier) -> List:   # DONE
         data = []
         if data_for == "project":
             query = f'''SELECT [CID+Nazev], [ProjektovyManazerJmeno]
@@ -86,7 +86,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_project_list(self, data_for):
+    def read_project_list(self, data_for):   # DONE
         data = []
         if data_for == "project":
             resource = self.data_resources["project_list"]
@@ -103,7 +103,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_user_details(self, user_id):
+    def read_user_details(self, user_id):  # DONE
         data = []
         query = f'''SELECT [OddeleniID] ,[CeleJmeno] FROM {self.data_resources["name_list"]} WHERE
                 PracovnikID = \'{user_id}\''''
@@ -112,7 +112,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_phases(self, project_id: str) -> list:
+    def read_phases(self, project_id: str) -> list:   # DONE
         data = []
         query = f'''SELECT [ProjektID], [FazeID], [FazeNazev]
                 FROM {self.data_resources["phases"]} WHERE ProjektID = {project_id} AND Status = \'active\''''
@@ -121,7 +121,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_project_worker_list(self, project_id: str) -> list:
+    def read_project_worker_list(self, project_id: str) -> list:  # DONE
         data = []
         query = f'''SELECT [ProjektID], [PracovnikID], [PracovnikCeleJmeno], [RoleID], [RoleNazev]
                 FROM {self.data_resources["projects_workers"]} WHERE ProjektID = {project_id}'''
@@ -130,14 +130,14 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_planHod_worker_phase(self, pracovnik_id: str, phase_id: str) -> str:  # return planHod
+    def read_planHod_worker_phase(self, pracovnik_id: str, phase_id: str) -> str:  # return planHod   DONE
         query = f'''SELECT [PlanHod] FROM {self.data_resources["pracovnik_plan_ftfp"]}
                 WHERE PracovnikID = \'{pracovnik_id}\' AND FazeID = {phase_id}'''
         table = self.cursor.execute(query)
         result_list = table.fetchall()
-        return str(result_list[0][0]) if result_list[0][0] else "" 
+        return str(result_list[0][0]) if result_list else "" 
 
-    def read_planHod_sum(self, project_id: str, year_start, week_start, year_end, week_end) -> List:
+    def read_planHod_sum(self, project_id: str, year_start, week_start, year_end, week_end) -> List:  # DONE
         data = []
         if year_start == year_end:
             condition = f"Rok = {year_start} AND Tyden BETWEEN {week_start} AND {week_end}"
@@ -151,7 +151,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
   
-    def read_workers_on_project(self, year_start, year_end, week_start, week_end, project_id: str) -> List:
+    def read_workers_on_project(self, year_start, year_end, week_start, week_end, project_id: str) -> List:  # DONE
         data = []
         if year_start == year_end:
             condition = f"Rok = {year_start} AND Tyden BETWEEN {week_start} AND {week_end}"
@@ -166,7 +166,7 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_project_summary_plan(self, project_id, year_start, week_start, year_end, week_end) -> List:
+    def read_project_summary_plan(self, project_id, year_start, week_start, year_end, week_end) -> List:   # DONE
         data = []
         if year_start == year_end:
             condition = f"Rok = {year_start} AND Tyden BETWEEN {week_start} AND {week_end}"
@@ -179,14 +179,14 @@ class SqlRead(SqlMain):
             data.append(row)
         return data
 
-    def read_worker_alocation(self, worker_id: str, year: str, week: str) -> str:
+    def read_worker_alocation(self, worker_id: str, year: str, week: str) -> str:   # DONE
         query = f'''SELECT SUM(PlanHod) AS Alocation FROM [dbo].[PracovnikPlan_TEST]
                 WHERE PracovnikID = \'{worker_id}\' and Rok = {year} and Tyden = {week}'''
         table = self.cursor.execute(query)
         result_list = table.fetchall()
         return str(result_list[0][0]) if result_list[0][0] else "" 
 
-    def read_full_name(self, user_id: str) -> List:
-        query = f'''SELECT[Jmeno] ,[Prijmeni] FROM [dbo].[Pracovnik] where PracovnikID = \'{user_id}\''''
+    def read_full_name(self, user_id: str) -> List:  # DONE
+        query = f'''SELECT [Jmeno] ,[Prijmeni] FROM [dbo].[Pracovnik] where PracovnikID = \'{user_id}\''''
         table = self.cursor.execute(query)
         return table.fetchall()
