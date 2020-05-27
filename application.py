@@ -2,7 +2,8 @@ from planner import create_app
 import app_config
 
 
-app = create_app(app_config.ProdConfig)
+app = create_app(app_config.DevConfig)
+
 
 if __name__ == "__main__":
     if app.config["ENV"] != "PRODUCTION":
