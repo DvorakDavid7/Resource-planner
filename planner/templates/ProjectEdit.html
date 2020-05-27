@@ -1,0 +1,28 @@
+  
+{% extends "layout.html" %}
+
+{% block content%}
+<div id="dataholder" class="container-fluid" data-header='{{ header | tojson }}' data-model='{{ model | tojson }}'>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Add project</button>
+                <div class="dropdown-menu w-100" style="height: auto; max-height: 500px; overflow-x: hidden;">
+                    <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<table id="main-table" border="1">
+
+    	<thead id="header" class="text-center"></thead>
+		<tbody id="body"></tbody>
+		
+	</table>
+    <button id="submit-changes" type="button">Save changes</button>
+
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='dist/project_edit.js') }}"></script>
+
+{% endblock content%}
