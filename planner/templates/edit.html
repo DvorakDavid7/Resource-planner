@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content%}
+<style>
+    .selected {
+        background-color:cornsilk;
+    }
+
+    .selection {
+        background: rgba(46, 115, 252, 0.11);
+        border-radius: 0.1em;
+        border: 2px solid rgba(98, 155, 255, 0.81);
+    }
+</style>
+
+<div id="dataholder" class="container-fluid" data-header='{{ header | tojson }}' data-body='{{ body | tojson }}'>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Add project</button>
+                <div class="dropdown-menu w-100" style="height: auto; max-height: 500px; overflow-x: hidden;">
+                    <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <table class="" id="main-table" border="1">
+                <thead id="header" class="text-center"></thead>
+                
+                <tbody id="projects"></tbody>
+                
+                <tbody id="opportunities"></tbody>
+    
+                <tbody id="sum"></tbody>
+            </table>
+            <button id="save" class="btn btn-primary" type="button">Save Changes</button>
+            <input type="text" name="" id="multi-insert" placeholder="insert">
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='dist/edit.js') }}"></script> 
+
+{% endblock content %}
