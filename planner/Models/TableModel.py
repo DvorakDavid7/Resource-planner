@@ -1,41 +1,40 @@
+from typing import Dict, List
 from planner.Models.Model import Model
+from planner.Models.HeaderModel import HeaderModel
+from planner.Models.DataModels.Worker import Worker
+from planner.Sql.WorkerTables.WorkerSummaryTable import WorkerSummaryTable
+from planner.Sql.DepartmentTable import DepartmentTable
 
 
 class TableModel(Model):
-    def __init__(self, tableHeader):
+    def __init__(self, tableHeader: HeaderModel) -> None:
         super().__init__()
-        self.tableHeader = tableHeader
-        self.name_list = []  # [(...,...,...), (...,...,...), (...,...,...)]
-        self.table_body = []
+        self.header = tableHeader
+        self.workerList: List[Worker] = []
+        self.values: Dict[str, Dict[str, str]] = {}
 
-    def generate_table_body(self):
-        result_row = {"user_id": "", "department": "", "name": "", "values": {}}
-        plan = {}
-        for i in range(len(self.name_list)):
-            user_id = self.name_list[i][0]
-            department = self.name_list[i][1]
-            name = self.name_list[i][2]
-            for week in self.tableHeader.table_header["weeks"]:
-                plan[int(week)] = ""
-            y_start = self.tableHeader.year_start
-            w_start = self.tableHeader.week_start
-            y_end = self.tableHeader.year_end
-            w_end = self.tableHeader.week_end
-            worker_plan_table = self.sqlRead.read_worker_summary_plan(user_id, y_start, w_start, y_end, w_end)
-            for row in worker_plan_table:
-                plan[row[0]] = row[1]
-            result_row["user_id"] = user_id
-            result_row["department"] = department
-            result_row["name"] = name
-            result_row["values"] = plan.copy()
-            self.table_body.append(result_row.copy())
 
-    def set_name_list_department(self, department):
-        if len(department) == 2:
-            self.name_list = self.sqlRead.read_department(department)
-        else:
-            department = str(tuple(department.split(" ")))
-            self.name_list = self.sqlRead.read_department(department)
+    def set_values(self) -> None:
+        plan: Dict[str, str] = {}
+        workerSummaryPlan = WorkerSummaryTable()
+        for week in self.header.weeks:
+            plan[str(int(week))] = ""
+        for worker in self.workerList:
+            self.values[worker.id] = plan.copy()
+            workerSummaryPlan.get_worker_summary_plan(worker.id, self.header.dateRange)  
+            for index, week in enumerate(workerSummaryPlan.weeks):
+                self.values[worker.id][week] = workerSummaryPlan.planned[index]
+            workerSummaryPlan.clearTable()
 
-    def set_name_list_group(self, group):
-        self.name_list = group
+    def set_departmentWorkerList(self, department: str) -> None:
+        departmentTable = DepartmentTable()
+        departmentTable.get_workers_names(department)
+        for i, workerId in enumerate(departmentTable.workerId):
+            worker = Worker(workerId, departmentTable.fullName[i], departmentTable.department[i])
+            self.workerList.append(worker)
+
+    def toDict(self) -> Dict:
+        return {
+            "workerList": [worker.__dict__ for worker in self.workerList],
+            "values": self.values
+        }
