@@ -1,17 +1,24 @@
 import * as Generators from "./tools/generators.js";
 import * as TableFunctions from "./tools/tableFunctions.js"
 import * as Utils from "./tools/utils.js"
-
+import ProjectEditComponent from "./components/ProjectEditComponent.js"
+import HeaderComponent from "./components/HeaderComponent.js"
 
 
 // data parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 let model = JSON.parse(document.querySelector("#dataholder").dataset.model);
 
-
 // def variables
 let nameList = model.nameList;
 let values = model.values;
+
+// DOM Querries
+const theader = document.querySelector("#header");
+const tbody = document.querySelector("#body");
+const dropbtn = document.querySelector(".dropdown-toggle");
+const dropDown = document.querySelector(".dropdown-menu");
+const submitBtn = document.querySelector("#submit-changes");
 
 
 // custome functions
@@ -28,18 +35,11 @@ function send_changes(changes) {
     })
 }
 
-// DOM Querries
-const theader = document.querySelector("#header");
-const tbody = document.querySelector("#body");
 
 // generator functions call
-Generators.headerGenerator(header, theader);
-Generators.projectEditGenerator(header, nameList, values, tbody);
+HeaderComponent(header, theader);
+ProjectEditComponent(header, nameList, values, tbody);
 
-// DOM Querries
-const dropbtn = document.querySelector(".dropdown-toggle");
-const dropDown = document.querySelector(".dropdown-menu");
-const submitBtn = document.querySelector("#submit-changes");
 
 
 let data = document.querySelectorAll(".data");

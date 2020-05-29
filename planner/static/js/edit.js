@@ -1,7 +1,9 @@
-import * as Generators from "./tools/generators.js";
+import { projectListGenerator }from "./tools/generators.js";
 import * as TableFunctions from "./tools/tableFunctions.js"
 import * as Utils from "./tools/utils.js"
 import Selection from "@simonwep/selection-js"
+import EditComponent from "./components/EditComponent.js"
+import HeaderComponent from "./components/HeaderComponent.js"
 
 
 // dataholder JSON parser
@@ -13,6 +15,12 @@ let projectList = body.projects.projectList;
 let projectValues = body.projects.values;
 let opportunityList = body.opportunities.opportunityList;
 let opportunityValues = body.opportunities.values;
+
+// DOM Querries
+const input = document.querySelector("#multi-insert");
+const dropDown = document.querySelector(".dropdown-menu");
+const dropbtn = document.querySelector(".dropdown-toggle");
+const savebtn = document.querySelector("#save");
 
 
 // Cunstome functions
@@ -31,17 +39,10 @@ const opportunities = document.querySelector("#opportunities");
 const sum = document.querySelector("#sum");
 
 // generator functions call
-Generators.headerGenerator(header, theader);
-Generators.editProjectsGenerator(header, projectList, projectValues, "1", projects);
-Generators.editProjectsGenerator(header, opportunityList, opportunityValues, "0", opportunities);
-Generators.sumGenerator(header, sum);
+HeaderComponent(header, theader);
+EditComponent(header, projectList, projectValues, "1", projects, sum)
+EditComponent(header, opportunityList, opportunityValues, "0", opportunities, sum)
 computeSum();
-
-// DOM Querries
-const input = document.querySelector("#multi-insert");
-const dropDown = document.querySelector(".dropdown-menu");
-const dropbtn = document.querySelector(".dropdown-toggle");
-const savebtn = document.querySelector("#save");
 
 
 const defaultProjectValues = TableFunctions.toMatrix(document.querySelectorAll(".project-data"), header)
@@ -50,7 +51,7 @@ const defaultOpportunitysValues = TableFunctions.toMatrix(document.querySelector
 
 // Event listenners
 dropbtn.addEventListener("click", () => {
-    Generators.projectListGenerator(header, dropDown)
+    projectListGenerator(header, dropDown)
 })
 
 input.addEventListener("keyup", (e) => {

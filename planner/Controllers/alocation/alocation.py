@@ -1,5 +1,5 @@
 from typing import List
-from flask import Blueprint, render_template, request, json, jsonify, make_response
+from flask import Blueprint, render_template, request, json, jsonify, make_response, session
 from planner.Models.HeaderModel import HeaderModel
 from planner.Models.ProjectEditModel import ProjectEditModel
 from planner.Models.DataModels.DateRange import DateRange
@@ -19,7 +19,7 @@ def project_edit(cid):
         dateRange = DateRange(**request.args)
     else:
         dateRange = DateRange("", "", "", "")
-        dateRange.set_defaultRange()
+        dateRange.set_basedOnWeekNumber(dateRange.currentWeek, dateRange.currentYear)
 
     headerModel = HeaderModel()
     headerModel.set_dateRange(dateRange)
@@ -56,7 +56,7 @@ def project_edit_save_changes():
             table.delete_row(**change)
             if value != "":
                 change["plannedHours"] = value
-                change["modifiedBy"] = "ddvorak@trask.cz"
+                change["modifiedBy"] = session["user"]['preferred_username']
                 table.insert_row(**change)
     except Exception as err:
         return make_response(jsonify({"err": err}), 400)
@@ -69,7 +69,7 @@ def project_edit_add_worker():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
     table = WorkerPlanTable()
     try:
-        receive_data["modifiedBy"] = "ddvorak@trask.cz"
+        receive_data["modifiedBy"] = session["user"]['preferred_username']
         receive_data["typeZpid"] = "1"
         table.insert_row(**receive_data)
     except Exception as err:
