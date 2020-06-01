@@ -31,8 +31,6 @@ const searchInput = document.querySelector("#search");
 const departmentForm = document.querySelector("#form-department");
 const rangeForm = document.querySelector("#range-form");
 const dateForm = document.querySelector("#date-form");
-const moveRightBtn = document.querySelector("#move-right");
-const moveLeftBtn = document.querySelector("#move-left");
 const moveBtnGroup = document.querySelector("#move");
 
 // Components
@@ -46,6 +44,26 @@ searchInput.addEventListener("keyup", () => {
     tableSearch();
 });
 
+
+departmentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let department = document.querySelector("#department-value").value;
+    let data = {
+        "department": department,
+        "header": header
+    }
+    fetch('/table/set_department', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        regenerateTable(data);
+    })
+})
+
+
+// NAVIGATION
 
 rangeForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -103,24 +121,6 @@ dateForm.addEventListener("submit", (e) => {
         regenerateTable(data);
     });   
 });
-
-
-departmentForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    let department = document.querySelector("#department-value").value;
-    let data = {
-        "department": department,
-        "header": header
-    }
-    fetch('/table/set_department', {
-        method: 'POST',
-        body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        regenerateTable(data);
-    })
-})
 
 moveBtnGroup.addEventListener("click", (e) => {
     const step = 10;

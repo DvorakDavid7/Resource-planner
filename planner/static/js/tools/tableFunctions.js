@@ -5,7 +5,16 @@
  */
 export function toMatrix(data, header) {    
     let result = [], row = [];
-    let counter = 0;   
+    let counter = 0;
+    
+    if (!data.length) {
+        let nullRow = []
+        for (let i = 0; i < header.weeks.length; i++) {
+            nullRow.push(0)
+        }
+        result.push(nullRow);
+        return result;
+    }
     for (let i = 0; i < data.length; i++) {
         let value = data[i].innerHTML
         row.push(value)
@@ -39,15 +48,16 @@ export function computeSum(matrix) {
 
 /**Compute vertical sum of Projects and Opportunities */
 export function sumOfAll(header) {
-    let matr1 = toMatrix(document.querySelectorAll(".project-data"), header)
-    let matr2 = toMatrix(document.querySelectorAll(".opportunity-data"), header)
-    let masterMatrix = []
-    if (matr1.length != 0) {
-        masterMatrix.push(computeSum(matr1))
-    }
-    if (matr2.length != 0) {
-        masterMatrix.push(computeSum(matr2))
-    }
+    let projectData = document.querySelectorAll(".project-data");
+    let opportunityData = document.querySelectorAll(".opportunity-data");
+    let matr1, matr2, masterMatrix = [];
+
+    matr1 = toMatrix(projectData, header);
+    matr2 = toMatrix(opportunityData, header);
+   
+    masterMatrix.push(computeSum(matr1))
+    masterMatrix.push(computeSum(matr2))
+
     return computeSum(masterMatrix)
 }
 

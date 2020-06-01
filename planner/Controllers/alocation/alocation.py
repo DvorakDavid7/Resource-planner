@@ -9,7 +9,7 @@ from planner.Sql.WorkerTables.WorkerPlanTable import WorkerPlanTable
 from planner.authentication import login_required
 
 
-alocation = Blueprint("alocation", __name__, template_folder="templates", static_folder="static", static_url_path='/alocation/static')
+alocation = Blueprint("alocation", __name__)
 
 
 @alocation.route('/project_edit/<string:cid>', methods=["GET"])
