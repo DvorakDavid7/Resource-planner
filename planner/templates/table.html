@@ -4,14 +4,19 @@
 <div id="dataholder" class="container-fluid" data-header='{{ header | tojson }}' data-tablemodel='{{ tableModel | tojson }}'>
 
 	<div class="row d-flex align-items-end">
-		<div class="col-3">
-			<input class="form-control" id="search" type="text" placeholder="Search for names..">
+		<div class="col-4">
+			<form id="form-deep-search" class="form-inline">
+				<div class="form-group">
+					<input class="form-control mr-sm-2" id="search" type="text" placeholder="Search for names..">
+					<button class="btn btn-primary" type="submit">Deep search</button>
+				</div>
+			</form>
 		</div>
 		<div class="col-3">
 			<form id="form-department" class="form-inline">
 				<div class="form-group">
 					<input id="department-value" class="form-control mr-sm-2" placeholder="Enter Department(s)">
-					<button class="btn btn-primary" type="submit" name="button_1">Submit</button>
+					<button class="btn btn-primary" type="submit">Submit</button>
 				</div>
 			</form>
 		</div>
@@ -26,7 +31,7 @@
             </div>
 		</div>
 
-		<div class="col-3 d-flex justify-content-end">
+		<div class="col-2">
 			{{ header.dateRange.year_start}} / {{ header.dateRange.year_end }}
 		</div>
 	</div>

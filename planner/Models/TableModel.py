@@ -32,6 +32,13 @@ class TableModel(Model):
         for i, workerId in enumerate(departmentTable.workerId):
             worker = Worker(workerId, departmentTable.fullName[i], departmentTable.department[i])
             self.workerList.append(worker)
+    
+    def set_seepSearchWorkerList(self, searchString: str) -> None:
+        departmentTable = DepartmentTable()
+        departmentTable.get_worker_names_deepsearch(searchString)
+        for i, workerId in enumerate(departmentTable.workerId):
+            worker = Worker(workerId, departmentTable.fullName[i], departmentTable.department[i])
+            self.workerList.append(worker)
 
     def toDict(self) -> Dict:
         return {

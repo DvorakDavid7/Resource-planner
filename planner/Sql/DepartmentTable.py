@@ -34,7 +34,18 @@ class DepartmentTable(SqlMain):
         for row in table:
             self.department.append(row[0])
             self.fullName.append(row[1])
-        
+    
+    def get_worker_names_deepsearch(self, searchString: str) -> None:
+        query = f'''SELECT [PracovnikID] ,[OddeleniID] ,[CeleJmeno]
+                    FROM {self.DATA_RESOURCE}
+                '''
+        table = self.cursor.execute(query)
+        for row in table:
+            if searchString.lower() in row[2].lower():
+                self.workerId.append(row[0])
+                self.department.append(row[1])
+                self.fullName.append(row[2])
+
     def clearTable(self):
         self.workerId = []
         self.department = []

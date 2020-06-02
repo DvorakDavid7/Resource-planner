@@ -1,3 +1,4 @@
+from flask.wrappers import Response
 from planner.Models.DataModels.Worker import Worker
 from planner.Models.DataModels.DateRange import DateRange
 from flask import Blueprint, render_template, request, json, jsonify, make_response, session
@@ -10,7 +11,7 @@ table = Blueprint("table", __name__, template_folder="templates")
 
 @table.route('/table', methods=["GET"])
 @login_required
-def table_get():
+def table_get() -> str:
     date_range = DateRange("", "", "", "")
     date_range.set_basedOnWeekNumber(date_range.currentWeek, date_range.currentYear)
 
@@ -20,13 +21,13 @@ def table_get():
 
     tableModel = TableModel(header)
     tableModel.set_departmentWorkerList(session["user"]["department"])
-    tableModel.set_values()    
+    tableModel.set_values()
 
     return render_template("table.html", header=header.toDict(), tableModel=tableModel.toDict())
 
 
 @table.route('/table/set_department', methods=["POST"])
-def table_set_department():
+def table_set_department() -> Response:
     request_data = json.loads(str(request.get_data().decode('utf-8')))
     department = request_data["department"]
 
@@ -50,7 +51,7 @@ def table_set_department():
 
 
 @table.route('/table/navigation/set_range', methods=["POST"])
-def table_navigation_range():
+def table_navigation_range() -> Response:
     request_data = json.loads(str(request.get_data().decode('utf-8')))
     date_range = DateRange(**request_data["dateRange"])
     header = HeaderModel()
@@ -69,7 +70,7 @@ def table_navigation_range():
 
 
 @table.route('/table/navigation/set_week', methods=["POST"])
-def table_navigation_week():
+def table_navigation_week() -> Response:
     request_data = json.loads(str(request.get_data().decode('utf-8')))
     date_range = DateRange("", "", "", "")
     date_range.set_basedOnWeekNumber(**request_data["date"])
@@ -82,6 +83,29 @@ def table_navigation_week():
     for record in request_data["nameList"]:
         tableModel.workerList.append(Worker(**record)) 
     tableModel.set_values()    
+    result = {
+        "tableModel": tableModel.toDict(),
+        "header": header.toDict()
+    }
+    return make_response(jsonify(result), 200)
+
+
+@table.route('/table/deepsearch', methods=["POST"])
+def table_deepSearch() -> Response:
+    request_data = json.loads(str(request.get_data().decode('utf-8')))
+
+    date_range = DateRange(**request_data["header"]["dateRange"])
+
+    header = HeaderModel()
+    header.set_dateRange(date_range)
+    header.weeks = request_data["header"]["weeks"]
+    header.dates = request_data["header"]["dates"]
+    header.workingHours = request_data["header"]["workingHours"]
+
+    tableModel = TableModel(header)
+    tableModel.set_seepSearchWorkerList(request_data["search"])
+    tableModel.set_values()
+
     result = {
         "tableModel": tableModel.toDict(),
         "header": header.toDict()

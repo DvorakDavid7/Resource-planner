@@ -32,6 +32,7 @@ const departmentForm = document.querySelector("#form-department");
 const rangeForm = document.querySelector("#range-form");
 const dateForm = document.querySelector("#date-form");
 const moveBtnGroup = document.querySelector("#move");
+const deepSearchForm = document.querySelector("#form-deep-search")
 
 // Components
 HeaderComponent(header, theader);
@@ -60,6 +61,23 @@ departmentForm.addEventListener("submit", (e) => {
     .then(data => {
         regenerateTable(data);
     })
+})
+
+deepSearchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let searchString = document.querySelector("#search").value;
+    let data = {
+        "search": searchString,
+        "header": header
+    }
+    fetch('/table/deepsearch', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        regenerateTable(data);
+    });
 })
 
 
