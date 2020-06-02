@@ -28,6 +28,8 @@ def project_edit(cid):
     projectEditModel = ProjectEditModel(headerModel, cid)
     projectEditModel.set_values()
 
+    projectEditModel.add_achievoWorkers()
+
     return render_template("ProjectEdit.html", header=headerModel.toDict(), model=projectEditModel.toDict())
 
 

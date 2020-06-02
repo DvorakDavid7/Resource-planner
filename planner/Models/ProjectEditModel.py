@@ -6,6 +6,8 @@ from copy import deepcopy
 from planner.Sql.WorkerTables.WorkerPlanTable import WorkerPlanTable
 from planner.Sql.DepartmentTable import DepartmentTable
 from planner.Models.DataModels.Worker import Worker
+from planner.Sql.ProjectTables.ProjectWorkersAchievo import ProjectWorkersAchievo
+
 
 class ProjectEditModel(Model):
     def __init__(self, tableHeader: HeaderModel, cid: str):
@@ -51,6 +53,27 @@ class ProjectEditModel(Model):
                 worker = Worker(workerId, workerId, "NULL!!!")
             self.nameList.append(worker)
             departmentTable.clearTable()
+    
+    def add_achievoWorkers(self):
+        achievoWorkerList = []
+        plan: Dict = {}
+        projectWorkersAchievo = ProjectWorkersAchievo()
+        projectWorkersAchievo.get_project_workers(self.cid)
+
+        for week in self.header.weeks:
+            plan[str(int(week))] = {
+                "planned": "",
+                "alocated": ""
+            }
+
+        for i, workerId in enumerate(projectWorkersAchievo.workerId):
+            fullName = projectWorkersAchievo.workerFullName[i] if projectWorkersAchievo.workerFullName[i] != None else workerId
+            achievoWorkerList.append(Worker(workerId, fullName, "ACH"))
+
+        for worker in achievoWorkerList:
+            if not self.values.get(worker.id):
+                self.nameList.append(worker)
+                self.values[worker.id] = deepcopy(plan)
 
     def _current_year(self, week: int):     
         if week < int(self.header.dateRange.week_start):
