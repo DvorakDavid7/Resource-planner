@@ -59,7 +59,6 @@ class ProjectEditModel(Model):
         plan: Dict = {}
         projectWorkersAchievo = ProjectWorkersAchievo()
         projectWorkersAchievo.get_project_workers(self.cid)
-
         for week in self.header.weeks:
             plan[str(int(week))] = {
                 "planned": "",
