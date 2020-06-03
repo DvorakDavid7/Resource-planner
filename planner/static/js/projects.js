@@ -7,23 +7,9 @@ import HeaderComponent from "./components/HeaderComponent.js"
 // Data Parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.projecttablemodel);
-
-
 // def variables
 let projectList = tableModel.projectList
 let values = tableModel.values
-
-
-function regenerateTable(data) {
-    let tableModel = data.tableModel;
-    projectList = tableModel.projectList;
-    values = tableModel.values;
-    header = data.header;
-    theader.innerHTML = "";
-    tbody.innerHTML = "";
-    HeaderComponent(header, theader)
-    ProjectsComponent(header, projectList, values, tbody)
-}
 
 
 // DOM queries
@@ -34,22 +20,31 @@ const dateForm = document.querySelector("#date-form");
 const moveBtnGroup = document.querySelector("#move");
 const searchInput = document.querySelector("#search");
 
-// generators
-HeaderComponent(header, theader)
-ProjectsComponent(header, projectList, values, tbody)
-
-
 
 // Event listeners
-searchInput.addEventListener("keyup", () => {   
-    tableSearch()
-});
 
-
+window.addEventListener('load', generateTable(tableModel, header));
+searchInput.addEventListener("keyup", tableSearch);
 // NAVIGATION
+rangeForm.addEventListener("submit", setRange);
+dateForm.addEventListener("submit", setDate);
+moveBtnGroup.addEventListener("click", navigationMove)
 
-rangeForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+
+// Functions
+
+function generateTable(tableModel, header) {
+    projectList = tableModel.projectList;
+    values = tableModel.values;
+    theader.innerHTML = "";
+    tbody.innerHTML = "";
+    HeaderComponent(header, theader)
+    ProjectsComponent(header, projectList, values, tbody)
+}
+
+
+async function setRange(event) {
+    event.preventDefault();
     let [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
     let [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
     let data = {
@@ -61,19 +56,17 @@ rangeForm.addEventListener("submit", (e) => {
         },
         "nameList": projectList
     }
-    fetch('/projects/navigation/set_range', {
+    const response = await fetch('/projects/navigation/set_range', {
         method: 'POST',
         body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        regenerateTable(data);
     });
-});
+    const responseData = await response.json();
+    generateTable(responseData.tableModel, responseData.header);
+}
 
 
-dateForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+async function setDate(event) {
+    event.preventDefault();
     let weekAndYear = document.querySelector("#data-week").value;
     let dateString = document.querySelector("#data-date").value;
     let year, weekNumber = ""
@@ -94,31 +87,27 @@ dateForm.addEventListener("submit", (e) => {
         },
         "nameList": projectList
     };
-    
-    fetch('/projects/navigation/set_week', {
+    const response = await fetch('/projects/navigation/set_week', {
         method: 'POST',
         body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        regenerateTable(data);
-    });   
-});
+    });
+    const responseData = await response.json();
+    generateTable(responseData.tableModel, responseData.header);
+}
 
-moveBtnGroup.addEventListener("click", (e) => {
+
+async function navigationMove(event) {
     const step = 10;
-
     let dateStart = getDateOfWeek(header.dateRange.week_start, header.dateRange.year_start);
     let dateEnd = getDateOfWeek(header.dateRange.week_end, header.dateRange.year_end);
-
     let dateStartPlus = new Date();
     let dateEndPlus = new Date();
 
-    if (e.srcElement.name === "right") {
+    if (event.srcElement.name === "right") {
         dateStartPlus = add_weeks(dateStart, step);
         dateEndPlus = add_weeks(dateEnd, step);
     }
-    else if (e.srcElement.name === "left") {
+    else if (event.srcElement.name === "left") {
         dateStartPlus = sub_weeks(dateStart, step);
         dateEndPlus = sub_weeks(dateEnd, step);
     }
@@ -131,12 +120,10 @@ moveBtnGroup.addEventListener("click", (e) => {
         },
         "nameList": projectList
     }
-    fetch('/projects/navigation/set_range', {
+    const response = await fetch('/projects/navigation/set_range', {
         method: 'POST',
         body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        regenerateTable(data);
     });
-})
+    const responseData = await response.json();
+    generateTable(responseData.tableModel, responseData.header);
+}

@@ -70,19 +70,6 @@ export function removeSelected() {
     });
 }
 
-
-export function saveChanges(changes) {
-    fetch('/edit/save_changes/', {
-        method: 'POST',
-        body: JSON.stringify(changes),
-    })
-    .then(response => response.json())
-    .then(data => {
-        window.location.reload();
-        console.log("succes", data);
-    })
-}
-
 /**
  * use for searching in main tables
  * looking for elements with item-for-search class

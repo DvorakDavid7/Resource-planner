@@ -1,3 +1,4 @@
+from flask.globals import request
 import msal
 from flask import session, redirect, url_for
 from functools import wraps
@@ -37,6 +38,8 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         token = _get_token_from_cache(current_app.config["SCOPE"])
         if not token:
+            if "project_edit" in request.url:
+                session["authorized_redirect"] = request.url
             return redirect(url_for("home.login"))
         return f(*args, **kwargs)
     return decorated_function

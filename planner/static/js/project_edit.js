@@ -8,11 +8,11 @@ import { ISO8601_week_number, getDateOfWeek, add_weeks, sub_weeks } from "./tool
 
 // data parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
-let model = JSON.parse(document.querySelector("#dataholder").dataset.model);
-
+let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.model);
 // def variables
-let nameList = model.nameList;
-let values = model.values;
+let nameList = tableModel.nameList;
+let values = tableModel.values;
+let default_values = []
 
 // DOM Querries
 const theader = document.querySelector("#header");
@@ -23,39 +23,42 @@ const submitBtn = document.querySelector("#submit-changes");
 const rangeForm = document.querySelector("#range-form");
 const dateForm = document.querySelector("#date-form");
 const moveBtnGroup = document.querySelector("#move");
-
-
-// custome functions
-function send_changes(changes) {
-    fetch('/project_edit/save_changes', {
-            method: 'POST',
-            body:JSON.stringify(changes),
-        }
-    )
-    .then(response => response.json())
-    .then(data => {
-        console.log("succes", data);
-        location.reload();
-    })
-}
-
-
-// generator functions call
-HeaderComponent(header, theader);
-ProjectEditComponent(header, nameList, values, tbody);
-
-
-
-let data = document.querySelectorAll(".data");
-let default_values = TableFunctions.toMatrix(data, header);
+const inputSearch = document.querySelector("#myInput");
 
 
 // event listeners
-dropbtn.addEventListener("click", () => {
-    Generators.nameListGenerator(dropDown, header);
-})
+window.addEventListener('load', generateTable(tableModel, header));
+dropbtn.addEventListener("click", Generators.nameListGenerator(dropDown, header));
+submitBtn.addEventListener("click", saveChanges);
+inputSearch.addEventListener("keyup", dropDwonSearch);
+// NAVIGATION
+rangeForm.addEventListener("submit", setRange);
+dateForm.addEventListener("submit", setDate);
+moveBtnGroup.addEventListener("click", navigationMove);
 
-submitBtn.addEventListener("click", () => {
+
+// functions
+
+async function send_changes(changes) {
+    const response = await fetch('/project_edit/save_changes', {
+            method: 'POST',
+            body:JSON.stringify(changes),
+        });
+    const responseData = await response.json()
+    console.log("succes", responseData);
+    location.reload();
+}
+
+
+function generateTable(tableModel, header) {
+    HeaderComponent(header, theader);
+    ProjectEditComponent(header, tableModel.nameList, tableModel.values, tbody);
+    let data = document.querySelectorAll(".data");
+    default_values = TableFunctions.toMatrix(data, header);
+}
+
+
+function saveChanges() {
     let data = document.querySelectorAll(".data");
     let current_values = TableFunctions.toMatrix(data, header);
     let changes = [];
@@ -71,37 +74,22 @@ submitBtn.addEventListener("click", () => {
             }
         }
     }
-    console.log(changes);
     send_changes(changes);
-});
+}
 
 
-// search
-$(document).ready(function(){
-    $("#myInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $(".dropdown-menu a").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    });
-});
-
-
-
-// NAVIGATION
-
-rangeForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+function setRange(event) {
+    event.preventDefault();
     let [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
     let [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
 
     let search = `?year_start=${yearFrom}&year_end=${yearTo}&week_start=${weekFrom}&week_end=${weekTo}`
     window.location = window.location.pathname + search
-});
+}
 
 
-dateForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+async function setDate(event) {
+    event.preventDefault();
     let weekAndYear = document.querySelector("#data-week").value;
     let dateString = document.querySelector("#data-date").value;
     let year, weekNumber = ""
@@ -121,20 +109,18 @@ dateForm.addEventListener("submit", (e) => {
             "year": year
         }
     };
-    
-    fetch('/navigation/set_week', {
+    const response = await fetch('/navigation/set_week', {
         method: 'POST',
         body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        let {year_start, year_end, week_start, week_end} = data.dateRange;
-        let search = `?year_start=${year_start}&year_end=${year_end}&week_start=${week_start}&week_end=${week_end}`;
-        window.location = window.location.pathname + search;
-    });   
-});
+    });
+    const responseData = await response.json();
+    let {year_start, year_end, week_start, week_end} = responseData.dateRange;
+    let search = `?year_start=${year_start}&year_end=${year_end}&week_start=${week_start}&week_end=${week_end}`;
+    window.location = window.location.pathname + search;
+}
 
-moveBtnGroup.addEventListener("click", (e) => {
+
+function navigationMove(event) {
     const step = 10;
 
     let dateStart = getDateOfWeek(header.dateRange.week_start, header.dateRange.year_start);
@@ -143,11 +129,11 @@ moveBtnGroup.addEventListener("click", (e) => {
     let dateStartPlus = new Date();
     let dateEndPlus = new Date();
 
-    if (e.srcElement.name === "right") {
+    if (event.srcElement.name === "right") {
         dateStartPlus = add_weeks(dateStart, step);
         dateEndPlus = add_weeks(dateEnd, step);
     }
-    else if (e.srcElement.name === "left") {
+    else if (event.srcElement.name === "left") {
         dateStartPlus = sub_weeks(dateStart, step);
         dateEndPlus = sub_weeks(dateEnd, step);
     }            
@@ -158,4 +144,12 @@ moveBtnGroup.addEventListener("click", (e) => {
 
     let search = `?year_start=${year_start}&year_end=${year_end}&week_start=${week_start}&week_end=${week_end}`;
     window.location = window.location.pathname + search;
-});
+}
+
+
+function dropDwonSearch() {
+    let value = $(this).val().toLowerCase();
+    $(".dropdown-menu a").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+}

@@ -41,8 +41,10 @@ def authorized():
                 result["error"], result.get("error_description"))
         session["user"] = result.get("id_token_claims")
         _save_cache(cache)
-    return redirect(url_for("home.index"))
-
+    if session.get("authorized_redirect", False):
+        return redirect(session["authorized_redirect"])
+    else:
+        return redirect(url_for("home.index"))
 
 @home.route("/logout")
 def logout():
