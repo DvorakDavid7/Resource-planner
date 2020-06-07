@@ -9,18 +9,18 @@ export default function HeaderComponent(header, target) {
     let weeksTr = document.createElement("tr");
     let datesTr = document.createElement("tr");
 
-    weeksTr.append(document.createElement("td"))
-    datesTr.append(document.createElement("td"))
+    weeksTr.appendChild(document.createElement("td"))
+    datesTr.appendChild(document.createElement("td"))
     for (let i = 0; i < header.weeks.length; i++) {
         let td = document.createElement("td");
         td.innerHTML = `${header.weeks[i]} (${header.workingHours[i]})`
-        weeksTr.append(td)
+        weeksTr.appendChild(td)
     }    
     for (let i = 0; i < header.weeks.length; i++) {
         let td = document.createElement("td");
         td.innerHTML = header.dates[i]
-        datesTr.append(td)
+        datesTr.appendChild(td)
     } 
-    target.append(weeksTr);
-    target.append(datesTr);
+    target.appendChild(weeksTr);
+    target.appendChild(datesTr);
 }

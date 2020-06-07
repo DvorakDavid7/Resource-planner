@@ -4,7 +4,7 @@ import * as Utils from "./tools/utils.js"
 import Selection from "@simonwep/selection-js"
 import EditComponent from "./components/EditComponent.js"
 import HeaderComponent from "./components/HeaderComponent.js"
-import { ISO8601_week_number, getDateOfWeek, add_weeks, sub_weeks } from "./tools/utils.js"
+import { ISO8601_week_number, getDateOfWeek, add_weeks, sub_weeks, dropDwonSearch } from "./tools/utils.js"
 
 
 // dataholder JSON parser
@@ -33,6 +33,7 @@ const projects = document.querySelector("#projects");
 const opportunities = document.querySelector("#opportunities");
 const sum = document.querySelector("#sum");
 const inputSearch = document.querySelector("#myInput");
+const backForm = document.querySelector("#back-form");
 
 
 // Event listenners
@@ -46,9 +47,37 @@ inputSearch.addEventListener("keyup", dropDwonSearch);
 rangeForm.addEventListener("submit", setRange);
 dateForm.addEventListener("submit", setDate);
 moveBtnGroup.addEventListener("click", navigationMove);
-
+backForm.addEventListener("click", backBtnHandler);
 
 // Functions
+
+function backBtnHandler() {    
+    const form = document.createElement('form');
+    const headerInput = document.createElement('input');
+    const listInput = document.createElement('input');
+    const valuesInput = document.createElement('input');
+    form.method = "POST";
+    form.action = "/table";
+  
+    headerInput.type = "hidden";
+    listInput.type = "hidden";
+    valuesInput.type = "hidden";
+
+    headerInput.name = "header";
+    headerInput.value = JSON.stringify(localStorage.getItem("header"));   
+    valuesInput.name = "values"
+    valuesInput.value = JSON.stringify(localStorage.getItem("values"));
+    listInput.name = "list"
+    listInput.value = JSON.stringify(localStorage.getItem("list"));
+  
+    form.appendChild(headerInput);
+    form.appendChild(valuesInput);
+    form.appendChild(listInput);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
 
 async function send_changes(changes) {
     const response = await fetch('/edit/save_changes/', {
@@ -132,14 +161,6 @@ function saveChanges() {
         }
     }
     send_changes(changes)
-}
-
-
-function dropDwonSearch() {
-    let value = $(this).val().toLowerCase();
-    $(".dropdown-menu a").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
 }
 
 

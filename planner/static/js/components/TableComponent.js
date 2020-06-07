@@ -12,15 +12,15 @@ export default function TableComponent(header, list, values, target) {
         let nameTd = document.createElement("td");
         nameTd.innerHTML = `<button data-id='${list[j].id}' type='button' class='btn btn-link text-left'>${list[j].fullName} (${list[j].department})</button>`
         nameTd.classList.add("item-for-search")
-        tr.append(nameTd)
+        tr.appendChild(nameTd)
         for (let i = 0; i < header.weeks.length; i++) {
             let td = document.createElement("td");
             let week = parseInt(header.weeks[i])
             td.innerHTML = values[list[j].id][week]
             td.classList.add("text-center")
-            tr.append(td)
+            tr.appendChild(td)
         }
-        target.append(tr)
+        target.appendChild(tr)
     }
 
     // DOM queries
@@ -37,6 +37,9 @@ export default function TableComponent(header, list, values, target) {
             let w_start = header.dateRange.week_start;
             let w_end = header.dateRange.week_end;
             let url = `edit/${workerId}?year_start=${y_start}&year_end=${y_end}&week_start=${w_start}&week_end=${w_end}`;
+            localStorage.setItem('header', JSON.stringify(header));
+            localStorage.setItem("list", JSON.stringify(list))
+            localStorage.setItem("values", JSON.stringify(values)) 
             window.location = url;
         });
     });

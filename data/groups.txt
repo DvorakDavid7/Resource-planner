@@ -1,9 +1,427 @@
 {
-    "fsdfds": [
+    " Identity Governance": [
+        [
+            "pkoza",
+            "IA",
+            "Koza Pavel"
+        ],
+        [
+            "mpotapova",
+            "IA",
+            "Potapova Maria"
+        ],
+        [
+            "dsoukup",
+            "IA",
+            "Soukup Denis"
+        ],
+        [
+            "jdriml",
+            "IA",
+            "Driml Jan"
+        ],
+        [
+            "jnejdl",
+            "IA",
+            "Nejdl Jakub"
+        ],
+        [
+            "lmichal",
+            "IA",
+            "Míchal Luboš"
+        ],
+        [
+            "mmaterna",
+            "IA",
+            "Materna Michal"
+        ],
+        [
+            "pgajdos",
+            "IA",
+            "Gajdoš Peter"
+        ],
+        [
+            "vvlach",
+            "IA",
+            "Vlach Václav"
+        ],
+        [
+            "slerch",
+            "IA",
+            "Lerch Štěpán"
+        ],
+        [
+            "jadam",
+            "IA",
+            "Adam Jiří"
+        ]
+    ],
+    "IDM": [
+        [
+            "jnejdl",
+            "IA",
+            "Nejdl Jakub"
+        ],
+        [
+            "slerch",
+            "IA",
+            "Lerch Štěpán"
+        ],
+        [
+            "jadam",
+            "IA",
+            "Adam Jiří"
+        ],
+        [
+            "pgajdos",
+            "IA",
+            "Gajdoš Peter"
+        ],
+        [
+            "jdriml",
+            "IA",
+            "Driml Jan"
+        ]
+    ],
+    "Identity Governance": [
+        [
+            "mpotapova",
+            "IA",
+            "Potapova Maria"
+        ]
+    ],
+    "Management + PM": [
+        [
+            "jmotejlek",
+            "IA",
+            "Motejlek Jiří"
+        ],
+        [
+            "nkolkova",
+            "IA",
+            "Kolková Natálie"
+        ],
+        [
+            "pkoza",
+            "IA",
+            "Koza Pavel"
+        ],
+        [
+            "mbares",
+            "IA",
+            "Bareš Martin"
+        ],
+        [
+            "lcejka",
+            "IA",
+            "Čejka Lukáš"
+        ],
+        [
+            "ppodruh",
+            "IA",
+            "Podruh Petr"
+        ],
+        [
+            "pmarek",
+            "IA",
+            "Marek Petr"
+        ],
+        [
+            "zchutkova",
+            "IA",
+            "Chuťková Zdenka"
+        ],
+        [
+            "znuc",
+            "IA",
+            "Nuc Zdeněk"
+        ]
+    ],
+    "Microsoft Infrastructure/Security": [
+        [
+            "pmarek",
+            "IA",
+            "Marek Petr"
+        ],
+        [
+            "mambroz",
+            "IA",
+            "Ambrož Miroslav"
+        ],
+        [
+            "mgubani",
+            "IA",
+            "Gubani Marek"
+        ],
+        [
+            "dlavor",
+            "IA",
+            "Lavor Daniel"
+        ],
+        [
+            "lmichlovsky",
+            "IA",
+            "Michlovský Lukáš"
+        ],
+        [
+            "jnemec",
+            "IA",
+            "Němec Jakub"
+        ],
+        [
+            "jnohacek",
+            "IA",
+            "Noháček Jiří"
+        ],
+        [
+            "dpavelka",
+            "IA",
+            "Pavelka Daniel"
+        ],
+        [
+            "mpollak",
+            "IA",
+            "Pollák Matúš"
+        ],
+        [
+            "vprochazka",
+            "IA",
+            "Procházka Václav"
+        ],
+        [
+            "jvelehradsky",
+            "IA",
+            "Velehradský Jan"
+        ]
+    ],
+    "Monitoring a ITSM": [
+        [
+            "ppodruh",
+            "IA",
+            "Podruh Petr"
+        ],
+        [
+            "ldostal",
+            "IA",
+            "Dostál Lukáš"
+        ],
+        [
+            "tdrexler",
+            "IA",
+            "Drexler Tomáš"
+        ],
+        [
+            "lkrejcarek",
+            "IA",
+            "Krejcárek Lukáš"
+        ],
+        [
+            "znuc",
+            "IA",
+            "Nuc Zdeněk"
+        ],
+        [
+            "jpatocka",
+            "IA",
+            "Patočka Jan"
+        ],
+        [
+            "jpisk",
+            "IA",
+            "Pisk Jiří"
+        ],
+        [
+            "lroll",
+            "IA",
+            "Roll Ladislav"
+        ]
+    ],
+    "NLP/Babelfish": [
+        [
+            "akretov",
+            "IA",
+            "Kretov Anton"
+        ],
+        [
+            "mistrnad",
+            "IA",
+            "Strnad Miroslav"
+        ],
+        [
+            "msamonil",
+            "IA",
+            "Šamonil Martin"
+        ],
+        [
+            "lcejka",
+            "IA",
+            "Čejka Lukáš"
+        ],
+        [
+            "zchutkova",
+            "IA",
+            "Chuťková Zdenka"
+        ]
+    ],
+    "PM": [
+        [
+            "mgubani",
+            "IA",
+            "Gubani Marek"
+        ],
+        [
+            "dlavor",
+            "IA",
+            "Lavor Daniel"
+        ],
+        [
+            "dpavelka",
+            "IA",
+            "Pavelka Daniel"
+        ],
+        [
+            "jvelehradsky",
+            "IA",
+            "Velehradský Jan"
+        ],
+        [
+            "lmichlovsky",
+            "IA",
+            "Michlovský Lukáš"
+        ],
+        [
+            "vprochazka",
+            "IA",
+            "Procházka Václav"
+        ],
+        [
+            "mambroz",
+            "IA",
+            "Ambrož Miroslav"
+        ],
+        [
+            "jnohacek",
+            "IA",
+            "Noháček Jiří"
+        ],
+        [
+            "jsvoboda",
+            "IA",
+            "Svoboda Jaroslav"
+        ]
+    ],
+    "TDP/Cloud": [
+        [
+            "mbendik",
+            "IA",
+            "Bendík Marián"
+        ],
+        [
+            "lcejka",
+            "IA",
+            "Čejka Lukáš"
+        ],
+        [
+            "jhonc",
+            "IA",
+            "Honc Jan"
+        ],
+        [
+            "zchutkova",
+            "IA",
+            "Chuťková Zdenka"
+        ],
+        [
+            "jjon",
+            "IA",
+            "Jón Jakub"
+        ],
+        [
+            "jkafka",
+            "IA",
+            "Kafka Jaroslav"
+        ],
         [
             "akolarik",
             "IA",
             "Kolařík Adam"
+        ],
+        [
+            "ldostal",
+            "IA",
+            "Dostál Lukáš"
+        ],
+        [
+            "tdedic",
+            "IA",
+            "Dědič Tomáš"
+        ]
+    ],
+    "Virtualization and Security": [
+        [
+            "mbares",
+            "IA",
+            "Bareš Martin"
+        ],
+        [
+            "pbohm",
+            "IA",
+            "Böhm Pavel"
+        ],
+        [
+            "ocerny",
+            "IA",
+            "Černý Ondřej"
+        ],
+        [
+            "mgyurkovsky",
+            "IA",
+            "Gyurkovský Michal"
+        ],
+        [
+            "dhofman",
+            "IA",
+            "Hofman Daniel"
+        ],
+        [
+            "pchaloupka",
+            "IA",
+            "Chaloupka Pavel"
+        ],
+        [
+            "okasicka",
+            "IA",
+            "Kašička Ondřej"
+        ],
+        [
+            "lkratky",
+            "IA",
+            "Krátký Lukáš"
+        ],
+        [
+            "mrysavy",
+            "IA",
+            "Ryšavý Michal"
+        ],
+        [
+            "pvcelis",
+            "IA",
+            "Včeliš Pavel"
+        ],
+        [
+            "tsikora",
+            "IA",
+            "Sikora Tomáš"
+        ],
+        [
+            "fnovak",
+            "IA",
+            "Novák František"
+        ],
+        [
+            "tmyslivecek",
+            "IA",
+            "Mysliveček Tomáš"
         ]
     ],
     "tes2": [
@@ -212,13 +630,6 @@
             "areznikova",
             "EX",
             "Řezníková Alena"
-        ]
-    ],
-    "tetestsetse": [
-        [
-            "pmarek",
-            "IA",
-            "Marek Petr"
         ]
     ],
     "total test": [

@@ -54,3 +54,14 @@ export function add_weeks(dt, n) {
 export function sub_weeks(dt, n) {
     return new Date(dt.setDate(dt.getDate() - (n * 7)));      
 }
+
+
+/**
+ * 
+ */
+export function dropDwonSearch() {
+    let value = $(this).val().toLowerCase();
+    $(".dropdown-menu a").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+}

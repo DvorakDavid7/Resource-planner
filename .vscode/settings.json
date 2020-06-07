@@ -14,5 +14,16 @@
   "python.testing.nosetestsEnabled": false,
   "python.testing.unittestEnabled": true,
   // "javascript.implicitProjectConfig.checkJs":true
-
+  "editor.tokenColorCustomizations": {
+    "[Dark++]": {
+      "textMateRules": [
+        {
+          "scope": "meta.function-call.generic.python",
+          "settings": {
+            "foreground": "#DCDCAA"
+          }
+        }
+      ]
+    }
+  }
 }

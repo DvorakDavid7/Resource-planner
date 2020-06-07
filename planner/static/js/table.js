@@ -1,8 +1,7 @@
 import { tableSearch } from "./tools/tableFunctions.js";
-import { ISO8601_week_number, getDateOfWeek, add_weeks, sub_weeks } from "./tools/utils.js"
+import { ISO8601_week_number, getDateOfWeek, add_weeks, sub_weeks, dropDwonSearch } from "./tools/utils.js"
 import TableComponent from "./components/TableComponent.js"
 import HeaderComponent from "./components/HeaderComponent.js"
-
 
 // data parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
@@ -19,6 +18,8 @@ const rangeForm = document.querySelector("#range-form");
 const dateForm = document.querySelector("#date-form");
 const moveBtnGroup = document.querySelector("#move");
 const deepSearchForm = document.querySelector("#form-deep-search")
+const inputSearch = document.querySelector("#myInput");
+const dropbtn = document.querySelector(".dropdown-toggle");
 
 
 // Event listeners
@@ -27,6 +28,8 @@ window.addEventListener('load', generateTable(tableModel, header));
 searchInput.addEventListener("keyup", tableSearch);
 departmentForm.addEventListener("submit", setDepartment);
 deepSearchForm.addEventListener("submit", deepSearch);
+inputSearch.addEventListener("keyup", dropDwonSearch);
+dropbtn.addEventListener("click", groupListGenerator);
 // NAVIGATION
 rangeForm.addEventListener("submit", setRange);
 dateForm.addEventListener("submit", setDate);
@@ -42,6 +45,35 @@ function generateTable(tableModel, header) {
     tbody.innerHTML = "";
     HeaderComponent(header, theader);
     TableComponent(header, workerList, values, tbody);
+}
+
+
+async function groupListGenerator() {
+    const dropDown = document.querySelector(".dropdown-menu");
+    if (dropDown.childElementCount !== 1) return;
+    const response = await fetch("/groups/show_groups");
+    const responseData = await response.json()
+    for (let group of responseData.data) {
+        let dropDownItem = document.createElement("a");
+        dropDownItem.innerHTML = `${group}`;
+        dropDownItem.classList.add("dropdown-item");
+        dropDownItem.href = "javascript:;";
+        dropDownItem.dataset.groupName = `${group}`;
+        dropDownItem.addEventListener("click", chooseGroup);
+        dropDown.append(dropDownItem);
+    }
+}
+
+
+async function chooseGroup(e) {
+    const groupName = e.srcElement.dataset.groupName;
+    const response = await fetch('/table/set_group', {
+        method: 'POST',
+        body: JSON.stringify(groupName),
+    });
+    const responseData = await response.json();
+    generateTable(responseData.tableModel, responseData.header);
+    
 }
 
 
