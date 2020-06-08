@@ -22,7 +22,7 @@ export default function TableComponent(header, list, values, target) {
 
             td.classList.add("text-center")
             let colorClass = coloringResult(header.workingHours[i],values[list[j].id][week])
-            if (colourClass) {
+            if (colorClass) {
                 td.classList.add(colorClass)
             }
             tr.appendChild(td)
