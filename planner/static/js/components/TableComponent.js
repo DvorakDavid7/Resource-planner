@@ -1,3 +1,5 @@
+import { coloringResult } from "../tools/tableFunctions.js"
+
 /**
  * This function genereate main table body
  * @param {any} header JSON from TableModel
@@ -17,7 +19,12 @@ export default function TableComponent(header, list, values, target) {
             let td = document.createElement("td");
             let week = parseInt(header.weeks[i])
             td.innerHTML = values[list[j].id][week]
+
             td.classList.add("text-center")
+            let colorClass = coloringResult(header.workingHours[i],values[list[j].id][week])
+            if (colourClass) {
+                td.classList.add(colorClass)
+            }
             tr.appendChild(td)
         }
         target.appendChild(tr)

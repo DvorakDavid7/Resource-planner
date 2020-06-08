@@ -190,66 +190,6 @@ function projectEditGenerator(header, list, values, target) {
 
 /***/ }),
 
-/***/ "./js/components/TableComponent.js":
-/*!*****************************************!*\
-  !*** ./js/components/TableComponent.js ***!
-  \*****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TableComponent; });
-/**
- * This function genereate main table body
- * @param {any} header JSON from TableModel
- * @param {Array} list - left list of names
- * @param {JSON} values - values JSON
- * @param {Element} target - target element
- */
-function TableComponent(header, list, values, target) {
-    // html skeleton
-    for (let j = 0; j < list.length; j++) {
-        let tr = document.createElement("tr");
-        let nameTd = document.createElement("td");
-        nameTd.innerHTML = `<button data-id='${list[j].id}' type='button' class='btn btn-link text-left'>${list[j].fullName} (${list[j].department})</button>`
-        nameTd.classList.add("item-for-search")
-        tr.appendChild(nameTd)
-        for (let i = 0; i < header.weeks.length; i++) {
-            let td = document.createElement("td");
-            let week = parseInt(header.weeks[i])
-            td.innerHTML = values[list[j].id][week]
-            td.classList.add("text-center")
-            tr.appendChild(td)
-        }
-        target.appendChild(tr)
-    }
-
-    // DOM queries
-    const nameBtns = document.querySelectorAll(".btn-link");
-
-
-
-    // Event listeners
-    nameBtns.forEach((button) => {
-        button.addEventListener("click", (e) => {
-            let workerId = e.srcElement.dataset.id;
-            let y_start = header.dateRange.year_start;
-            let y_end = header.dateRange.year_end;
-            let w_start = header.dateRange.week_start;
-            let w_end = header.dateRange.week_end;
-            let url = `edit/${workerId}?year_start=${y_start}&year_end=${y_end}&week_start=${w_start}&week_end=${w_end}`;
-            localStorage.setItem('header', JSON.stringify(header));
-            localStorage.setItem("list", JSON.stringify(list))
-            localStorage.setItem("values", JSON.stringify(values)) 
-            window.location = url;
-        });
-    });
-}
-
-
-/***/ }),
-
 /***/ "./js/project_edit.js":
 /*!****************************!*\
   !*** ./js/project_edit.js ***!
@@ -434,9 +374,6 @@ function dropDwonSearch() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "projectListGenerator", function() { return projectListGenerator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nameListGenerator", function() { return nameListGenerator; });
-/* harmony import */ var _components_TableComponent_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/TableComponent.js */ "./js/components/TableComponent.js");
-
-
 /**
  * This function send GET request to server and then generate DropDown menu with projects and opportunities
  * @param {Element} target 
@@ -485,7 +422,6 @@ function nameListGenerator(target, header) {
     });
 }
 
-
 function add_worker(worker_id, header) {
     let record = {
         "cid": window.location.pathname.split("/").pop(),
@@ -531,7 +467,7 @@ function addProject(header, cid, typeZpid) {
 /*!************************************!*\
   !*** ./js/tools/tableFunctions.js ***!
   \************************************/
-/*! exports provided: toMatrix, computeSum, sumOfAll, removeSelected, tableSearch */
+/*! exports provided: toMatrix, computeSum, sumOfAll, removeSelected, tableSearch, coloringResult */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -541,6 +477,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sumOfAll", function() { return sumOfAll; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeSelected", function() { return removeSelected; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tableSearch", function() { return tableSearch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coloringResult", function() { return coloringResult; });
 /**
  * Convert HTML table td data to matrix
  * @param {NodeListOf<Element>} data
@@ -638,6 +575,35 @@ function tableSearch() {
     }
 }
 
+/**
+ * 
+ * @param {String | number} workingHours 
+ * @param {String | number} planned 
+ * @returns {String} - returns colour class name
+ */
+function coloringResult(workingHours, planned) {
+    if (planned == "")
+        return
+    
+    const wHours = parseInt(workingHours);
+    const plan = parseInt(planned);
+
+    if (wHours - plan >= 5)
+        return "ultraless"
+
+    else if (wHours === plan)
+        return "optimal"
+    else if (wHours - plan >= -5)
+        return "over"
+    
+    else if (wHours - plan >= -6)
+        return "notultraover"
+
+    else if (wHours - plan >= -10)
+        return "ultraover"
+    
+    else return ""
+}
 
 /***/ }),
 

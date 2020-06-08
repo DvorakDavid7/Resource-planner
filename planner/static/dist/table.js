@@ -136,6 +136,9 @@ function HeaderComponent(header, target) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TableComponent; });
+/* harmony import */ var _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tools/tableFunctions.js */ "./js/tools/tableFunctions.js");
+
+
 /**
  * This function genereate main table body
  * @param {any} header JSON from TableModel
@@ -155,7 +158,12 @@ function TableComponent(header, list, values, target) {
             let td = document.createElement("td");
             let week = parseInt(header.weeks[i])
             td.innerHTML = values[list[j].id][week]
+
             td.classList.add("text-center")
+            let colorClass = Object(_tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__["coloringResult"])(header.workingHours[i],values[list[j].id][week])
+            if (colourClass) {
+                td.classList.add(colorClass)
+            }
             tr.appendChild(td)
         }
         target.appendChild(tr)
@@ -239,9 +247,11 @@ moveBtnGroup.addEventListener("click", navigationMove);
 
 // Functions
 
-function generateTable(tableModel, header) {
+function generateTable(tableModel, newheader) {
     workerList = tableModel.workerList;
     values = tableModel.values;
+    header = newheader;
+    
     theader.innerHTML = "";
     tbody.innerHTML = "";
     Object(_components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_3__["default"])(header, theader);
@@ -364,6 +374,7 @@ async function setDate(event) {
 
 
 async function navigationMove(event) {
+    
     const step = 10;
     let dateStart = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__["getDateOfWeek"])(header.dateRange.week_start, header.dateRange.year_start);
     let dateEnd = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__["getDateOfWeek"])(header.dateRange.week_end, header.dateRange.year_end);
@@ -392,6 +403,7 @@ async function navigationMove(event) {
         body: JSON.stringify(data),
     });
     const responseData = await response.json();
+       
     generateTable(responseData.tableModel, responseData.header);
 }
 
@@ -402,7 +414,7 @@ async function navigationMove(event) {
 /*!************************************!*\
   !*** ./js/tools/tableFunctions.js ***!
   \************************************/
-/*! exports provided: toMatrix, computeSum, sumOfAll, removeSelected, tableSearch */
+/*! exports provided: toMatrix, computeSum, sumOfAll, removeSelected, tableSearch, coloringResult */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -412,6 +424,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sumOfAll", function() { return sumOfAll; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeSelected", function() { return removeSelected; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tableSearch", function() { return tableSearch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coloringResult", function() { return coloringResult; });
 /**
  * Convert HTML table td data to matrix
  * @param {NodeListOf<Element>} data
@@ -509,6 +522,35 @@ function tableSearch() {
     }
 }
 
+/**
+ * 
+ * @param {String | number} workingHours 
+ * @param {String | number} planned 
+ * @returns {String} - returns colour class name
+ */
+function coloringResult(workingHours, planned) {
+    if (planned == "")
+        return
+    
+    const wHours = parseInt(workingHours);
+    const plan = parseInt(planned);
+
+    if (wHours - plan >= 5)
+        return "ultraless"
+
+    else if (wHours === plan)
+        return "optimal"
+    else if (wHours - plan >= -5)
+        return "over"
+    
+    else if (wHours - plan >= -6)
+        return "notultraover"
+
+    else if (wHours - plan >= -10)
+        return "ultraover"
+    
+    else return ""
+}
 
 /***/ }),
 

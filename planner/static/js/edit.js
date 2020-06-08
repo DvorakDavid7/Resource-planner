@@ -91,9 +91,15 @@ async function send_changes(changes) {
 
 
 function computeSum() {
+    let colourClass = ""
     let horizontalSum = TableFunctions.sumOfAll(header)
     document.querySelectorAll(".sum-value").forEach((element, index) => {
-        element.innerHTML = horizontalSum[index]
+        element.innerHTML = horizontalSum[index];
+        element.classList.remove("optimal", "over", "ultraover", "notultraover"); 
+        colourClass = TableFunctions.coloringResult(header.workingHours[index], horizontalSum[index]);
+        if (colourClass) {
+            element.classList.add(colourClass);
+        }
     })
 }
 

@@ -227,9 +227,10 @@ moveBtnGroup.addEventListener("click", navigationMove)
 
 // Functions
 
-function generateTable(tableModel, header) {
+function generateTable(tableModel, newheader) {
     projectList = tableModel.projectList;
     values = tableModel.values;
+    header = newheader
     theader.innerHTML = "";
     tbody.innerHTML = "";
     Object(_components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_3__["default"])(header, theader)
@@ -329,7 +330,7 @@ async function navigationMove(event) {
 /*!************************************!*\
   !*** ./js/tools/tableFunctions.js ***!
   \************************************/
-/*! exports provided: toMatrix, computeSum, sumOfAll, removeSelected, tableSearch */
+/*! exports provided: toMatrix, computeSum, sumOfAll, removeSelected, tableSearch, coloringResult */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -339,6 +340,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sumOfAll", function() { return sumOfAll; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeSelected", function() { return removeSelected; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tableSearch", function() { return tableSearch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coloringResult", function() { return coloringResult; });
 /**
  * Convert HTML table td data to matrix
  * @param {NodeListOf<Element>} data
@@ -436,6 +438,35 @@ function tableSearch() {
     }
 }
 
+/**
+ * 
+ * @param {String | number} workingHours 
+ * @param {String | number} planned 
+ * @returns {String} - returns colour class name
+ */
+function coloringResult(workingHours, planned) {
+    if (planned == "")
+        return
+    
+    const wHours = parseInt(workingHours);
+    const plan = parseInt(planned);
+
+    if (wHours - plan >= 5)
+        return "ultraless"
+
+    else if (wHours === plan)
+        return "optimal"
+    else if (wHours - plan >= -5)
+        return "over"
+    
+    else if (wHours - plan >= -6)
+        return "notultraover"
+
+    else if (wHours - plan >= -10)
+        return "ultraover"
+    
+    else return ""
+}
 
 /***/ }),
 

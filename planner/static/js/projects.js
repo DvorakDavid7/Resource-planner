@@ -33,9 +33,10 @@ moveBtnGroup.addEventListener("click", navigationMove)
 
 // Functions
 
-function generateTable(tableModel, header) {
+function generateTable(tableModel, newheader) {
     projectList = tableModel.projectList;
     values = tableModel.values;
+    header = newheader
     theader.innerHTML = "";
     tbody.innerHTML = "";
     HeaderComponent(header, theader)

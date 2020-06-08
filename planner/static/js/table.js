@@ -38,9 +38,11 @@ moveBtnGroup.addEventListener("click", navigationMove);
 
 // Functions
 
-function generateTable(tableModel, header) {
+function generateTable(tableModel, newheader) {
     workerList = tableModel.workerList;
     values = tableModel.values;
+    header = newheader;
+    
     theader.innerHTML = "";
     tbody.innerHTML = "";
     HeaderComponent(header, theader);
@@ -163,6 +165,7 @@ async function setDate(event) {
 
 
 async function navigationMove(event) {
+    
     const step = 10;
     let dateStart = getDateOfWeek(header.dateRange.week_start, header.dateRange.year_start);
     let dateEnd = getDateOfWeek(header.dateRange.week_end, header.dateRange.year_end);
@@ -191,5 +194,6 @@ async function navigationMove(event) {
         body: JSON.stringify(data),
     });
     const responseData = await response.json();
+       
     generateTable(responseData.tableModel, responseData.header);
 }

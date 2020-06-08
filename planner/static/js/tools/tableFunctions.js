@@ -94,3 +94,33 @@ export function tableSearch() {
         }
     }
 }
+
+/**
+ * 
+ * @param {String | number} workingHours 
+ * @param {String | number} planned 
+ * @returns {String} - returns colour class name
+ */
+export function coloringResult(workingHours, planned) {
+    if (planned == "")
+        return
+    
+    const wHours = parseInt(workingHours);
+    const plan = parseInt(planned);
+
+    if (wHours - plan >= 5)
+        return "ultraless"
+
+    else if (wHours === plan)
+        return "optimal"
+    else if (wHours - plan >= -5)
+        return "over"
+    
+    else if (wHours - plan >= -6)
+        return "notultraover"
+
+    else if (wHours - plan >= -10)
+        return "ultraover"
+    
+    else return ""
+}
