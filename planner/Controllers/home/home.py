@@ -61,6 +61,8 @@ def _add_user_department_to_session():
     departmentTable.get_user_details(userId)
     try:
         department = departmentTable.department[0]
-        session["user"]["department"] = "IA"    
+        if department == "EX":
+            department = "IA"
+        session["user"]["department"] = department
     except Exception as err:
         pass

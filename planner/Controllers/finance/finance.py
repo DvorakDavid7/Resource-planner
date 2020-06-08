@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request, json, jsonify, make_response, send_file
+from flask import Blueprint, request, json, jsonify, make_response, send_file, session
 from planner.Models.ProjectsListModel import ProjectListModel
 from planner.Models.FinanceModel import FinanceModel
 from planner.authentication import login_required
+from planner.Sql.WorkerTables.WorkerFtfp import WorkerFtfpTable
 
 
 finance = Blueprint("finance", __name__, template_folder="templates")
@@ -9,7 +10,10 @@ finance = Blueprint("finance", __name__, template_folder="templates")
 @finance.route('/finance', methods=["GET"])
 @login_required
 def finance_get():
-    return send_file("Controllers/finance/templates/finance.html")
+    if session["user"]["department"] != "IA":
+        return "<h3>you do not have permission to visit this page</h3>"
+    else:
+        return send_file("Controllers/finance/templates/finance.html")
 
 @finance.route('/finance/projects', methods=["GET"])
 def finance_projects():
@@ -30,18 +34,14 @@ def finance_table_data(project_id):
 @finance.route('/finance/save_changes', methods=["POST"])
 def finance_save_changes():
     receive_data = json.loads(str(request.get_data().decode('utf-8')))
-    modified_by = "ddvorak@trask.cz" # session["user"]['preferred_username']
-    sql = SqlWrite()
+    modified_by = session["user"]['preferred_username']
+    workerFtfpTable = WorkerFtfpTable()
+    print(receive_data)
     try:
         for change in receive_data:
-            print(change)
-            if change["new_value"] == "":
-                sql.delete_row_ftfp(str(change['worker_id']), int(change['project_id']), int(change['phase_id']))
-            else:
-                sql.delete_row_ftfp(str(change['worker_id']), int(change['project_id']), int(change['phase_id']))
-                sql.insert_row_ftfp(str(change['worker_id']), int(change['project_id']), int(change['phase_id']), int(change['new_value']), modified_by)
-        print("OK")
+            workerFtfpTable.delete_row(change['worker_id'], change['project_id'], change['phase_id'])
+            if change["new_value"] != "":
+                workerFtfpTable.insert_row(change['worker_id'], change['project_id'], change['phase_id'], change['new_value'], modified_by)
         return make_response(jsonify({}), 200)
-    except Exception as err:
-        print(err)
-        return make_response(jsonify({"error": err}), 400)
+    except Exception:
+        return make_response(jsonify({"error": "save error"}), 400)
