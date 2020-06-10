@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/colours.css')}}">
     <title>Resource Planner</title>
 </head>
-
+<style>
+    .form-inline {
+        display: block;
+    }
+</style>
 <body>
     <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
         <div class="row container-fluid">
@@ -17,7 +21,7 @@
                 </a>
             </div>
     
-            <div class="col-5">
+            <div class="col-md-5 col-sm">
                 <form id="range-form" class="form-inline">
                     <div class="form-group">
                         <span class="navbar-text mr-2">Range from:</span>
@@ -29,7 +33,7 @@
                 </form>
             </div>
     
-            <div class="col-4">
+            <div class="col-md-4 col-sm">
                 <form id="date-form" class="form-inline">
                     <div class="form-group">
                         <input id="data-week" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
@@ -40,7 +44,7 @@
                 </form>
             </div>
     
-            <div class="col-2">
+            <div class="col-md-2 col-sm">
                 <div id="move" class="">
                     <button name="left" id="move-left" class="btn btn-outline-primary" type="button"><----</button>
                     <button name="right" id="move-right" class="btn btn-outline-primary" type="button">----></button>
