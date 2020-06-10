@@ -11,6 +11,7 @@ from planner.authentication import login_required
 
 alocation = Blueprint("alocation", __name__)
 
+DEPARTMENTS = "('AC', 'BI', 'BR', 'BS', 'CC', 'DE', 'DM', 'ED', 'ER', 'EX', 'IA', 'IS', 'NA', 'NL', 'OS', 'PD', 'PO', 'SA', 'SD', 'SK', 'SL', 'SU', 'TR', 'ZA')"
 
 @alocation.route('/project_edit/<string:cid>', methods=["GET"])
 @login_required
@@ -38,7 +39,7 @@ def project_edit(cid):
 def project_edit_get_names():
     workerList : List[Worker] = []
     departmentTable = DepartmentTable()
-    departmentTable.get_workers_names("IA")
+    departmentTable.get_workers_names(DEPARTMENTS)
     for i, workerId in enumerate(departmentTable.workerId):
         worker = Worker(workerId, departmentTable.fullName[i], departmentTable.department[i])
         workerList.append(worker)

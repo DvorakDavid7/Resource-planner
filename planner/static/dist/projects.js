@@ -94,7 +94,35 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return HeaderComponent; });\n// HEADER\n\n/**\r\n * This function Display table Header from TableHeader Model\r\n * @param {Element} target target parent element\r\n * @param {any} header JSON from TableModel\r\n */\nfunction HeaderComponent(header, target) {\n  let weeksTr = document.createElement(\"tr\");\n  let datesTr = document.createElement(\"tr\");\n  weeksTr.appendChild(document.createElement(\"td\"));\n  datesTr.appendChild(document.createElement(\"td\"));\n\n  for (let i = 0; i < header.weeks.length; i++) {\n    let td = document.createElement(\"td\");\n    td.innerHTML = `${header.weeks[i]} (${header.workingHours[i]})`;\n    weeksTr.appendChild(td);\n  }\n\n  for (let i = 0; i < header.weeks.length; i++) {\n    let td = document.createElement(\"td\");\n    td.innerHTML = header.dates[i];\n    datesTr.appendChild(td);\n  }\n\n  target.appendChild(weeksTr);\n  target.appendChild(datesTr);\n}\n\n//# sourceURL=webpack:///./js/components/HeaderComponent.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return HeaderComponent; });
+// HEADER
+
+/**
+ * This function Display table Header from TableHeader Model
+ * @param {Element} target target parent element
+ * @param {any} header JSON from TableModel
+ */
+function HeaderComponent(header, target) {
+    let weeksTr = document.createElement("tr");
+    let datesTr = document.createElement("tr");
+
+    weeksTr.appendChild(document.createElement("td"))
+    datesTr.appendChild(document.createElement("td"))
+    for (let i = 0; i < header.weeks.length; i++) {
+        let td = document.createElement("td");
+        td.innerHTML = `${header.weeks[i]} (${header.workingHours[i]})`
+        weeksTr.appendChild(td)
+    }    
+    for (let i = 0; i < header.weeks.length; i++) {
+        let td = document.createElement("td");
+        td.innerHTML = header.dates[i]
+        datesTr.appendChild(td)
+    } 
+    target.appendChild(weeksTr);
+    target.appendChild(datesTr);
+}
+
 
 /***/ }),
 
@@ -106,7 +134,48 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return ProjectsComponent; });\n/**\r\n * This function genereate Project Overview\r\n * @param {any} header JSON from TableModel\r\n * @param {Array} list - left list of names\r\n * @param {JSON} values - values JSON\r\n * @param {Element} target - target element\r\n */\nfunction ProjectsComponent(header, list, values, target) {\n  for (let j = 0; j < list.length; j++) {\n    let tr = document.createElement(\"tr\");\n    let nameTd = document.createElement(\"td\");\n    nameTd.innerHTML = `<button data-cid='${list[j].cid}' type='button' class='btn btn-link text-left'>${list[j].fullName}</button>`;\n    nameTd.classList.add(\"item-for-search\");\n    tr.append(nameTd);\n\n    for (let i = 0; i < header.weeks.length; i++) {\n      let td = document.createElement(\"td\");\n      let week = parseInt(header.weeks[i]);\n      td.innerHTML = values[list[j].cid][week];\n      td.classList.add(\"text-center\");\n      tr.append(td);\n    }\n\n    target.append(tr);\n  } // DOM Queries\n\n\n  const nameBtns = document.querySelectorAll(\".item-for-search\"); // Event Listeners\n\n  nameBtns.forEach(button => {\n    button.addEventListener(\"click\", e => {\n      let cid = e.srcElement.dataset.cid;\n      let y_start = header.dateRange.year_start;\n      let y_end = header.dateRange.year_end;\n      let w_start = header.dateRange.week_start;\n      let w_end = header.dateRange.week_end;\n      let url = `project_edit/${cid}?year_start=${y_start}&year_end=${y_end}&week_start=${w_start}&week_end=${w_end}`;\n      window.location = url;\n    });\n  });\n}\n\n//# sourceURL=webpack:///./js/components/ProjectsComponent.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ProjectsComponent; });
+/**
+ * This function genereate Project Overview
+ * @param {any} header JSON from TableModel
+ * @param {Array} list - left list of names
+ * @param {JSON} values - values JSON
+ * @param {Element} target - target element
+ */
+function ProjectsComponent(header, list, values, target) {
+    for (let j = 0; j < list.length; j++) {
+        let tr = document.createElement("tr");
+        let nameTd = document.createElement("td");
+        nameTd.innerHTML = `<button data-cid='${list[j].cid}' type='button' class='btn btn-link text-left'>${list[j].fullName}</button>`
+        nameTd.classList.add("item-for-search")
+        tr.append(nameTd)
+        for (let i = 0; i < header.weeks.length; i++) {
+            let td = document.createElement("td");
+            let week = parseInt(header.weeks[i])
+            td.innerHTML = values[list[j].cid][week]
+            td.classList.add("text-center")
+            tr.append(td)
+        }
+        target.append(tr)
+    }
+
+    // DOM Queries
+    const nameBtns = document.querySelectorAll(".item-for-search")
+
+    // Event Listeners
+    nameBtns.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            let cid = e.srcElement.dataset.cid
+            let y_start = header.dateRange.year_start
+            let y_end = header.dateRange.year_end
+            let w_start = header.dateRange.week_start
+            let w_end = header.dateRange.week_end
+            let url = `project_edit/${cid}?year_start=${y_start}&year_end=${y_end}&week_start=${w_start}&week_end=${w_end}`
+            window.location = url
+        })
+    })    
+}
 
 /***/ }),
 
@@ -118,7 +187,330 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tools/tableFunctions.js */ \"./js/tools/tableFunctions.js\");\n/* harmony import */ var _tools_utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tools/utils.js */ \"./js/tools/utils.js\");\n/* harmony import */ var _components_ProjectsComponent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/ProjectsComponent.js */ \"./js/components/ProjectsComponent.js\");\n/* harmony import */ var _components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/HeaderComponent.js */ \"./js/components/HeaderComponent.js\");\n\n\n\n // Data Parsers\n\nlet header = JSON.parse(document.querySelector(\"#dataholder\").dataset.header);\nlet tableModel = JSON.parse(document.querySelector(\"#dataholder\").dataset.projecttablemodel); // def variables\n\nlet projectList = tableModel.projectList;\nlet values = tableModel.values; // DOM queries\n\nconst theader = document.querySelector(\"#header\");\nconst tbody = document.querySelector(\"#body\");\nconst rangeForm = document.querySelector(\"#range-form\");\nconst dateForm = document.querySelector(\"#date-form\");\nconst moveBtnGroup = document.querySelector(\"#move\");\nconst searchInput = document.querySelector(\"#search\"); // Event listeners\n\nwindow.addEventListener('load', generateTable(tableModel, header));\nsearchInput.addEventListener(\"keyup\", _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__[\"tableSearch\"]); // NAVIGATION\n\nrangeForm.addEventListener(\"submit\", setRange);\ndateForm.addEventListener(\"submit\", setDate);\nmoveBtnGroup.addEventListener(\"click\", navigationMove); // Functions\n\nfunction generateTable(tableModel, newheader) {\n  projectList = tableModel.projectList;\n  values = tableModel.values;\n  header = newheader;\n  theader.innerHTML = \"\";\n  tbody.innerHTML = \"\";\n  Object(_components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_3__[\"default\"])(header, theader);\n  Object(_components_ProjectsComponent_js__WEBPACK_IMPORTED_MODULE_2__[\"default\"])(header, projectList, values, tbody);\n}\n\nasync function setRange(event) {\n  event.preventDefault();\n  let [weekFrom, yearFrom] = document.querySelector(\"#data-range-from\").value.split(\"/\");\n  let [weekTo, yearTo] = document.querySelector(\"#data-range-to\").value.split(\"/\");\n  let data = {\n    \"dateRange\": {\n      \"year_start\": yearFrom,\n      \"year_end\": yearTo,\n      \"week_start\": weekFrom,\n      \"week_end\": weekTo\n    },\n    \"nameList\": projectList\n  };\n  const response = await fetch('/projects/navigation/set_range', {\n    method: 'POST',\n    body: JSON.stringify(data)\n  });\n  const responseData = await response.json();\n  generateTable(responseData.tableModel, responseData.header);\n}\n\nasync function setDate(event) {\n  event.preventDefault();\n  let weekAndYear = document.querySelector(\"#data-week\").value;\n  let dateString = document.querySelector(\"#data-date\").value;\n  let year,\n      weekNumber = \"\";\n\n  if (weekAndYear != \"\") {\n    [weekNumber, year] = weekAndYear.split(\"/\");\n  } else if (dateString != \"\") {\n    let [month, day, y] = dateString.split(\"/\");\n    year = y;\n    let date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day)); // the month is 0-indexed        \n\n    weekNumber = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"ISO8601_week_number\"])(date).toString();\n  }\n\n  let data = {\n    \"date\": {\n      \"weekNumber\": weekNumber,\n      \"year\": year\n    },\n    \"nameList\": projectList\n  };\n  const response = await fetch('/projects/navigation/set_week', {\n    method: 'POST',\n    body: JSON.stringify(data)\n  });\n  const responseData = await response.json();\n  generateTable(responseData.tableModel, responseData.header);\n}\n\nasync function navigationMove(event) {\n  const step = 10;\n  let dateStart = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"getDateOfWeek\"])(header.dateRange.week_start, header.dateRange.year_start);\n  let dateEnd = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"getDateOfWeek\"])(header.dateRange.week_end, header.dateRange.year_end);\n  let dateStartPlus = new Date();\n  let dateEndPlus = new Date();\n\n  if (event.srcElement.name === \"right\") {\n    dateStartPlus = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"add_weeks\"])(dateStart, step);\n    dateEndPlus = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"add_weeks\"])(dateEnd, step);\n  } else if (event.srcElement.name === \"left\") {\n    dateStartPlus = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"sub_weeks\"])(dateStart, step);\n    dateEndPlus = Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"sub_weeks\"])(dateEnd, step);\n  }\n\n  let data = {\n    \"dateRange\": {\n      \"year_start\": dateStartPlus.getFullYear().toString(),\n      \"year_end\": dateEndPlus.getFullYear().toString(),\n      \"week_start\": Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"ISO8601_week_number\"])(dateStartPlus).toString(),\n      \"week_end\": Object(_tools_utils_js__WEBPACK_IMPORTED_MODULE_1__[\"ISO8601_week_number\"])(dateEndPlus).toString()\n    },\n    \"nameList\": projectList\n  };\n  const response = await fetch('/projects/navigation/set_range', {\n    method: 'POST',\n    body: JSON.stringify(data)\n  });\n  const responseData = await response.json();\n  generateTable(responseData.tableModel, responseData.header);\n}\n\n//# sourceURL=webpack:///./js/projects.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tools/tableFunctions.js */ "./js/tools/tableFunctions.js");
+/* harmony import */ var _components_ProjectsComponent_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/ProjectsComponent.js */ "./js/components/ProjectsComponent.js");
+/* harmony import */ var _components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/HeaderComponent.js */ "./js/components/HeaderComponent.js");
+/* harmony import */ var _tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./tools/navigationFunctions.js */ "./js/tools/navigationFunctions.js");
+
+
+
+
+
+// Data Parsers
+let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
+let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.projecttablemodel);
+// def variables
+let projectList = tableModel.projectList
+let values = tableModel.values
+
+
+// DOM queries
+const theader = document.querySelector("#header");
+const tbody = document.querySelector("#body")
+const rangeForm = document.querySelector("#range-form");
+const dateForm = document.querySelector("#date-form");
+const moveBtnGroup = document.querySelector("#move");
+const searchInput = document.querySelector("#search");
+const navbar = document.querySelector(".navbar");
+
+
+// Event listeners
+
+window.addEventListener('load', generateTable(tableModel, header));
+searchInput.addEventListener("keyup", _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__["tableSearch"]);
+// NAVIGATION
+rangeForm.addEventListener("submit", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_3__["setRange"])(e, projectList, '/projects/navigation/set_range'));
+dateForm.addEventListener("submit", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_3__["setDate"])(e, projectList, '/projects/navigation/set_week'));
+moveBtnGroup.addEventListener("click", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_3__["navigationMove"])(e, projectList, header, '/projects/navigation/set_range'));
+
+navbar.addEventListener("formEvent", e => generateTable(e.detail.tableModel, e.detail.header));
+
+// Functions
+
+function generateTable(tableModel, newheader) {
+    projectList = tableModel.projectList;
+    values = tableModel.values;
+    header = newheader
+
+    theader.innerHTML = "";
+    tbody.innerHTML = "";
+    Object(_components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_2__["default"])(header, theader)
+    Object(_components_ProjectsComponent_js__WEBPACK_IMPORTED_MODULE_1__["default"])(header, projectList, values, tbody)
+}
+
+
+/***/ }),
+
+/***/ "./js/tools/navigationFunctions.js":
+/*!*****************************************!*\
+  !*** ./js/tools/navigationFunctions.js ***!
+  \*****************************************/
+/*! exports provided: setRange, setDate, navigationMove, setRangeUrl, setDateUrl, navigationMoveUrl */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setRange", function() { return setRange; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDate", function() { return setDate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "navigationMove", function() { return navigationMove; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setRangeUrl", function() { return setRangeUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDateUrl", function() { return setDateUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "navigationMoveUrl", function() { return navigationMoveUrl; });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./js/tools/utils.js");
+/* harmony import */ var _vaidators_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./vaidators.js */ "./js/tools/vaidators.js");
+
+
+
+
+async function setRange(event, list, apiEndpoint) {
+    event.preventDefault();
+    let inputFrom = document.querySelector("#data-range-from");
+    let inputTo = document.querySelector("#data-range-to");
+
+    // validation
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(inputFrom, inputTo)) {
+        alert("Field(s) are empty");
+        return;
+    }
+
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+        alert("Bad format please be sure that data are in week/year format")
+        return
+    }
+
+    let [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
+    let [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
+
+    let data = {
+        "dateRange": {
+            "year_start": yearFrom,
+            "year_end": yearTo,
+            "week_start": weekFrom,
+            "week_end": weekTo
+        },
+        "list": list
+    }
+
+    const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    if (response.status !== 200) {
+        alert(responseData.err)
+        return
+    }
+    const formEvent = new CustomEvent("formEvent", {
+        detail: {
+            tableModel: responseData.tableModel,
+            header: responseData.header
+        }
+    }); 
+    document.querySelector(".navbar").dispatchEvent(formEvent);
+}
+
+
+async function setDate(event, list, apiEndpoint) {
+    event.preventDefault();
+    let weekAndYear = document.querySelector("#data-week");
+    let dateString = document.querySelector("#data-date");
+    let year, weekNumber = ""
+
+    // validation
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(weekAndYear, dateString)) {
+        alert("Field(s) are empty");
+        return;
+    }
+
+    if (weekAndYear.value != "" && dateString.value === "") {
+        if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([weekAndYear.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("the week/year field has incorrect format")
+            return
+        }
+        [weekNumber, year] = weekAndYear.value.split("/")
+    }
+    else if (weekAndYear.value === "" && dateString.value != "") {
+        if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([dateString.value], /^[0-9]{1,2}\/[0-1]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("the date field has incorrect format")
+            return
+        }
+        let [day, month, y] = dateString.value.split("/");
+        year = y;       
+        let date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));  // the month is 0-indexed        
+        weekNumber = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(date).toString();
+    }
+    else {
+        alert("Enter either week/year or date, not both")
+        return
+    }
+
+    let data = {
+        "date": {
+            "weekNumber": weekNumber,
+            "year": year
+        },
+        "list": list
+    };
+    const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+    if (response.status !== 200) {
+        alert(responseData.err);
+        return;
+    }
+    const responseData = await response.json();
+    const formEvent = new CustomEvent("formEvent", {
+        detail: {
+            tableModel: responseData.tableModel,
+            header: responseData.header
+        }
+    });
+    document.querySelector(".navbar").dispatchEvent(formEvent);
+}
+
+
+async function navigationMove(event, list, header, apiEndpoint) {
+    const step = 10;
+    let dateStart = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getDateOfWeek"])(header.dateRange.week_start, header.dateRange.year_start);
+    let dateEnd = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getDateOfWeek"])(header.dateRange.week_end, header.dateRange.year_end);
+    let dateStartPlus = new Date();
+    let dateEndPlus = new Date();
+
+    if (event.srcElement.name === "right") {
+        dateStartPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["add_weeks"])(dateStart, step);
+        dateEndPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["add_weeks"])(dateEnd, step);
+    }
+    else if (event.srcElement.name === "left") {
+        dateStartPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["sub_weeks"])(dateStart, step);
+        dateEndPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["sub_weeks"])(dateEnd, step);
+    }
+    let data = {
+        "dateRange": {
+            "year_start": dateStartPlus.getFullYear().toString(),
+            "year_end":  dateEndPlus.getFullYear().toString(),
+            "week_start": Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateStartPlus).toString(),
+            "week_end": Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateEndPlus).toString(),
+        },
+        "list": list
+    }
+    const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    const formEvent = new CustomEvent("formEvent", {
+        detail: {
+            tableModel: responseData.tableModel,
+            header: responseData.header
+        }
+    });
+    document.querySelector(".navbar").dispatchEvent(formEvent);
+}
+
+// Navigation based on URL
+
+function setRangeUrl(event) {
+    event.preventDefault();
+    let inputFrom = document.querySelector("#data-range-from");
+    let inputTo = document.querySelector("#data-range-to");
+
+    // validation
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(inputFrom, inputTo)) {
+        alert("Field(s) are empty");
+        return;
+    }
+
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+        alert("Bad format please be sure that data are in week/year format")
+        return
+    }
+
+    let [weekFrom, yearFrom] = inputFrom.value.split("/");
+    let [weekTo, yearTo] = inputTo.value.split("/");
+    let search = `?year_start=${yearFrom}&year_end=${yearTo}&week_start=${weekFrom}&week_end=${weekTo}`
+    window.location = window.location.pathname + search
+}
+
+
+async function setDateUrl(event, apiEndpoint) {
+    event.preventDefault();
+    let weekAndYear = document.querySelector("#data-week");
+    let dateString = document.querySelector("#data-date");
+    let year, weekNumber = ""
+
+    // validation
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(weekAndYear, dateString)) {
+        alert("Field(s) are empty");
+        return;
+    }
+
+    if (weekAndYear.value != "" && dateString.value === "") {
+        if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([weekAndYear.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("the week/year field has incorrect format")
+            return
+        }
+        [weekNumber, year] = weekAndYear.value.split("/")
+    }
+    else if (weekAndYear.value === "" && dateString.value != "") {
+        if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([dateString.value], /^[0-9]{1,2}\/[0-1]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("the date field has incorrect format")
+            return
+        }
+        let [day, month, y] = dateString.value.split("/");
+        year = y;       
+        let date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));  // the month is 0-indexed        
+        weekNumber = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(date).toString();
+    }
+    else {
+        alert("Enter either week/year or date, not both")
+        return
+    }
+
+    let data = {
+        "date": {
+            "weekNumber": weekNumber,
+            "year": year
+        }
+    };
+    const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    if (response.status !== 200) {
+        alert(responseData.err);
+        return;
+    }
+    let {year_start, year_end, week_start, week_end} = responseData.dateRange;
+    let search = `?year_start=${year_start}&year_end=${year_end}&week_start=${week_start}&week_end=${week_end}`;
+    window.location = window.location.pathname + search;
+}
+
+function navigationMoveUrl(event, header) {
+    const step = 10;
+    let dateStart = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getDateOfWeek"])(header.dateRange.week_start, header.dateRange.year_start);
+    let dateEnd = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getDateOfWeek"])(header.dateRange.week_end, header.dateRange.year_end);
+    let dateStartPlus = new Date();
+    let dateEndPlus = new Date();
+
+    if (event.srcElement.name === "right") {
+        dateStartPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["add_weeks"])(dateStart, step);
+        dateEndPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["add_weeks"])(dateEnd, step);
+    }
+    else if (event.srcElement.name === "left") {
+        dateStartPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["sub_weeks"])(dateStart, step);
+        dateEndPlus = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["sub_weeks"])(dateEnd, step);
+    }            
+    let year_start = dateStartPlus.getFullYear().toString();
+    let year_end =  dateEndPlus.getFullYear().toString();
+    let week_start = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateStartPlus).toString();
+    let week_end = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateEndPlus).toString();
+
+    let search = `?year_start=${year_start}&year_end=${year_end}&week_start=${week_start}&week_end=${week_end}`;
+    window.location = window.location.pathname + search;
+}
 
 /***/ }),
 
@@ -130,7 +522,139 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _too
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"toMatrix\", function() { return toMatrix; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"computeSum\", function() { return computeSum; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"sumOfAll\", function() { return sumOfAll; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"removeSelected\", function() { return removeSelected; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tableSearch\", function() { return tableSearch; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"coloringResult\", function() { return coloringResult; });\n/**\r\n * Convert HTML table td data to matrix\r\n * @param {NodeListOf<Element>} data\r\n * @returns {Array}\r\n */\nfunction toMatrix(data, header) {\n  let result = [],\n      row = [];\n  let counter = 0;\n\n  if (!data.length) {\n    let nullRow = [];\n\n    for (let i = 0; i < header.weeks.length; i++) {\n      nullRow.push(0);\n    }\n\n    result.push(nullRow);\n    return result;\n  }\n\n  for (let i = 0; i < data.length; i++) {\n    let value = data[i].innerHTML;\n    row.push(value);\n    counter++;\n\n    if (counter === header.weeks.length) {\n      result.push(row);\n      row = [];\n      counter = 0;\n    }\n  }\n\n  return result;\n}\n/**\r\n * Compute vertical sum from given matrix\r\n * @param {Array} matrix\r\n * @returns {Array} \r\n */\n\nfunction computeSum(matrix) {\n  let result = [];\n\n  for (let j = 0; j < matrix[0].length; j++) {\n    let sum = 0;\n\n    for (let i = 0; i < matrix.length; i++) {\n      let value = matrix[i][j] != \"\" ? parseInt(matrix[i][j]) : 0;\n      sum += value;\n    }\n\n    result.push(sum);\n  }\n\n  return result;\n}\n/**Compute vertical sum of Projects and Opportunities */\n\nfunction sumOfAll(header) {\n  let projectData = document.querySelectorAll(\".project-data\");\n  let opportunityData = document.querySelectorAll(\".opportunity-data\");\n  let matr1,\n      matr2,\n      masterMatrix = [];\n  matr1 = toMatrix(projectData, header);\n  matr2 = toMatrix(opportunityData, header);\n  masterMatrix.push(computeSum(matr1));\n  masterMatrix.push(computeSum(matr2));\n  return computeSum(masterMatrix);\n}\n/**function remove selected area */\n\nfunction removeSelected() {\n  document.querySelectorAll(\".selected\").forEach(element => {\n    element.classList.remove(\"selected\");\n    document.querySelector(\"#multi-insert\").blur();\n  });\n}\n/**\r\n * use for searching in main tables\r\n * looking for elements with item-for-search class\r\n */\n\nfunction tableSearch() {\n  let input, filter, table, tr, td, i, txtValue;\n  input = document.getElementById(\"search\");\n  filter = input.value.toUpperCase();\n  table = document.getElementById(\"table\");\n  tr = table.getElementsByTagName(\"tr\");\n\n  for (i = 0; i < tr.length; i++) {\n    td = tr[i].getElementsByClassName(\"item-for-search\")[0];\n\n    if (td) {\n      txtValue = td.textContent || td.innerText;\n\n      if (txtValue.toUpperCase().indexOf(filter) > -1) {\n        tr[i].style.display = \"\";\n      } else {\n        tr[i].style.display = \"none\";\n      }\n    }\n  }\n}\n/**\r\n * \r\n * @param {String | number} workingHours \r\n * @param {String | number} planned \r\n * @returns {String} - returns colour class name\r\n */\n\nfunction coloringResult(workingHours, planned) {\n  if (planned == \"\") return;\n  const wHours = parseInt(workingHours);\n  const plan = parseInt(planned);\n  if (wHours - plan >= 5) return \"ultraless\";else if (wHours === plan) return \"optimal\";else if (wHours - plan >= -5) return \"over\";else if (wHours - plan >= -6) return \"notultraover\";else if (wHours - plan >= -10) return \"ultraover\";else return \"\";\n}\n\n//# sourceURL=webpack:///./js/tools/tableFunctions.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toMatrix", function() { return toMatrix; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "computeSum", function() { return computeSum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sumOfAll", function() { return sumOfAll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeSelected", function() { return removeSelected; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tableSearch", function() { return tableSearch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coloringResult", function() { return coloringResult; });
+/**
+ * Convert HTML table td data to matrix
+ * @param {NodeListOf<Element>} data
+ * @returns {Array}
+ */
+function toMatrix(data, header) {    
+    let result = [], row = [];
+    let counter = 0;
+    
+    if (!data.length) {
+        let nullRow = []
+        for (let i = 0; i < header.weeks.length; i++) {
+            nullRow.push(0)
+        }
+        result.push(nullRow);
+        return result;
+    }
+    for (let i = 0; i < data.length; i++) {
+        let value = data[i].innerHTML
+        row.push(value)
+        counter++
+        if (counter === header.weeks.length) {
+            result.push(row)
+            row = []
+            counter = 0
+        }
+    }
+    return result 
+}
+
+/**
+ * Compute vertical sum from given matrix
+ * @param {Array} matrix
+ * @returns {Array} 
+ */
+function computeSum(matrix) {
+    let result = []
+    for (let j = 0; j < matrix[0].length; j++) {
+        let sum = 0
+        for (let i = 0; i < matrix.length; i++) {
+            let value = matrix[i][j] != "" ? parseInt(matrix[i][j]) : 0
+            sum += value
+        }
+        result.push(sum)
+    }
+    return result
+}
+
+/**Compute vertical sum of Projects and Opportunities */
+function sumOfAll(header) {
+    let projectData = document.querySelectorAll(".project-data");
+    let opportunityData = document.querySelectorAll(".opportunity-data");
+    let matr1, matr2, masterMatrix = [];
+
+    matr1 = toMatrix(projectData, header);
+    matr2 = toMatrix(opportunityData, header);
+   
+    masterMatrix.push(computeSum(matr1))
+    masterMatrix.push(computeSum(matr2))
+
+    return computeSum(masterMatrix)
+}
+
+
+/**function remove selected area */
+function removeSelected() {
+    document.querySelectorAll(".selected").forEach((element) => {
+        element.classList.remove("selected"); 
+        document.querySelector("#multi-insert").blur()
+    });
+}
+
+/**
+ * use for searching in main tables
+ * looking for elements with item-for-search class
+ */
+function tableSearch() {     
+    let input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("search");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("table");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByClassName("item-for-search")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+          }
+          else {
+              tr[i].style.display = "none";
+          }
+        }
+    }
+}
+
+/**
+ * 
+ * @param {String | number} workingHours 
+ * @param {String | number} planned 
+ * @returns {String} - returns colour class name
+ */
+function coloringResult(workingHours, planned) {
+    if (planned == "")
+        return
+    
+    const wHours = parseInt(workingHours);
+    const plan = parseInt(planned);
+
+    if (wHours - plan >= 5)
+        return "ultraless"
+
+    else if (wHours === plan)
+        return "optimal"
+    else if (wHours - plan >= -5)
+        return "over"
+    
+    else if (wHours - plan >= -6)
+        return "notultraover"
+
+    else if (wHours - plan >= -10)
+        return "ultraover"
+    
+    else return ""
+}
 
 /***/ }),
 
@@ -142,8 +666,125 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"get_year\", function() { return get_year; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ISO8601_week_number\", function() { return ISO8601_week_number; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"getDateOfWeek\", function() { return getDateOfWeek; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"add_weeks\", function() { return add_weeks; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"sub_weeks\", function() { return sub_weeks; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dropDwonSearch\", function() { return dropDwonSearch; });\n/**\r\n * \r\n * @param {string} week \r\n */\nfunction get_year(week, header) {\n  if (header.dateRange.year_start == header.dateRange.year_end || parseInt(week) > parseInt(header.weeks[header.weeks.length - 1])) {\n    return header.dateRange.year_start;\n  } else {\n    return header.dateRange.year_end;\n  }\n}\n/**\r\n * Convert Date to week number\r\n * @param {Date} dt\r\n * @returns {Number} returns week number for given date\r\n */\n\nfunction ISO8601_week_number(dt) {\n  const today = dt;\n  const firstDayOfYear = new Date(today.getFullYear(), 0, 1);\n  const pastDaysOfYear = (today - firstDayOfYear) / 86400000;\n  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);\n}\n/**\r\n * \r\n * @param {Number} weekNumber \r\n * @param {Number} year \r\n * @returns {Date} returns Date based on given week and year\r\n */\n\nfunction getDateOfWeek(weekNumber, year) {\n  // Create a date object starting january first of chosen year, plus\n  // the number of days in a week multiplied by the week number to get the right date.\n  return new Date(year, 0, 1 + (weekNumber - 1) * 7);\n}\n/**\r\n * \r\n * @param {Date} dt Base Date\r\n * @param {Number} n step in weeks\r\n * @returns {Date} returns dt + n weeks\r\n */\n\nfunction add_weeks(dt, n) {\n  return new Date(dt.setDate(dt.getDate() + n * 7));\n}\n/**\r\n * \r\n * @param {Date} dt Base Date\r\n * @param {Number} n step in weeks\r\n * @returns {Date} returns dt - n weeks\r\n */\n\nfunction sub_weeks(dt, n) {\n  return new Date(dt.setDate(dt.getDate() - n * 7));\n}\n/**\r\n * \r\n */\n\nfunction dropDwonSearch() {\n  let value = $(this).val().toLowerCase();\n  $(\".dropdown-menu a\").filter(function () {\n    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);\n  });\n}\n\n//# sourceURL=webpack:///./js/tools/utils.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_year", function() { return get_year; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ISO8601_week_number", function() { return ISO8601_week_number; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDateOfWeek", function() { return getDateOfWeek; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_weeks", function() { return add_weeks; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sub_weeks", function() { return sub_weeks; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dropDwonSearch", function() { return dropDwonSearch; });
+
+/**
+ * 
+ * @param {string} week 
+ */
+function get_year(week, header) {
+    if (header.dateRange.year_start == header.dateRange.year_end || parseInt(week) > parseInt(header.weeks[header.weeks.length - 1])){
+        return header.dateRange.year_start;
+    } else {
+        return header.dateRange.year_end;
+    }
+}
+
+/**
+ * Convert Date to week number
+ * @param {Date} dt
+ * @returns {Number} returns week number for given date
+ */
+function ISO8601_week_number(dt) {
+    const today = dt
+    const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+    const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+/**
+ * 
+ * @param {Number} weekNumber 
+ * @param {Number} year 
+ * @returns {Date} returns Date based on given week and year
+ */
+function getDateOfWeek(weekNumber,year){
+    // Create a date object starting january first of chosen year, plus
+    // the number of days in a week multiplied by the week number to get the right date.
+    return new Date(year, 0, 1+((weekNumber-1)*7));
+}
+
+/**
+ * 
+ * @param {Date} dt Base Date
+ * @param {Number} n step in weeks
+ * @returns {Date} returns dt + n weeks
+ */
+function add_weeks(dt, n) {
+    return new Date(dt.setDate(dt.getDate() + (n * 7)));      
+}
+
+/**
+ * 
+ * @param {Date} dt Base Date
+ * @param {Number} n step in weeks
+ * @returns {Date} returns dt - n weeks
+ */
+function sub_weeks(dt, n) {
+    return new Date(dt.setDate(dt.getDate() - (n * 7)));      
+}
+
+
+/**
+ * 
+ */
+function dropDwonSearch() {
+    let value = $(this).val().toLowerCase();
+    $(".dropdown-menu a").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+}
+
+/***/ }),
+
+/***/ "./js/tools/vaidators.js":
+/*!*******************************!*\
+  !*** ./js/tools/vaidators.js ***!
+  \*******************************/
+/*! exports provided: emptyFieldsValidation, matchFormatValidation */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "emptyFieldsValidation", function() { return emptyFieldsValidation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "matchFormatValidation", function() { return matchFormatValidation; });
+
+/**
+ * @param  {...HTMLElement} fields
+ * @returns {Boolean}
+ */
+function emptyFieldsValidation(...fields) {
+    for (let field of fields) {
+        if (field.value !== "") {
+            return true
+        }
+    }
+    return false
+}
+
+
+/**
+ * @param {Array<String>} value 
+ * @param {RegExp} format
+ * @returns {Boolean} Return true if each value of values match the format RegEx othervise return false
+ */
+function matchFormatValidation(values, format) {
+    for (let value of values) {
+        if (!format.test(value)) {
+            return false
+        }
+    }
+    return true
+}
+
 
 /***/ })
 
 /******/ });
+//# sourceMappingURL=projects.js.map

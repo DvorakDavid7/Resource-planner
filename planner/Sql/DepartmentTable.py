@@ -19,7 +19,6 @@ class DepartmentTable(SqlMain):
 
         query = f'''SELECT DISTINCT [PracovnikID], [OddeleniID], [CeleJmeno] FROM {self.DATA_RESOURCE}
                 WHERE {condition} ORDER BY ([CeleJmeno])'''
-        
         table = self.cursor.execute(query)
         for row in table:
             self.workerId.append(row[0])

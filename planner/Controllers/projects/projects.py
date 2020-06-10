@@ -29,41 +29,46 @@ def projects_get():
 @projects.route('/projects/navigation/set_range', methods=["POST"])
 def projects_navigation_range():
     request_data = json.loads(str(request.get_data().decode('utf-8')))
-    
-    date_range = DateRange(**request_data["dateRange"])
+    try:
+        date_range = DateRange(**request_data["dateRange"])
 
-    headerModel = HeaderModel()
-    headerModel.set_dateRange(date_range)
-    headerModel.set_fromDatabese()
+        headerModel = HeaderModel()
+        headerModel.set_dateRange(date_range)
+        headerModel.set_fromDatabese()
 
-    projectTableModel = ProjectTableModel(headerModel)
-    for record in request_data["nameList"]:
-        projectTableModel.projectList.append(Project(record["cid"], record["fullName"], record["projectManager"]))
-    projectTableModel.set_values()
+        projectTableModel = ProjectTableModel(headerModel)
+        for record in request_data["list"]:
+            projectTableModel.projectList.append(Project(record["cid"], record["fullName"], record["projectManager"]))
+        projectTableModel.set_values()
 
-    result = {
-        "tableModel": projectTableModel.toDict(),
-        "header": headerModel.toDict()
-    }
-    return make_response(jsonify(result), 200)
+        result = {
+            "tableModel": projectTableModel.toDict(),
+            "header": headerModel.toDict()
+        }
+        return make_response(jsonify(result), 200)
+    except Exception:
+        return make_response(jsonify({"err": "Server got bad data"}), 400)
 
 
 @projects.route('/projects/navigation/set_week', methods=["POST"])
 def projects_navigation_week():
     request_data = json.loads(str(request.get_data().decode('utf-8')))
     date_range = DateRange("", "", "", "")
-    date_range.set_basedOnWeekNumber(**request_data["date"])
-    
-    header = HeaderModel()
-    header.set_dateRange(date_range)
-    header.set_fromDatabese()
+    try:
+        date_range.set_basedOnWeekNumber(**request_data["date"])
+        
+        header = HeaderModel()
+        header.set_dateRange(date_range)
+        header.set_fromDatabese()
 
-    projectTableModel = ProjectTableModel(header)
-    for record in request_data["nameList"]:
-        projectTableModel.projectList.append(Project(**record)) 
-    projectTableModel.set_values()    
-    result = {
-        "tableModel": projectTableModel.toDict(),
-        "header": header.toDict()
-    }
-    return make_response(jsonify(result), 200)
+        projectTableModel = ProjectTableModel(header)
+        for record in request_data["list"]:
+            projectTableModel.projectList.append(Project(**record)) 
+        projectTableModel.set_values()    
+        result = {
+            "tableModel": projectTableModel.toDict(),
+            "header": header.toDict()
+        }
+        return make_response(jsonify(result), 200)
+    except Exception:
+        return make_response(jsonify({"err": "Server got bad data"}), 400)

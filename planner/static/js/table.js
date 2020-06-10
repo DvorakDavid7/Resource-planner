@@ -1,7 +1,9 @@
 import { tableSearch } from "./tools/tableFunctions.js";
-import { ISO8601_week_number, getDateOfWeek, add_weeks, sub_weeks, dropDwonSearch } from "./tools/utils.js"
+import { dropDwonSearch } from "./tools/utils.js"
 import TableComponent from "./components/TableComponent.js"
 import HeaderComponent from "./components/HeaderComponent.js"
+import { setRange, setDate, navigationMove } from "./tools/navigationFunctions.js"
+
 
 // data parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
@@ -20,20 +22,23 @@ const moveBtnGroup = document.querySelector("#move");
 const deepSearchForm = document.querySelector("#form-deep-search")
 const inputSearch = document.querySelector("#myInput");
 const dropbtn = document.querySelector(".dropdown-toggle");
-
+const navbar = document.querySelector(".navbar");
 
 // Event listeners
 
-window.addEventListener('load', generateTable(tableModel, header));
+window.addEventListener('load', () => generateTable(tableModel, header));
 searchInput.addEventListener("keyup", tableSearch);
 departmentForm.addEventListener("submit", setDepartment);
 deepSearchForm.addEventListener("submit", deepSearch);
 inputSearch.addEventListener("keyup", dropDwonSearch);
 dropbtn.addEventListener("click", groupListGenerator);
 // NAVIGATION
-rangeForm.addEventListener("submit", setRange);
-dateForm.addEventListener("submit", setDate);
-moveBtnGroup.addEventListener("click", navigationMove);
+rangeForm.addEventListener("submit", e => setRange(e, workerList, '/table/navigation/set_range'));
+dateForm.addEventListener("submit", e => setDate(e, workerList, '/table/navigation/set_week'));
+moveBtnGroup.addEventListener("click", e => navigationMove(e, workerList, header, '/table/navigation/set_range'));
+
+navbar.addEventListener("formEvent", e => generateTable(e.detail.tableModel, e.detail.header));
+
 
 
 // Functions
@@ -82,6 +87,10 @@ async function chooseGroup(e) {
 async function setDepartment(event) {
     event.preventDefault();
     let department = document.querySelector("#department-value").value;
+    if (department.length === 0) {
+        alert("Invalid department");
+        return;
+    }
     let data = {
         "department": department,
         "header": header
@@ -98,6 +107,10 @@ async function setDepartment(event) {
 async function deepSearch(event) {
     event.preventDefault();
     let searchString = document.querySelector("#search").value;
+    if (searchString.length === 0) {
+        alert("Invalid input for deep search");
+        return;
+    }
     let data = {
         "search": searchString,
         "header": header
@@ -107,93 +120,5 @@ async function deepSearch(event) {
         body: JSON.stringify(data),
     });
     const responseData = await response.json();
-    generateTable(responseData.tableModel, responseData.header);
-}
-
-
-async function setRange(event) {
-    event.preventDefault();
-    let [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
-    let [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
-    let data = {
-        "dateRange": {
-            "year_start": yearFrom,
-            "year_end": yearTo,
-            "week_start": weekFrom,
-            "week_end": weekTo
-        },
-        "nameList": workerList
-    }
-    const response = await fetch('/table/navigation/set_range', {
-        method: 'POST',
-        body: JSON.stringify(data),
-    });
-    const responseData = await response.json();
-    generateTable(responseData.tableModel, responseData.header);
-}
-
-
-async function setDate(event) {
-    event.preventDefault();
-    let weekAndYear = document.querySelector("#data-week").value;
-    let dateString = document.querySelector("#data-date").value;
-    let year, weekNumber = ""
-
-    if (weekAndYear != "") {
-        [weekNumber, year] = weekAndYear.split("/")
-    }
-    else if (dateString != "") {
-        let [month, day, y] = dateString.split("/");
-        year = y;       
-        let date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));  // the month is 0-indexed        
-        weekNumber = ISO8601_week_number(date).toString();
-    }
-    let data = {
-        "date": {
-            "weekNumber": weekNumber,
-            "year": year
-        },
-        "nameList": workerList
-    };
-    const response = await fetch('/table/navigation/set_week', {
-        method: 'POST',
-        body: JSON.stringify(data),
-    });
-    const responseData = await response.json();
-    generateTable(responseData.tableModel, responseData.header);
-}
-
-
-async function navigationMove(event) {
-    
-    const step = 10;
-    let dateStart = getDateOfWeek(header.dateRange.week_start, header.dateRange.year_start);
-    let dateEnd = getDateOfWeek(header.dateRange.week_end, header.dateRange.year_end);
-    let dateStartPlus = new Date();
-    let dateEndPlus = new Date();
-
-    if (event.srcElement.name === "right") {
-        dateStartPlus = add_weeks(dateStart, step);
-        dateEndPlus = add_weeks(dateEnd, step);
-    }
-    else if (event.srcElement.name === "left") {
-        dateStartPlus = sub_weeks(dateStart, step);
-        dateEndPlus = sub_weeks(dateEnd, step);
-    }
-    let data = {
-        "dateRange": {
-            "year_start": dateStartPlus.getFullYear().toString(),
-            "year_end":  dateEndPlus.getFullYear().toString(),
-            "week_start": ISO8601_week_number(dateStartPlus).toString(),
-            "week_end": ISO8601_week_number(dateEndPlus).toString(),
-        },
-        "nameList": workerList
-    }
-    const response = await fetch('/table/navigation/set_range', {
-        method: 'POST',
-        body: JSON.stringify(data),
-    });
-    const responseData = await response.json();
-       
     generateTable(responseData.tableModel, responseData.header);
 }

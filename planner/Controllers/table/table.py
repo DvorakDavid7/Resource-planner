@@ -89,41 +89,47 @@ def table_set_group() -> Response:
 @table.route('/table/navigation/set_range', methods=["POST"])
 def table_navigation_range() -> Response:
     request_data = json.loads(str(request.get_data().decode('utf-8')))
-    date_range = DateRange(**request_data["dateRange"])
-    header = HeaderModel()
-    header.set_dateRange(date_range)
-    header.set_fromDatabese()
+    try:
+        date_range = DateRange(**request_data["dateRange"])
+        header = HeaderModel()
+        header.set_dateRange(date_range)
+        header.set_fromDatabese()
 
-    tableModel = TableModel(header)
-    for record in request_data["nameList"]:
-        tableModel.workerList.append(Worker(**record)) 
-    tableModel.set_values()    
-    result = {
-        "tableModel": tableModel.toDict(),
-        "header": header.toDict()
-    }
-    return make_response(jsonify(result), 200)
+        tableModel = TableModel(header)
+        for record in request_data["list"]:
+            tableModel.workerList.append(Worker(**record)) 
+        tableModel.set_values()    
+        result = {
+            "tableModel": tableModel.toDict(),
+            "header": header.toDict()
+        }
+        return make_response(jsonify(result), 200)
+    except Exception:
+        return make_response(jsonify({"err": "Server got bad data"}), 400)
 
 
 @table.route('/table/navigation/set_week', methods=["POST"])
 def table_navigation_week() -> Response:
     request_data = json.loads(str(request.get_data().decode('utf-8')))
     date_range = DateRange("", "", "", "")
-    date_range.set_basedOnWeekNumber(**request_data["date"])
-    
-    header = HeaderModel()
-    header.set_dateRange(date_range)
-    header.set_fromDatabese()
+    try:
+        date_range.set_basedOnWeekNumber(**request_data["date"])
+        
+        header = HeaderModel()
+        header.set_dateRange(date_range)
+        header.set_fromDatabese()
 
-    tableModel = TableModel(header)
-    for record in request_data["nameList"]:
-        tableModel.workerList.append(Worker(**record)) 
-    tableModel.set_values()    
-    result = {
-        "tableModel": tableModel.toDict(),
-        "header": header.toDict()
-    }
-    return make_response(jsonify(result), 200)
+        tableModel = TableModel(header)
+        for record in request_data["list"]:
+            tableModel.workerList.append(Worker(**record)) 
+        tableModel.set_values()    
+        result = {
+            "tableModel": tableModel.toDict(),
+            "header": header.toDict()
+        }
+        return make_response(jsonify(result), 200)
+    except Exception:
+        return make_response(jsonify({"err": "Server got bad data"}), 400)
 
 
 @table.route('/table/deepsearch', methods=["POST"])
