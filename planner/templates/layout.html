@@ -13,38 +13,45 @@
     }
 </style>
 <body>
-    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <nav class="navbar navbar-light mb-3" style="background-color: #e3f2fd;">
         <div class="row container-fluid">
-            <div class="col-1">
+            <div class="col-lg-1 col-md-1 col-sm-1">
                 <a href="/">
                     <img class="img-fluid" src="../static/images/logo.png" width="100" height="60" alt="">
                 </a>
             </div>
-    
-            <div class="col-md-5 col-sm">
+
+            <div class="col-lg-6 col-md col-sm">
                 <form id="range-form" class="form-inline">
                     <div class="form-group">
                         <span class="navbar-text mr-2">Range from:</span>
-                        <input id="data-range-from" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                        <input id="data-range-from" size="18" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
                         <span class="navbar-text mr-2">To:</span>
-                        <input id="data-range-to" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
-                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="button_1">Set Range</button>
+                        <input id="data-range-to" size="18" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
+                    </div>
+
+                    <div class="form-group"> <!-- Date input -->
+                        <span class="navbar-text mr-2">Range from:</span>
+                        <input class="form-control mr-sm-2" id="date-from" name="date" placeholder="MM/DD/YYYY" type="date"/>
+                        <span class="navbar-text mr-2">To:</span>
+                        <input class="form-control mr-sm-2" id="date-to" name="date" placeholder="MM/DD/YYYY" type="date"/>
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Set Range</button>
                     </div>
                 </form>
             </div>
     
-            <div class="col-md-4 col-sm">
+            <div class="col-lg-3 col-md col-sm">
                 <form id="date-form" class="form-inline">
                     <div class="form-group">
                         <input id="data-week" size="10" class="form-control mr-sm-2" placeholder="week/year" aria-label="Search">
                         <span class="navbar-text mr-2">Or: </span>
                         <input id="data-date" size="10" class="form-control mr-sm-2" placeholder="dd/mm/yyyy" aria-label="Search">
-                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="button_2">Set week</button>
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Set week</button>
                     </div>
                 </form>
             </div>
     
-            <div class="col-md-2 col-sm">
+            <div class="col-lg-2 col-md-2 col-sm-1">
                 <div id="move" class="">
                     <button name="left" id="move-left" class="btn btn-outline-primary" type="button"><----</button>
                     <button name="right" id="move-right" class="btn btn-outline-primary" type="button">----></button>

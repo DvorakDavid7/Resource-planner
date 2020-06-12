@@ -10,15 +10,16 @@ export default function projectEditGenerator(header, list, values, target) {
         let tr = document.createElement("tr");
         let workerName = document.createElement("td");
         workerName.innerHTML = `<b>${list[j].fullName} (${list[j].department})</b>`
-        tr.append(workerName);
+        tr.appendChild(workerName);
 
         for (let i = 0; i < header.weeks.length; i++) {
             // main td - everything is in it
             let td = document.createElement("td")
+            td.classList.add("selectable");
 
             // cell table with two rows
             let cell = document.createElement("table");
-            cell.style = "margin: auto;"
+            cell.style = "margin: auto;";
             let plannedTr = document.createElement("tr")
             let alocatedTr = document.createElement("tr")
 
@@ -29,23 +30,24 @@ export default function projectEditGenerator(header, list, values, target) {
 
             // planned styling
             plannedTd.innerHTML = values[workerId][week].planned;
-            plannedTd.classList.add("text-center")
-            plannedTd.classList.add("data")
-            plannedTd.contentEditable = true
-            plannedTd.style = "width:40px"
-            plannedTr.append(plannedTd)
+            plannedTd.classList.add("text-center");
+            plannedTd.classList.add("data");
+            
+            // plannedTd.contentEditable = true;
+            // plannedTd.style = "width:40px";
+            plannedTr.appendChild(plannedTd);
             
             // alocated styling
             alocatedTd.innerHTML = values[workerId][week].alocated;
-            alocatedTd.classList.add("text-center")
-            alocatedTd.style = "font-size:65%"
-            alocatedTr.append(alocatedTd)
-            
-            cell.append(plannedTr)
-            cell.append(alocatedTr)
-            td.append(cell)
-            tr.append(td);
+            alocatedTd.classList.add("text-center");
+            alocatedTd.style = "font-size:65%";
+            alocatedTr.appendChild(alocatedTd);
+
+            cell.appendChild(plannedTr);
+            cell.appendChild(alocatedTr);
+            td.appendChild(cell);
+            tr.appendChild(td);
         }
-        target.append(tr);
+        target.appendChild(tr);
     }
 }

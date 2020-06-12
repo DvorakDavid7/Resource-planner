@@ -206,13 +206,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tools_generators_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tools/generators.js */ "./js/tools/generators.js");
 /* harmony import */ var _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tools/tableFunctions.js */ "./js/tools/tableFunctions.js");
 /* harmony import */ var _tools_utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./tools/utils.js */ "./js/tools/utils.js");
-/* harmony import */ var _simonwep_selection_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @simonwep/selection-js */ "./node_modules/@simonwep/selection-js/dist/selection.min.js");
-/* harmony import */ var _simonwep_selection_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_simonwep_selection_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _components_EditComponent_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/EditComponent.js */ "./js/components/EditComponent.js");
-/* harmony import */ var _components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/HeaderComponent.js */ "./js/components/HeaderComponent.js");
-/* harmony import */ var _tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./tools/navigationFunctions.js */ "./js/tools/navigationFunctions.js");
-/* harmony import */ var _tools_vaidators_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./tools/vaidators.js */ "./js/tools/vaidators.js");
-
+/* harmony import */ var _components_EditComponent_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/EditComponent.js */ "./js/components/EditComponent.js");
+/* harmony import */ var _components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/HeaderComponent.js */ "./js/components/HeaderComponent.js");
+/* harmony import */ var _tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./tools/navigationFunctions.js */ "./js/tools/navigationFunctions.js");
+/* harmony import */ var _tools_selection_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./tools/selection.js */ "./js/tools/selection.js");
 
 
 
@@ -261,9 +258,9 @@ savebtn.addEventListener("click", saveChanges);
 inputSearch.addEventListener("keyup", _tools_utils_js__WEBPACK_IMPORTED_MODULE_2__["dropDwonSearch"]);
 backForm.addEventListener("click", backBtnHandler);
 // NAVIGATION
-rangeForm.addEventListener("submit", _tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_6__["setRangeUrl"]);
-dateForm.addEventListener("submit", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_6__["setDateUrl"])(e, '/navigation/set_week'));
-moveBtnGroup.addEventListener("click", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_6__["navigationMoveUrl"])(e, header));
+rangeForm.addEventListener("submit", _tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_5__["setRangeUrl"]);
+dateForm.addEventListener("submit", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_5__["setDateUrl"])(e, '/navigation/set_week'));
+moveBtnGroup.addEventListener("click", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_5__["navigationMoveUrl"])(e, header));
 
 // Functions
 
@@ -325,9 +322,9 @@ function generateTable(tableModel, header) {
     projectValues = tableModel.projects.values;
     opportunityList = tableModel.opportunities.opportunityList;
     opportunityValues = tableModel.opportunities.values;
-    Object(_components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_5__["default"])(header, theader);
-    Object(_components_EditComponent_js__WEBPACK_IMPORTED_MODULE_4__["default"])(header, projectList, projectValues, "1", projects, sum)
-    Object(_components_EditComponent_js__WEBPACK_IMPORTED_MODULE_4__["default"])(header, opportunityList, opportunityValues, "0", opportunities, sum)
+    Object(_components_HeaderComponent_js__WEBPACK_IMPORTED_MODULE_4__["default"])(header, theader);
+    Object(_components_EditComponent_js__WEBPACK_IMPORTED_MODULE_3__["default"])(header, projectList, projectValues, "1", projects, sum)
+    Object(_components_EditComponent_js__WEBPACK_IMPORTED_MODULE_3__["default"])(header, opportunityList, opportunityValues, "0", opportunities, sum)
     computeSum();
     defaultProjectValues = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["toMatrix"](document.querySelectorAll(".project-data"), header)
     defaultOpportunitysValues = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["toMatrix"](document.querySelectorAll(".opportunity-data"), header)
@@ -393,62 +390,6 @@ function saveChanges() {
     }
     send_changes(changes)
 }
-
-
-// Initialize selectionjs
-
-/**
- * this is library from https://github.com/Simonwep/selection
- * doc https://simonwep.github.io/selection/
- */
-const selection = _simonwep_selection_js__WEBPACK_IMPORTED_MODULE_3___default.a.create({
-
-    // Class for the selection-area
-    class: 'selection',
-
-    // All elements in this container can be selected
-    selectables: ['.selectable'],
-
-    // The container is also the boundary in this case
-    boundaries: ['table']
-}).on('beforestart', evt => {
-    // removeSelected()
-    input.value = ""
-    return true
-
-}).on('start', ({inst, selected, oe}) => {
-
-    // Remove class if the user isn't pressing the control key or ⌘ key
-    if (!oe.ctrlKey && !oe.metaKey) {
-
-        // Unselect all elements
-        for (const el of selected) {
-            el.classList.remove('selected');
-            inst.removeFromSelection(el);
-        }
-
-        // Clear previous selection
-        inst.clearSelection();
-    }
-
-}).on('move', ({changed: {removed, added}}) => {
-    
-    // Add a custom class to the elements that where selected.
-    for (const el of added) {
-        el.classList.add('selected');
-    }
-
-    // Remove the class from elements that where removed
-    // since the last selection
-    for (const el of removed) {
-        el.classList.remove('selected');
-    }
-
-}).on('stop', ({inst}) => {
-    inst.keepSelection();
-    input.focus();
-});
-
 
 /***/ }),
 
@@ -578,30 +519,50 @@ async function setRange(event, list, apiEndpoint) {
     let inputFrom = document.querySelector("#data-range-from");
     let inputTo = document.querySelector("#data-range-to");
 
+    let dateInputFrom = document.querySelector("#date-from");
+    let dateInputTo = document.querySelector("#date-to");
+    
+    let weekFrom, yearFrom, weekTo, yearTo;
+
     // validation
-    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(inputFrom, inputTo)) {
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(inputFrom, inputTo, dateInputFrom, dateInputTo)) {
         alert("Field(s) are empty");
         return;
     }
 
-    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
-        alert("Bad format please be sure that data are in week/year format")
+    if (inputFrom.value !== "" && dateInputFrom.value === "") {
+        if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("Bad format please be sure that data are in week/year format")
+            return
+        }
+        [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
+        [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
+    }
+    else if (dateInputFrom.value !== "" && inputFrom.value === "") {
+        let dateFrom = new Date(dateInputFrom.value);
+        let dateTo = new Date(dateInputTo.value);
+
+        weekFrom = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateFrom);
+        yearFrom = dateFrom.getFullYear();
+        weekTo = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateTo);
+        yearTo = dateTo.getFullYear();
+    }
+    else {
+        alert("Enter either week range or date range, not both")
         return
     }
 
-    let [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
-    let [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
-
     let data = {
         "dateRange": {
-            "year_start": yearFrom,
-            "year_end": yearTo,
-            "week_start": weekFrom,
-            "week_end": weekTo
+            "year_start": yearFrom.toString(),
+            "year_end": yearTo.toString(),
+            "week_start": weekFrom.toString(),
+            "week_end": weekTo.toString()
         },
         "list": list
     }
-
+    console.log(data);
+    
     const response = await fetch(apiEndpoint, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -726,19 +687,38 @@ function setRangeUrl(event) {
     let inputFrom = document.querySelector("#data-range-from");
     let inputTo = document.querySelector("#data-range-to");
 
+    let dateInputFrom = document.querySelector("#date-from");
+    let dateInputTo = document.querySelector("#date-to");
+    
+    let weekFrom, yearFrom, weekTo, yearTo;
+
     // validation
-    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(inputFrom, inputTo)) {
+    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["emptyFieldsValidation"])(inputFrom, inputTo, dateInputFrom, dateInputTo)) {
         alert("Field(s) are empty");
         return;
     }
 
-    if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
-        alert("Bad format please be sure that data are in week/year format")
+    if (inputFrom.value !== "" && dateInputFrom.value === "") {
+        if (!Object(_vaidators_js__WEBPACK_IMPORTED_MODULE_1__["matchFormatValidation"])([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("Bad format please be sure that data are in week/year format")
+            return
+        }
+        [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
+        [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
+    }
+    else if (dateInputFrom.value !== "" && inputFrom.value === "") {
+        let dateFrom = new Date(dateInputFrom.value);
+        let dateTo = new Date(dateInputTo.value);
+
+        weekFrom = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateFrom);
+        yearFrom = dateFrom.getFullYear();
+        weekTo = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["ISO8601_week_number"])(dateTo);
+        yearTo = dateTo.getFullYear();
+    }
+    else {
+        alert("Enter either week range or date range, not both")
         return
     }
-
-    let [weekFrom, yearFrom] = inputFrom.value.split("/");
-    let [weekTo, yearTo] = inputTo.value.split("/");
     let search = `?year_start=${yearFrom}&year_end=${yearTo}&week_start=${weekFrom}&week_end=${weekTo}`
     window.location = window.location.pathname + search
 }
@@ -821,6 +801,77 @@ function navigationMoveUrl(event, header) {
     let search = `?year_start=${year_start}&year_end=${year_end}&week_start=${week_start}&week_end=${week_end}`;
     window.location = window.location.pathname + search;
 }
+
+/***/ }),
+
+/***/ "./js/tools/selection.js":
+/*!*******************************!*\
+  !*** ./js/tools/selection.js ***!
+  \*******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _simonwep_selection_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @simonwep/selection-js */ "./node_modules/@simonwep/selection-js/dist/selection.min.js");
+/* harmony import */ var _simonwep_selection_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_simonwep_selection_js__WEBPACK_IMPORTED_MODULE_0__);
+
+
+// Initialize selectionjs
+
+/**
+ * this is library from https://github.com/Simonwep/selection
+ * doc https://simonwep.github.io/selection/
+ */
+const selection = _simonwep_selection_js__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+
+    // Class for the selection-area
+    class: 'selection',
+
+    // All elements in this container can be selected
+    selectables: ['.selectable'],
+
+    // The container is also the boundary in this case
+    boundaries: ['table'],
+
+}).on('beforestart', evt => {
+    // removeSelected()
+    document.querySelector("#multi-insert").value = ""
+    return true
+
+}).on('start', ({inst, selected, oe}) => {
+
+    // Remove class if the user isn't pressing the control key or ⌘ key
+    if (!oe.ctrlKey && !oe.metaKey) {
+
+        // Unselect all elements
+        for (const el of selected) {
+            el.classList.remove('selected');
+            inst.removeFromSelection(el);
+        }
+
+        // Clear previous selection
+        inst.clearSelection();
+    }
+
+}).on('move', ({changed: {removed, added}}) => {
+    
+    // Add a custom class to the elements that where selected.
+    for (const el of added) {
+        el.classList.add('selected');
+    }
+
+    // Remove the class from elements that where removed
+    // since the last selection
+    for (const el of removed) {
+        el.classList.remove('selected');
+    }
+
+}).on('stop', ({inst}) => {
+    inst.keepSelection();
+    document.querySelector("#multi-insert").focus();
+});
+
 
 /***/ }),
 

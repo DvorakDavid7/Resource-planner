@@ -2,6 +2,19 @@
 {% extends "layout.html" %}
 
 {% block content%}
+
+<style>
+    .selected {
+        background-color:cornsilk;
+    }
+
+    .selection {
+        background: rgba(46, 115, 252, 0.11);
+        border-radius: 0.1em;
+        border: 2px solid rgba(98, 155, 255, 0.81);
+    }
+</style>
+
 <div id="dataholder" class="container-fluid" data-header='{{ header | tojson }}' data-model='{{ model | tojson }}'>
     <div class="row">
         <div class="col-md-6">
@@ -21,7 +34,7 @@
 		
 	</table>
     <button class="btn btn-primary" id="submit-changes" type="button">Save changes</button>
-
+    <input type="text" name="" id="multi-insert" placeholder="insert">
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='dist/project_edit.js') }}"></script>
 

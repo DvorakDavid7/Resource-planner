@@ -4,7 +4,7 @@ import * as Utils from "./tools/utils.js"
 import ProjectEditComponent from "./components/ProjectEditComponent.js"
 import HeaderComponent from "./components/HeaderComponent.js"
 import { setRangeUrl, setDateUrl, navigationMoveUrl } from "./tools/navigationFunctions.js"
-
+import "./tools/selection.js"
 
 // data parsers
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
@@ -24,13 +24,15 @@ const rangeForm = document.querySelector("#range-form");
 const dateForm = document.querySelector("#date-form");
 const moveBtnGroup = document.querySelector("#move");
 const inputSearch = document.querySelector("#myInput");
-
+const input = document.querySelector("#multi-insert");
 
 // event listeners
 window.addEventListener('load', () => generateTable(tableModel, header));
 dropbtn.addEventListener("click", () => Generators.nameListGenerator(dropDown, header));
 submitBtn.addEventListener("click", saveChanges);
 inputSearch.addEventListener("keyup", Utils.dropDwonSearch);
+input.addEventListener("keyup", insertValues);
+document.body.addEventListener('dblclick', TableFunctions.removeSelected);
 // NAVIGATION
 rangeForm.addEventListener("submit", setRangeUrl);
 dateForm.addEventListener("submit", e => setDateUrl(e, '/navigation/set_week'));
@@ -59,7 +61,7 @@ async function send_changes(changes) {
 
 
 function saveChanges() {
-    let data = document.querySelectorAll(".data");
+    let data = document.querySelectorAll(".data");    
     let current_values = TableFunctions.toMatrix(data, header);
     let changes = [];
     let cid = window.location.pathname.split("/").pop();
@@ -80,4 +82,24 @@ function saveChanges() {
         }
     }
     send_changes(changes);
+}
+
+function insertValues(event) {
+    if (event.key === "ArrowRight") {
+        let sel = document.querySelector(".selected");
+        let next = sel.nextSibling.classList.add("selected");
+        sel.classList.remove("selected"); 
+        input.value = ""
+    }
+    else if (event.key === "ArrowLeft") {
+        let sel = document.querySelector(".selected");
+        let next = sel.previousSibling.classList.add("selected");
+        sel.classList.remove("selected");    
+        input.value = ""
+    }
+    else if (event.key != "Control") {
+        document.querySelectorAll(".selected").forEach((element) => {
+            element.children[0].children[0].children[0].innerHTML = input.value;
+        });
+    }
 }

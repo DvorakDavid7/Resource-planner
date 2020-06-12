@@ -7,30 +7,50 @@ export async function setRange(event, list, apiEndpoint) {
     let inputFrom = document.querySelector("#data-range-from");
     let inputTo = document.querySelector("#data-range-to");
 
+    let dateInputFrom = document.querySelector("#date-from");
+    let dateInputTo = document.querySelector("#date-to");
+    
+    let weekFrom, yearFrom, weekTo, yearTo;
+
     // validation
-    if (!emptyFieldsValidation(inputFrom, inputTo)) {
+    if (!emptyFieldsValidation(inputFrom, inputTo, dateInputFrom, dateInputTo)) {
         alert("Field(s) are empty");
         return;
     }
 
-    if (!matchFormatValidation([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
-        alert("Bad format please be sure that data are in week/year format")
+    if (inputFrom.value !== "" && dateInputFrom.value === "") {
+        if (!matchFormatValidation([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("Bad format please be sure that data are in week/year format")
+            return
+        }
+        [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
+        [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
+    }
+    else if (dateInputFrom.value !== "" && inputFrom.value === "") {
+        let dateFrom = new Date(dateInputFrom.value);
+        let dateTo = new Date(dateInputTo.value);
+
+        weekFrom = ISO8601_week_number(dateFrom);
+        yearFrom = dateFrom.getFullYear();
+        weekTo = ISO8601_week_number(dateTo);
+        yearTo = dateTo.getFullYear();
+    }
+    else {
+        alert("Enter either week range or date range, not both")
         return
     }
 
-    let [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
-    let [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
-
     let data = {
         "dateRange": {
-            "year_start": yearFrom,
-            "year_end": yearTo,
-            "week_start": weekFrom,
-            "week_end": weekTo
+            "year_start": yearFrom.toString(),
+            "year_end": yearTo.toString(),
+            "week_start": weekFrom.toString(),
+            "week_end": weekTo.toString()
         },
         "list": list
     }
-
+    console.log(data);
+    
     const response = await fetch(apiEndpoint, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -155,19 +175,38 @@ export function setRangeUrl(event) {
     let inputFrom = document.querySelector("#data-range-from");
     let inputTo = document.querySelector("#data-range-to");
 
+    let dateInputFrom = document.querySelector("#date-from");
+    let dateInputTo = document.querySelector("#date-to");
+    
+    let weekFrom, yearFrom, weekTo, yearTo;
+
     // validation
-    if (!emptyFieldsValidation(inputFrom, inputTo)) {
+    if (!emptyFieldsValidation(inputFrom, inputTo, dateInputFrom, dateInputTo)) {
         alert("Field(s) are empty");
         return;
     }
 
-    if (!matchFormatValidation([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
-        alert("Bad format please be sure that data are in week/year format")
+    if (inputFrom.value !== "" && dateInputFrom.value === "") {
+        if (!matchFormatValidation([inputFrom.value, inputTo.value], /^[0-9]{0,1}[0-9]\/[0-9]{4}$/)) {
+            alert("Bad format please be sure that data are in week/year format")
+            return
+        }
+        [weekFrom, yearFrom] = document.querySelector("#data-range-from").value.split("/");
+        [weekTo, yearTo] = document.querySelector("#data-range-to").value.split("/");
+    }
+    else if (dateInputFrom.value !== "" && inputFrom.value === "") {
+        let dateFrom = new Date(dateInputFrom.value);
+        let dateTo = new Date(dateInputTo.value);
+
+        weekFrom = ISO8601_week_number(dateFrom);
+        yearFrom = dateFrom.getFullYear();
+        weekTo = ISO8601_week_number(dateTo);
+        yearTo = dateTo.getFullYear();
+    }
+    else {
+        alert("Enter either week range or date range, not both")
         return
     }
-
-    let [weekFrom, yearFrom] = inputFrom.value.split("/");
-    let [weekTo, yearTo] = inputTo.value.split("/");
     let search = `?year_start=${yearFrom}&year_end=${yearTo}&week_start=${weekFrom}&week_end=${weekTo}`
     window.location = window.location.pathname + search
 }
