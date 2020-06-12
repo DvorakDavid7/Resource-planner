@@ -24,7 +24,7 @@ class ProjectTable(SqlMain):
             self.pmFullName.append(row[1])
     
     def get_project_list(self) -> None:
-        query = f'''SELECT TOP(50) [ZakazkaID], [CID+NazevZakazkyCRM], [ProjektovyManazerJmeno], [DeliveryManazerJmeno]
+        query = f'''SELECT [ZakazkaID], [CID+NazevZakazkyCRM], [ProjektovyManazerJmeno], [DeliveryManazerJmeno]
                 FROM {self.DATA_RESOURCE}
                 '''
         table = self.cursor.execute(query)
