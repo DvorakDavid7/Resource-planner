@@ -4,17 +4,17 @@ from planner.Sql.SqlMain import SqlMain
 
 class ProjectWorkersTable(SqlMain):
  
-    DATA_RESOURCE = "[dbo].[View_ResourcePlanner_Projekty_Pracovnik_Seznam]"
-
-    projectId: List[str] = []
-    workerId: List[str] = []
-    workerFullName: List[str] = []
-    roleId: List[str] = []
-    roleName: List[str] = []       
+    DATA_RESOURCE = "[dbo].[View_ResourcePlanner_Projekty_Pracovnik_Seznam]"      
 
     def __init__(self) -> None:
         super().__init__()
         super().connect_to_database()
+        
+        self.projectId: List[str] = []
+        self.workerId: List[str] = []
+        self.workerFullName: List[str] = []
+        self.roleId: List[str] = []
+        self.roleName: List[str] = [] 
 
 
     def get_project_workers(self, projectId: str) -> None:

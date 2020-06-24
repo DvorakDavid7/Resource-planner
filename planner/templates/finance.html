@@ -1,0 +1,82 @@
+{% extends "layout_2.html" %}
+
+{% block content%}
+<style>
+    .sticky {
+        position: sticky;
+        top: 0;
+      }
+
+      th, td {
+        border-bottom: 1px solid #ddd;
+      }
+      .spacing {
+          padding-right: 20px;
+      }
+</style>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col-6">
+                    <input class="form-control" id="search" type="text" placeholder="Search...">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div id="spinner" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+
+                    <table id="table">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card sticky">
+                <div class="card-body">
+                    <h5 class="card-title">Project Info</h5>
+                    <h6 id="projectName" class="card-subtitle mb-2 text-muted"></h6>
+                    <table>
+                        <tr>
+                            <td class="spacing">Cid</td>
+                            <td id="cid"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Project ID</td>
+                            <td id="projectId"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Project Manager</td>
+                            <td id="projectManager"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Delivery Manager</td>
+                            <td id="deliveryManager"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Estimate Work</td>
+                            <td id="estimate"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Total Amount</td>
+                            <td id="amount"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='dist/finance.js') }}"></script>  
+{% endblock content %}

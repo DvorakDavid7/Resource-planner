@@ -33,5 +33,9 @@ class WorkerFtfpTable(SqlMain):
         self.connection.commit()
 
 
+    def clearTable(self):
+        self.planned = []
+
+
     def __str__(self) -> str:
         return f"planned: {self.planned}"

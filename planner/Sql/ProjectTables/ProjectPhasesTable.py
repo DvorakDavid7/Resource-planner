@@ -6,14 +6,14 @@ class ProjecPhasesTable(SqlMain):
  
     DATA_RESOURCE = "[dbo].[View_ResourcePlanner_Projekty_Faze_Seznam]"
 
-    projectId: List[str] = []
-    phaseId: List[str] = []
-    phaseName: List[str] = []
-    plannedWork: List[str] = []
-
     def __init__(self) -> None:
         super().__init__()
         super().connect_to_database()
+
+        self.projectId: List[str] = []
+        self.phaseId: List[str] = []
+        self.phaseName: List[str] = []
+        self.plannedWork: List[str] = []
 
     def get_phases(self, projectId: str) -> None:
         query = f'''SELECT [ProjektID], [FazeID], [FazeNazev], [PlanovanaPracnost]

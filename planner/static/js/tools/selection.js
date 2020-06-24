@@ -15,7 +15,7 @@ const selection = Selection.create({
     selectables: ['.selectable'],
 
     // The container is also the boundary in this case
-    boundaries: ['table'],
+    boundaries: ['.selectable-table'],
 
 }).on('beforestart', evt => {
     // removeSelected()

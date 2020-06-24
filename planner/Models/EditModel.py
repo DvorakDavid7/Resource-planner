@@ -3,7 +3,9 @@ from typing import Dict, List
 from planner.Models.Model import Model
 from planner.Models.DataModels.Project import Project
 from planner.Sql.WorkerTables.WorkerPlanTable import WorkerPlanTable
-from planner.Sql.ProjectTables.ProjetDetails import ProjectTable, OpportunityTable
+from planner.Sql.ProjectTables.ProjectTableCRM import ProjectTableCRM
+from planner.Sql.ProjectTables.OpportunityTable import OpportunityTable
+
 
 
 class EditModel(Model):
@@ -38,7 +40,7 @@ class EditModel(Model):
     def set_projectDetails(self):
         self.projectValues = self.workerPlan("1")
         self.opportunityValues = self.workerPlan("0")
-        tableOfProjects = ProjectTable()
+        tableOfProjects = ProjectTableCRM()
         tableOfOpportunities = OpportunityTable()
         
         for cid in self.projectValues.keys():

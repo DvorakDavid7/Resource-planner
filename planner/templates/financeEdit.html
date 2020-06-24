@@ -1,0 +1,121 @@
+{% extends "layout_2.html" %}
+
+{% block content%}
+<style>
+  
+   .wrapper thead th {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+  }
+  
+  .wrapper tbody th {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 0;
+    background-color: white;
+  }
+
+  .selected {
+    background-color:cornsilk;
+}
+
+.selection {
+    background: rgba(46, 115, 252, 0.11);
+    border-radius: 0.1em;
+    border: 2px solid rgba(98, 155, 255, 0.81);
+}
+.card-body th, td {
+    border-bottom: 1px solid #ddd;
+}
+
+.spacing {
+    padding-right: 200px;
+}
+.info {
+    background-color: rgba(35, 193, 214, 0.658);
+}
+</style>
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="card sticky">
+                <div class="card-body">
+                    <h5 class="card-title">Project Info</h5>
+                    <h6 id="projectName" class="card-subtitle mb-2 text-muted"></h6>
+                    <table class="">
+                        <tr>
+                            <td class="spacing">Cid</td>
+                            <td id="cid"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Project ID</td>
+                            <td id="projectId"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Project Manager</td>
+                            <td id="projectManager"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Delivery Manager</td>
+                            <td id="deliveryManager"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Estimate Work Achievo</td>
+                            <td id="estimate"></td>
+                        </tr>
+                        
+                        
+                        <tr>
+                            <td class="spacing">Estimate Work Resource Planner</td>
+                            <td id="res-planner"></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="spacing">Total Sum</td>
+                            <td class="info" id="sum"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="spacing">Total Amount</td>
+                            <td id="amount"></td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col wrapper">
+            <table id="table" class="table table-bordered table-hover table-editable selectable-table" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr id="header-row">
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="spinner" class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" id="save-btn" type="button">Save Changes</button>
+    <input type="text" name="" id="multi-insert" placeholder="insert">
+
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='dist/financeEdit.js') }}"></script>  
+{% endblock content %}

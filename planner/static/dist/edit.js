@@ -832,7 +832,7 @@ const selection = _simonwep_selection_js__WEBPACK_IMPORTED_MODULE_0___default.a.
     selectables: ['.selectable'],
 
     // The container is also the boundary in this case
-    boundaries: ['table'],
+    boundaries: ['.selectable-table'],
 
 }).on('beforestart', evt => {
     // removeSelected()

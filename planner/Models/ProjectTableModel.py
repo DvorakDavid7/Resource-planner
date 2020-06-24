@@ -3,7 +3,7 @@ from typing import List, Dict
 from planner.Models.HeaderModel import HeaderModel
 from planner.Models.Model import Model
 from planner.Sql.ProjectTables.ProjectSummaryTable import ProjectSummaryTable
-from planner.Sql.ProjectTables.ProjetDetails import ProjectTable
+from planner.Sql.ProjectTables.ProjectTableCRM import ProjectTableCRM
 from planner.Sql.ProjectTables.ProjectSummaryTable import ProjectSummaryTable
 
 class ProjectTableModel(Model):
@@ -29,7 +29,7 @@ class ProjectTableModel(Model):
             projectSummaryTable.clearTable()
 
     def set_projectList(self) -> None:
-        projectTable = ProjectTable()
+        projectTable = ProjectTableCRM()
         projectTable.get_project_list()
         for i, cid in enumerate(projectTable.cid):
             self.projectList.append(Project(cid, projectTable.projectFullName[i], projectTable.pmFullName[i]))

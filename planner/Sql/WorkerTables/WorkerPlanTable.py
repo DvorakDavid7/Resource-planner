@@ -70,8 +70,17 @@ class WorkerPlanTable(SqlMain):
                 WHERE PracovnikID = '{workerId}' and Rok = {year} and Tyden = {week}'''
         table = self.cursor.execute(query)
         result_list = table.fetchall()
-        return str(result_list[0][0]) if result_list[0][0] else "" 
+        return str(result_list[0][0]) if result_list[0][0] else ""
 
+    
+    def get_sumOnProject(self, cid: str):
+        query = f'''SELECT SUM([PlanHod])
+                FROM [dbo].[PracovnikPlan_TEST]
+                WHERE ZakazkaID = '{cid}'
+                '''
+        table = self.cursor.execute(query)
+        for row in table:
+            return row
 
 
     def delete_row(self, workerId: str, cid: str, typeZpid: str, year: str, week: str) -> None:
