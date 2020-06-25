@@ -80,7 +80,7 @@ class WorkerPlanTable(SqlMain):
                 '''
         table = self.cursor.execute(query)
         for row in table:
-            return row
+            return str(row[0])
 
 
     def delete_row(self, workerId: str, cid: str, typeZpid: str, year: str, week: str) -> None:

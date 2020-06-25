@@ -122,7 +122,6 @@ const trDeliveryManager = document.querySelector("#deliveryManager");
 const trEstimate = document.querySelector("#estimate");
 const trAmount = document.querySelector("#amount");
 const projectName = document.querySelector("#projectName");
-const resPlannerSum = document.querySelector("#res-planner");
 const sumField = document.querySelector("#sum")
 
 // Events
@@ -300,7 +299,6 @@ async function getProjectInfo() {
     trDeliveryManager.innerHTML = project.deliveryManager;
     trEstimate.innerHTML = project.estimate + "h | " + (parseInt(project.estimate) / 8).toFixed(1) + "md"; 
     trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toFixed(2) + " Kč" : "";
-    resPlannerSum.innerHTML = project.resourcePlannerSum;
 }
 
 
