@@ -1,5 +1,6 @@
 from flask import Blueprint, request, json, jsonify, make_response, session
 from flask.templating import render_template
+from flask.wrappers import Response
 from planner.Models.FinanceModel import FinanceModel
 from planner.authentication import login_required
 from planner.Sql.WorkerTables.WorkerFtfp import WorkerFtfpTable
@@ -60,6 +61,17 @@ def finance_project_info(project_id):
         "resourcePlannerSum": resourcePlannerSum
     }
     return make_response(jsonify(record), 200)
+
+
+@finance.route('/finance/projects/sum/<string:project_id>', methods=["GET"])
+@login_required
+def finance_plannedHoursSum(project_id):
+    workerFtfpTable = WorkerFtfpTable()
+    plannedHoursSum = workerFtfpTable.get_plannedHoursSum(project_id)
+    data = {
+        "sum": plannedHoursSum
+    }
+    return make_response(jsonify(data), 200)
 
 
 @finance.route('/finance/data/<string:project_id>/', methods=["GET"])

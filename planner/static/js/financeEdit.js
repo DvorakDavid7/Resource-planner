@@ -196,11 +196,11 @@ async function getProjectInfo() {
 
     projectName.innerHTML = project.fullName;
     trCid.innerHTML = project.cid;
-    trProjectId.innerHTML = project.projectID;
+    // trProjectId.innerHTML = project.projectID;
     trProjectManager.innerHTML = project.projectManager;
     trDeliveryManager.innerHTML = project.deliveryManager;
-    trEstimate.innerHTML = project.estimate;
-    trAmount.innerHTML = project.amountTotal;
+    trEstimate.innerHTML = project.estimate + "h | " + (parseInt(project.estimate) / 8).toFixed(1) + "md"; 
+    trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toFixed(2) + " Kč" : "";
     resPlannerSum.innerHTML = project.resourcePlannerSum;
 }
 
@@ -214,5 +214,5 @@ function computeSum() {
             sum += value;
         }
     }
-    return sum.toString();
+    return sum + "h | " + (parseInt(sum) / 8).toFixed(1) + "md";;
 }

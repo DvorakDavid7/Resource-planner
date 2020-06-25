@@ -5,7 +5,7 @@ import { tableSearch } from "./tools/tableFunctions.js";
 const table = document.querySelector("#table");
 const spinner = document.querySelector("#spinner");
 const trCid = document.querySelector("#cid");
-const trProjectId = document.querySelector("#projectId");
+const trPlanner = document.querySelector("#planner");
 const trProjectManager = document.querySelector("#projectManager");
 const trDeliveryManager = document.querySelector("#deliveryManager");
 const trEstimate = document.querySelector("#estimate");
@@ -72,14 +72,17 @@ function generateFinance(projectList) {
     }
 }
 
-function displayInfo(project) {
+async function displayInfo(project) {
+    const response = await fetch(`/finance/projects/sum/${project.projectID}`);
+    const responseData = await response.json();
+    trPlanner.innerHTML = responseData.sum ? responseData.sum + "h | " + (parseInt(responseData.sum) / 8).toFixed(1) + "md" : "0h | 0md";
     projectName.innerHTML = project.fullName
     trCid.innerHTML = project.cid
-    trProjectId.innerHTML = project.projectID
-    trProjectManager.innerHTML = project.projectManager
-    trDeliveryManager.innerHTML = project.deliveryManager
-    trEstimate.innerHTML = project.estimate
-    trAmount.innerHTML = project.amountTotal
+    // trProjectId.innerHTML = project.projectID
+    trProjectManager.innerHTML = project.projectManager != "None" ? project.projectManager : "";
+    trDeliveryManager.innerHTML = project.deliveryManager != "None" ?  project.deliveryManager : "";
+    trEstimate.innerHTML = project.estimate + "h | " + (parseInt(project.estimate) / 8).toFixed(1) + "md"; 
+    trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toFixed(2) + " Kč" : "";
 }
 
 function goToEdit(projectId) {

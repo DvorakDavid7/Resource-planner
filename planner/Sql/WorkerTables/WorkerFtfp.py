@@ -17,8 +17,15 @@ class WorkerFtfpTable(SqlMain):
         table = self.cursor.execute(query)
         result_list = table.fetchall()
         self.planned.append(str(result_list[0][0]) if result_list else "" )
-        
+    
 
+    def get_plannedHoursSum(self, projectId: str):
+        query = f'''SELECT SUM(PlanHod) FROM [dbo].[PracovnikPlanFtfp] WHERE ProjektID = {projectId}'''
+        table = self.cursor.execute(query)
+        result_list = table.fetchall()
+        return str(result_list[0][0]) if result_list[0][0] else ""
+
+        
     def insert_row(self, worker_id, project_id, phase_id, planned_hours, modified_by):
         query = f'''INSERT INTO {self.DATA_RESOURCE} (PracovnikID, ProjektID, FazeID, PlanHod, ModifiedBy)
                 VALUES ('{worker_id}', {project_id}, {phase_id}, {planned_hours}, '{modified_by}');'''
