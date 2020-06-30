@@ -5,13 +5,17 @@ import { removeSelected } from "./tools/tableFunctions.js"
 // Variables
 const projectId = location.pathname.split("/")[3]
 let defaultValues;
+let defaultValuesFiance = [];
 let phaseList;
 let workerList;
+let data;
+let currentTable = "finance";
+let project
 
 // DOM queries
 const table = document.querySelector("#table");
-const headerRow = document.querySelector("#header-row");
-const tbody = document.querySelector(".wrapper tbody");
+// const headerRow = document.querySelector("#header-row");
+// const tbody = document.querySelector(".wrapper tbody");
 const spinner = document.querySelector("#spinner");
 const input = document.querySelector("#multi-insert");
 const saveBtn = document.querySelector("#save-btn");
@@ -24,22 +28,26 @@ const trEstimate = document.querySelector("#estimate");
 const trAmount = document.querySelector("#amount");
 const projectName = document.querySelector("#projectName");
 const sumField = document.querySelector("#sum")
+const initialPlanSwitch = document.querySelector("#initial-plan")
+const resourcePlanSwitch = document.querySelector("#resource-plan");
 
 // Events
 window.addEventListener('load', async () => {
+    initialPlanSwitch.disabled = true
     getProjectInfo()
-    const data = await getData();
-    spinner.remove()
+    data = await getData();
+    spinner.remove();
     generatePhaseTable(data);
     sumField.innerHTML = computeSum();
     defaultValues = toMatrix();
+    initialPlanSwitch.disabled = false
 });
 
 input.addEventListener("keyup", insertValues);
 document.body.addEventListener('dblclick', removeSelected);
-saveBtn.addEventListener("click", getChangesList)
-
-
+saveBtn.addEventListener("click", getChangesList);
+initialPlanSwitch.addEventListener("click", () => generateInatialPlanTable(data));
+resourcePlanSwitch.addEventListener("click", () => window.location.reload());
 // Functions
 
 
@@ -79,6 +87,9 @@ async function getData() {
 
 
 function generatePhaseTable(data) {
+    table.innerHTML = `<thead><tr id="header-row"></tr></thead><tbody></tbody>`;
+    const headerRow = document.querySelector("#header-row");
+    const tbody = document.querySelector(".wrapper tbody");
     phaseList = data.phaseList;
     workerList = data.workerList;
     const values = data.values;
@@ -89,7 +100,6 @@ function generatePhaseTable(data) {
         th.scope = "row";
         th.innerText = phase.phaseName;
         tr.appendChild(th);
-
         for (let worker of workerList) {
             const phaseId = phase.phaseId.toString();
             const workerId = worker.id;
@@ -110,9 +120,9 @@ function generatePhaseTable(data) {
     // tbody.appendChild(thSum);
 
     let thFirst = document.createElement("th");
-    thFirst.scope = "col";   
+    thFirst.scope = "col";
+    
     headerRow.appendChild(thFirst);
-
     for (let worker of workerList) {
         const workerName = worker.fullName != null ? worker.fullName : worker.id;
         let th = document.createElement("th");
@@ -122,6 +132,43 @@ function generatePhaseTable(data) {
         headerRow.appendChild(th);
     }
 }
+
+async function generateInatialPlanTable(data) {
+    table.innerHTML = `<thead><tr id="header-row"></tr></thead><tbody></tbody>`;
+    const headerRow = document.querySelector("#header-row");
+    const tbody = document.querySelector(".wrapper tbody");
+    phaseList = data.phaseList;
+    workerList = data.workerList;
+
+    const response = await fetch(`${window.origin}/finance/initial_planning/get_values/${projectId}`)
+    const responseData = await response.json()
+    console.log(responseData);
+    
+
+    for (let phase of phaseList) {
+        let tr = document.createElement("tr");
+        let th = document.createElement("th");
+        let td = document.createElement("td");
+        th.scope = "row";
+        th.innerText = phase.phaseName;
+        if (responseData[phase.phaseId]) {
+            td.innerText = parseInt(responseData[phase.phaseId]).toFixed(2);
+        }
+        else {
+            td.innerText = ""
+        }
+        td.classList.add("selectable");
+        td.classList.add("text-center");
+        td.classList.add("finance-data")
+        tr.appendChild(th);
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+    }
+    for (let element of document.querySelectorAll(".finance-data")) {
+        defaultValuesFiance.push(element.innerHTML)
+    }
+}
+
 
 
 function toMatrix() {
@@ -152,28 +199,47 @@ function toMatrix() {
 
 function getChangesList() {
     let changeList = [];
-    const currentValues = toMatrix();
-    for (let i = 0; i < defaultValues.length; i++) {
-        for (let j = 0; j < defaultValues[i].length; j++) {
-            if (defaultValues[i][j] != currentValues[i][j]) {
-                let newValue = currentValues[i][j];
+
+    if (currentTable === "finance") {
+        let values = document.querySelectorAll(".finance-data");
+        for (let i = 0; i < values.length; i++) {
+            if(values[i].innerHTML != defaultValuesFiance[i]) {
+                let newValue = values[i].innerHTML;
                 let change = {
-                    "planned": newValue,
+                    "amount": newValue,
                     "phaseId": phaseList[i].phaseId,
                     "projectId": projectId,
-                    "workerId": workerList[j].id
+                    "cid": project.cid
                 }
                 changeList.push(change);
             }
         }
+        sendChanges(changeList, '/finance/initial_planning/save_changes');
+    }
+    else {
+        const currentValues = toMatrix();
+        for (let i = 0; i < defaultValues.length; i++) {
+            for (let j = 0; j < defaultValues[i].length; j++) {
+                if (defaultValues[i][j] != currentValues[i][j]) {
+                    let newValue = currentValues[i][j];
+                    let change = {
+                        "planned": newValue,
+                        "phaseId": phaseList[i].phaseId,
+                        "projectId": projectId,
+                        "workerId": workerList[j].id
+                    }
+                    changeList.push(change);
+                }
+            }
+        }
+        sendChanges(changeList, '/finance/save_changes');
     }
     console.log(changeList);
-    sendChanges(changeList);
 }
 
 
-async function sendChanges(changeList) {
-    const response = await fetch('/finance/save_changes', {
+async function sendChanges(changeList, url) {
+    const response = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(changeList),
     });
@@ -188,10 +254,11 @@ async function sendChanges(changeList) {
 }
 
 
+
 async function getProjectInfo() {
     const response = await fetch(`${window.origin}/finance/projects/info/${projectId}`);
     const responseData = await response.json();
-    const project = responseData;
+    project = responseData;
 
     projectName.innerHTML = project.fullName;
     trCid.innerHTML = project.cid;

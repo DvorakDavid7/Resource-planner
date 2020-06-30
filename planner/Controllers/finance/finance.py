@@ -6,6 +6,8 @@ from planner.authentication import login_required
 from planner.Sql.WorkerTables.WorkerFtfp import WorkerFtfpTable
 from planner.Sql.ProjectTables.ProjectTable import ProjectTable
 from planner.Sql.WorkerTables.WorkerPlanTable import WorkerPlanTable
+from planner.Sql.PhasePlanftft import PhasePlanftft
+
 
 finance = Blueprint("finance", __name__, template_folder="templates")
 
@@ -101,3 +103,33 @@ def finance_save_changes():
             return make_response(jsonify({"err": "saving error"}), 400)        
     return make_response(jsonify({}), 200)
 
+
+@finance.route('/finance/initial_planning/save_changes', methods=["POST"])
+def finance_initial_planning_save_changes():
+    phasePlanftft = PhasePlanftft()
+    receive_data = json.loads(str(request.get_data().decode('utf-8')))
+    print(receive_data)
+    modified_by = session["user"]['preferred_username']
+    for change in receive_data:
+        amount = change["amount"]
+        phaseId = change["phaseId"]
+        projectId = change["projectId"]
+        cid = change["cid"]
+        try:
+            phasePlanftft.deleteRow(cid, projectId, phaseId)
+            if amount != "":
+                phasePlanftft.insertRow(cid, projectId, phaseId, amount, modified_by)
+        except Exception:
+            return make_response(jsonify({"err": "saving error"}), 400)
+
+    return make_response(jsonify({}), 200)
+
+
+@finance.route('/finance/initial_planning/get_values/<string:project_id>', methods=["GET"])
+def finance_initial_planning_get_values(project_id):
+    phasePlanftft = PhasePlanftft()
+    phasePlanftft.get_values(project_id)
+    result = {}
+    for i in range(len(phasePlanftft.phaseId)):
+        result[phasePlanftft.phaseId[i]] = phasePlanftft.amount[i]
+    return make_response(jsonify(result), 200)
