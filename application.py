@@ -2,7 +2,7 @@ from planner import create_app
 import app_config
 
 
-app = create_app(app_config.DevConfig)
+app = create_app(app_config.ProdConfig)
 
 
 if __name__ == "__main__":
