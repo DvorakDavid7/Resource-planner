@@ -13,12 +13,24 @@
         <h1>Resource planner</h1>
         <h5>Welcome {{ user.get("name") }}!</h5>
         <img style="width:250px; margin-bottom:100px;" src="{{ url_for('static', filename = 'images/calendar.png') }}" alt=""> <br>
-        {% if config.get("ENDPOINT") %}
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/table'">Show Data Table</button>
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/groups'">Groups</button>
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/color_setting'">Color settins</button>
-        <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/finance'">Project Phases</button>
-        <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/projects'">Project Planning</button>
+        
+        {% if config.get("ENV") == "DEMO" %}
+            <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/table'">Resource Planning</button>
+            <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/projects'">Project Planning</button>
+            <button type="button" class="btn btn-info btn-lg" onclick="window.location.href='/finance'">Project Phases</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/groups'">Groups</button>
+            <!--
+                <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/color_setting'">Color settins</button>
+            -->
+            
+        {% elif config.get("ENV") == "PRODUCTION" %}
+            <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/table'">Resource Planning</button>
+            <button disabled type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/projects'">Project Planning</button>
+            <button type="button" class="btn btn-info btn-lg" onclick="window.location.href='/finance'">Project Phases</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/groups'">Groups</button>
+            <!--
+                <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/color_setting'">Color settins</button>
+            -->
         {% endif %}
         <button type="button" class="btn btn-danger btn-lg" onclick="window.location.href='/logout'">Logout</button>
     </div>

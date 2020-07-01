@@ -2,10 +2,11 @@ import os
 
 
 class BaseConfig():
-    ENV = "DEMO"
+    pass
 
 
 class DevConfig(BaseConfig):
+    ENV = "DEMO"
     CLIENT_SECRET = "gKx@XbR?C:_T345z3RghHus@Q?e2H.uh" # Our Quickstart uses this placeholder
     # In your production app, we recommend you to use other ways to store your secret,
     # such as KeyVault, or environment variable as described in Flask's documentation here
@@ -36,6 +37,7 @@ class DevConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
+    ENV = "PRODUCTION"
     CLIENT_SECRET = os.getenv("CLIENT_SECRET")
     # if not CLIENT_SECRET:
     #     raise ValueError("Need to define CLIENT_SECRET environment variable")

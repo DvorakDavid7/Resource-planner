@@ -23,6 +23,7 @@ def groups_api_get():
 
 
 @groups.route('/groups/show_groups', methods=["GET"])
+@login_required
 def show_groups():
     result = []
     with open("data/groups.txt", "r", encoding='utf8') as file:

@@ -29,6 +29,7 @@ def edit_get(user_id):
 
 
 @edit.route('/edit/project_list', methods=["GET"])
+@login_required
 def edit_show_project_list():
     projects: List[Project] = []
     opportunities: List[Project] = []

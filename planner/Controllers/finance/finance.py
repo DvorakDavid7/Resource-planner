@@ -126,6 +126,7 @@ def finance_initial_planning_save_changes():
 
 
 @finance.route('/finance/initial_planning/get_values/<string:project_id>', methods=["GET"])
+@login_required
 def finance_initial_planning_get_values(project_id):
     phasePlanftft = PhasePlanftft()
     phasePlanftft.get_values(project_id)
