@@ -186,6 +186,7 @@ async function getData() {
 
 
 function generatePhaseTable(data) {
+    currentTable = "resources";
     table.innerHTML = `<thead><tr id="header-row"></tr></thead><tbody></tbody>`;
     const headerRow = document.querySelector("#header-row");
     const tbody = document.querySelector(".wrapper tbody");
@@ -233,6 +234,7 @@ function generatePhaseTable(data) {
 }
 
 async function generateInatialPlanTable(data) {
+    currentTable = "finance";
     table.innerHTML = `<thead><tr id="header-row"></tr></thead><tbody></tbody>`;
     const headerRow = document.querySelector("#header-row");
     const tbody = document.querySelector(".wrapper tbody");
@@ -315,7 +317,7 @@ function getChangesList() {
         }
         sendChanges(changeList, '/finance/initial_planning/save_changes');
     }
-    else {
+    else if (currentTable === "resources") {       
         const currentValues = toMatrix();
         for (let i = 0; i < defaultValues.length; i++) {
             for (let j = 0; j < defaultValues[i].length; j++) {
