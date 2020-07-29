@@ -229,6 +229,9 @@ function generatePhaseTable(data) {
         th.scope = "col";
         th.innerText = `${workerName} (${worker.role})`;
         th.classList.add("header-data");
+        if (!worker.isWorkerActive) {
+            th.style.backgroundColor = "red";
+        };
         headerRow.appendChild(th);
     }
 }

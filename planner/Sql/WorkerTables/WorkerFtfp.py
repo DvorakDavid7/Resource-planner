@@ -10,6 +10,15 @@ class WorkerFtfpTable(SqlMain):
         super().__init__()
         super().connect_to_database()
         self.planned: List[str] = []
+        self.workerId: List[str] = []
+
+    def get_workersOnProject(self, projectId: str) -> None:
+        query = f'''SELECT [PracovnikID] FROM {self.DATA_RESOURCE} WHERE ProjektID = {projectId}'''
+        table = self.cursor.execute(query)
+        for row in table:
+            self.workerId.append(row[0])
+
+
 
     def get_planned_hours(self, workerId: str, phaseId: str) -> None:  # return planHod
         query = f'''SELECT [PlanHod] FROM {self.DATA_RESOURCE}
@@ -42,7 +51,7 @@ class WorkerFtfpTable(SqlMain):
 
     def clearTable(self):
         self.planned = []
-
+        self.workerId = []
 
     def __str__(self) -> str:
         return f"planned: {self.planned}"

@@ -1,10 +1,11 @@
-from typing import Dict, List
+from typing import Dict, List, Set, final
 from planner.Models.Model import Model
 from planner.Sql.SqlRead import SqlRead
 from planner.Sql.ProjectTables.ProjectWorkersTable import ProjectWorkersTable 
 from planner.Sql.ProjectTables.ProjectPhasesTable import ProjecPhasesTable
 from planner.Sql.WorkerTables.WorkerFtfp import WorkerFtfpTable
 from planner.Models.DataModels.Worker import Worker
+from planner.Sql.DepartmentTable import DepartmentTable
 
 class FinanceModel(Model):
     def __init__(self):
@@ -16,28 +17,69 @@ class FinanceModel(Model):
 
     def makeFinanceModel(self, projectId: str):
         plan = {}
+
+        # workers from achievo
         projectWorkersTable = ProjectWorkersTable()
+        
+        # list of phases
         projecPhasesTable = ProjecPhasesTable()
+        
+        # already saved workers
         workerFtfpTable = WorkerFtfpTable()
+
+        # aditional information
+        departmentTable = DepartmentTable()
         
-        projectWorkersTable.get_project_workers(projectId)
+        projectWorkersTable.get_project_workers(projectId) # achievo workers
+        workerFtfpTable.get_workersOnProject(projectId) # saved wokers
         projecPhasesTable.get_phases(projectId)
+
+        # initial worker ids set
+        workerListSet: set[str] = set()
+        for workerId in projectWorkersTable.workerId:
+            workerListSet.add(workerId)
+
+        for workerId in workerFtfpTable.workerId:
+            workerListSet.add(workerId)
+
+        projectWorkersTable.clearTable()
+        for workerId in workerListSet:
+            # get worker informations   
+            isWorkerActive = True
+            try:
+                projectWorkersTable.get_userDetailsOnProject(workerId, projectId)
+                workerRole = projectWorkersTable.roleName[0]
+            except IndexError:
+                workerRole = ""
+            finally:
+                projectWorkersTable.clearTable()
+
+            try:
+                departmentTable.get_user_details(workerId)
+                workerFullName = departmentTable.fullName[0]
+            except IndexError:
+                # worker is no longer in Trask
+                workerFullName = workerId
+                isWorkerActive = False
+            finally:
+                departmentTable.clearTable()
+
+            worker = Worker(workerId, workerFullName, "", workerRole, isWorkerActive)
+            self.workerList.append(worker.__dict__)
         
+        # initial plan
         for phaseId in projecPhasesTable.phaseId:
             plan[phaseId] = ""
 
-        for workerId in projectWorkersTable.workerId:
+        for worker in self.workerList:
+            workerId = worker["id"]
             self.values[workerId] = plan.copy()
             for phaseId in projecPhasesTable.phaseId:
                 workerFtfpTable.get_planned_hours(workerId, phaseId)   
                 self.values[workerId][phaseId] = workerFtfpTable.planned[0]
                 workerFtfpTable.clearTable()
-        
-        # worker List
-        for i, workerId in enumerate(projectWorkersTable.workerId):
-            worker = Worker(workerId, projectWorkersTable.workerFullName[i], "", projectWorkersTable.roleName[i])
-            self.workerList.append(worker.__dict__)
-        
+            
+
         # phase List
         for i, phaseId in enumerate(projecPhasesTable.phaseId):
             phase = {
