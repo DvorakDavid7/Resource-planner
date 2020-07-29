@@ -1,6 +1,5 @@
-from typing import Dict, List, Set, final
+from typing import Dict, List
 from planner.Models.Model import Model
-from planner.Sql.SqlRead import SqlRead
 from planner.Sql.ProjectTables.ProjectWorkersTable import ProjectWorkersTable 
 from planner.Sql.ProjectTables.ProjectPhasesTable import ProjecPhasesTable
 from planner.Sql.WorkerTables.WorkerFtfp import WorkerFtfpTable
