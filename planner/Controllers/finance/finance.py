@@ -51,17 +51,23 @@ def finance_project_info(project_id):
     projectTable = ProjectTable()
     workerPlanTable = WorkerPlanTable()
     projectTable.get_projectInfo(project_id)
-    resourcePlannerSum = workerPlanTable.get_sumOnProject(projectTable.cid[0])
-    record = {
-        "projectID": projectTable.projectID[0],
-        "cid": projectTable.cid[0],
-        "fullName": projectTable.fullName[0],
-        "projectManager": projectTable.projectManager[0],
-        "deliveryManager": projectTable.deliveryManager[0],
-        "amountTotal": projectTable.amountTotal[0],
-        "estimate": projectTable.estimate[0],
-        "resourcePlannerSum": resourcePlannerSum
-    }
+    record = {}
+    try:
+        resourcePlannerSum = workerPlanTable.get_sumOnProject(projectTable.cid[0])
+
+        record = {
+            "projectID": projectTable.projectID[0],
+            "cid": projectTable.cid[0],
+            "fullName": projectTable.fullName[0],
+            "projectManager": projectTable.projectManager[0],
+            "deliveryManager": projectTable.deliveryManager[0],
+            "amountTotal": projectTable.amountTotal[0],
+            "estimate": projectTable.estimate[0],
+            "resourcePlannerSum": resourcePlannerSum
+        }
+    except IndexError:
+        resourcePlannerSum = ""
+        record = {}
     return make_response(jsonify(record), 200)
 
 

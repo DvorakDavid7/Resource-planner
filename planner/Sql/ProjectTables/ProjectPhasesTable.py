@@ -14,10 +14,11 @@ class ProjecPhasesTable(SqlMain):
         self.phaseId: List[str] = []
         self.phaseName: List[str] = []
         self.plannedWork: List[str] = []
+        self.status: List[str] = []
 
     def get_phases(self, projectId: str) -> None:
-        query = f'''SELECT [ProjektID], [FazeID], [FazeNazev], [PlanovanaPracnost]
-                FROM {ProjecPhasesTable.DATA_RESOURCE} WHERE ProjektID = {projectId} AND Status = 'active'
+        query = f'''SELECT [ProjektID], [FazeID], [FazeNazev], [PlanovanaPracnost], [Status]
+                FROM {ProjecPhasesTable.DATA_RESOURCE} WHERE ProjektID = {projectId}
                 '''
         table = self.cursor.execute(query)
         for row in table:
@@ -25,6 +26,7 @@ class ProjecPhasesTable(SqlMain):
             self.phaseId.append(row[1])
             self.phaseName.append(row[2])
             self.plannedWork.append(row[3])
+            self.status.append(row[4]) 
 
     def __str__(self) -> str:
         return f"projectId: {self.projectId}\nphaseId: {self.phaseId}\nphaseName: {self.phaseName}\nplannedWork: {self.plannedWork}"

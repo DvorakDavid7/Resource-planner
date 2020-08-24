@@ -100,6 +100,9 @@ function generatePhaseTable(data) {
         let th = document.createElement("th");
         th.scope = "row";
         th.innerText = phase.phaseName;
+        if (phase.status != "active") {
+            th.style.backgroundColor = "red"
+        }
         tr.appendChild(th);
         for (let worker of workerList) {
             const phaseId = phase.phaseId.toString();
@@ -161,6 +164,9 @@ async function generateInatialPlanTable(data) {
         }
         else {
             td.innerText = ""
+        }
+        if (phase.status != "active") {
+            th.style.backgroundColor = "red"
         }
         td.classList.add("selectable");
         td.classList.add("text-center");

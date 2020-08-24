@@ -83,7 +83,8 @@ class FinanceModel(Model):
         for i, phaseId in enumerate(projecPhasesTable.phaseId):
             phase = {
                 "phaseId": phaseId,
-                "phaseName": projecPhasesTable.phaseName[i]
+                "phaseName": projecPhasesTable.phaseName[i],
+                "status": projecPhasesTable.status[i]
             }
             self.phaseList.append(phase)
 
