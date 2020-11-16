@@ -1,4 +1,4 @@
-{% extends "layout_2.html" %}
+{% extends "layouts/layout_2.html" %}
 
 {% block content%}
 <style>
@@ -95,8 +95,13 @@
         </div>
     </div>
     <div class="row mt-2">
-        <div class="col wrapper">
-            <table id="table" class="table table-bordered table-hover table-editable selectable-table" cellpadding="0" cellspacing="0">
+        <div class="col">
+            <h4 id="current-table"></h4>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class= "col wrapper">
+            <table id="table" class="table table-bordered table-hover table-editable selectable-table table-sm " cellpadding="0" cellspacing="0">
 
             </table>
         </div>

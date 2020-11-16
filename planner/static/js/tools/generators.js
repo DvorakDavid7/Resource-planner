@@ -11,6 +11,9 @@ export function projectListGenerator(header, target) {
             let dropDownItem = document.createElement("a");
             dropDownItem.innerHTML = `p: ${project.fullName}`;
             dropDownItem.classList.add("dropdown-item");
+            if (project["status"] === "Uzavřeno") {
+                dropDownItem.style.color = "red"
+            }
             dropDownItem.href = "javascript:;";
             dropDownItem.addEventListener("click", () => addProject(header, project.cid, "1"))
             target.append(dropDownItem)
@@ -19,6 +22,9 @@ export function projectListGenerator(header, target) {
             let dropDownItem = document.createElement("a");
             dropDownItem.innerHTML = `o: ${opportunity.fullName}`;
             dropDownItem.classList.add("dropdown-item");
+            if (opportunity["status"] === 2) {
+                dropDownItem.style.color = "red"
+            }
             dropDownItem.href = "javascript:;";
             dropDownItem.addEventListener("click", () => addProject(header, opportunity.cid, "0"))
             target.append(dropDownItem)

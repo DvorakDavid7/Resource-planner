@@ -3,6 +3,7 @@ import msal
 from flask import session, redirect, url_for
 from functools import wraps
 from flask import current_app
+import os
 
 
 def _load_cache():
@@ -34,6 +35,9 @@ def _get_token_from_cache(scope=None):
 
 
 def login_required(f):
+    if os.getenv("ENV") == "DEVELOPMENT":  # do nothing if development
+        return f
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
         token = _get_token_from_cache(current_app.config["SCOPE"])

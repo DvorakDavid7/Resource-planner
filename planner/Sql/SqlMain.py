@@ -1,6 +1,6 @@
 import pypyodbc
 from flask import current_app
-from app_config import DevConfig
+
 
 class SqlMain:
     def __init__(self):

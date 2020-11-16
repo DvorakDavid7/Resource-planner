@@ -4,7 +4,7 @@ from planner.Models.DataModels.DateRange import DateRange
 
 
 class DateWeekTable(SqlMain):
- 
+
     DATA_RESOURCE = "[dbo].[View_ResourcePlanner_DatumTyden]"
 
     def __init__(self) -> None:
@@ -29,7 +29,7 @@ class DateWeekTable(SqlMain):
             self.week.append(row[0].split("-")[1])
             self.weekRange.append(row[1].replace("(", "").replace(")", ""))
             self.numberOfHour.append(str(row[2]))
-    
+
     def __str__(self) -> str:
         return f"weeks: {self.week}\nweekRange: {self.weekRange}\nnumberOfHours: {self.numberOfHour}"
 

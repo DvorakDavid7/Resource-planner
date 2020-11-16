@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layouts/layout.html" %}
 
 {% block content%}
 <style>
@@ -13,9 +13,21 @@
     }
 </style>
 
-<div id="dataholder" class="container-fluid" data-header='{{ header | tojson }}' data-body='{{ body | tojson }}'>
+<div id="dataholder" class="container-fluid"
+     data-header='{{ header | tojson }}'
+     data-body='{{ body | tojson }}'
+     data-fullName='{{ worker_info | tojson }}'
+    >
 
     <button class="btn btn-primary" id="back-form" type="button">back</button>
+
+    <div class="card" style="width: 18rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{ worker_info["fullName"] }}</li>
+            <li class="list-group-item">{{ worker_info["department"] }}</li>
+        </ul>
+    </div>
+
     <div class="row mt-2">
         <div class="col-md-6">
             <div class="dropdown">
@@ -29,7 +41,7 @@
 
     <div class="row">
         <div class="col">
-            <table class="selectable-table" id="main-table" border="1">
+            <table class="selectable-table table table-sm table-bordered" id="main-table">
                 <thead id="header" class="text-center"></thead>
                 
                 <tbody id="projects"></tbody>

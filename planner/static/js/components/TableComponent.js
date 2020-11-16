@@ -21,9 +21,9 @@ export default function TableComponent(header, list, values, target) {
             td.innerHTML = values[list[j].id][week]
 
             td.classList.add("text-center")
-            let colorClass = coloringResult(header.workingHours[i],values[list[j].id][week])
-            if (colorClass) {
-                td.classList.add(colorClass)
+            let color = coloringResult(header.workingHours[i],values[list[j].id][week])
+            if (color) {
+                td.style.backgroundColor = color
             }
             tr.appendChild(td)
         }

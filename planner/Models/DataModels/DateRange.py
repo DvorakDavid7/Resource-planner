@@ -25,7 +25,7 @@ class DateRange():
 
     
     def set_basedOnWeekNumber(self, weekNumber: str, year: str) -> None:
-        '''set dafault: current week - 2, current week + 19'''
+        """set dafault: current week - 2, current week + 19"""
         stepDown = 2
         stepUp = 19
         d = f"{year}-W{weekNumber}"

@@ -1,7 +1,8 @@
 
 
-class Project():
-    def __init__(self, cid: str, fullName: str, projectManager: str) -> None:
+class Project:
+    def __init__(self, cid: str, full_name: str, project_manager: str, status="NULL") -> None:
         self.cid = cid
-        self.fullName = fullName
-        self.projectManager = projectManager
+        self.fullName = full_name
+        self.projectManager = project_manager
+        self.status = status

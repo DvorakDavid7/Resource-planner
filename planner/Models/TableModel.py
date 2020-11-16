@@ -13,7 +13,6 @@ class TableModel(Model):
         self.workerList: List[Worker] = []
         self.values: Dict[str, Dict[str, str]] = {}
 
-
     def set_values(self) -> None:
         plan: Dict[str, str] = {}
         workerSummaryPlan = WorkerSummaryTable()
@@ -32,7 +31,7 @@ class TableModel(Model):
         for i, workerId in enumerate(departmentTable.workerId):
             worker = Worker(workerId, departmentTable.fullName[i], departmentTable.department[i])
             self.workerList.append(worker)
-    
+
     def set_seepSearchWorkerList(self, searchString: str) -> None:
         departmentTable = DepartmentTable()
         departmentTable.get_worker_names_deepsearch(searchString)
