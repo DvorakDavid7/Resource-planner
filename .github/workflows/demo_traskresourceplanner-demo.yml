@@ -31,4 +31,4 @@ jobs:
       with:
         app-name: 'traskresourceplanner-demo'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_5d41a0d4191b493ea7834d932eab6434 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_b7333dfbc4d240f1be723371a68fd830 }}
