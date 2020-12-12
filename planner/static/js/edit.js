@@ -38,8 +38,11 @@ const sum = document.querySelector("#sum");
 const inputSearch = document.querySelector("#myInput");
 const backForm = document.querySelector("#back-form");
 
+// RUN FUNCTION
+generateTable(tableModel, header);
+
 // Event listenners
-window.addEventListener('load', () => generateTable(tableModel, header));
+// window.addEventListener('load', () => generateTable(tableModel, header));
 dropbtn.addEventListener("click",() => projectListGenerator(header, dropDown));
 input.addEventListener("keyup", insertValues);
 document.body.addEventListener('dblclick', TableFunctions.removeSelected);

@@ -57,4 +57,12 @@
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='dist/edit.js') }}"></script> 
 
+<script>
+
+$(function () {
+    $('[data-toggle="popover"]').popover()
+})
+
+</script>
+
 {% endblock content %}

@@ -112,13 +112,26 @@ function EditComponent(header, list, values, typeZPID, targetForTable, targetFor
         let tdAutocompleteButton = document.createElement("td");
         let tdDeleteRowButton = document.createElement("td");
         tdAutocompleteButton.innerHTML = `
-            <button class="btn btn-success autocomplete">A</button>
+            <button type="button" class="btn btn-success autocomplete" 
+                data-toggle="popover" 
+                data-trigger="hover"
+                data-placement="top"
+                data-content="Doplní maximální možný (nenaplánovaný) počet hodin do každého týdne za vybrané období."
+            >
+            A
+            </button>
         `;
 
         tdDeleteRowButton.innerHTML = `
-            <button class="btn btn-danger delete">X</button>
+            <button type="button" class="btn btn-danger delete" 
+                data-toggle="popover" 
+                data-trigger="hover"
+                data-placement="top"
+                data-content="Smaže všechny vyplněné hodiny v daném řádku za vybrané období."
+            >
+            X
+            </button>
         `;
-        
 
         let projectNameTd = document.createElement("td");
         if (typeZPID === "1") {
@@ -275,8 +288,11 @@ const sum = document.querySelector("#sum");
 const inputSearch = document.querySelector("#myInput");
 const backForm = document.querySelector("#back-form");
 
+// RUN FUNCTION
+generateTable(tableModel, header);
+
 // Event listenners
-window.addEventListener('load', () => generateTable(tableModel, header));
+// window.addEventListener('load', () => generateTable(tableModel, header));
 dropbtn.addEventListener("click",() => Object(_tools_generators_js__WEBPACK_IMPORTED_MODULE_0__["projectListGenerator"])(header, dropDown));
 input.addEventListener("keyup", insertValues);
 document.body.addEventListener('dblclick', _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["removeSelected"]);
