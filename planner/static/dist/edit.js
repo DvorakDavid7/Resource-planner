@@ -135,13 +135,17 @@ function EditComponent(header, list, values, typeZPID, targetForTable, targetFor
 
         let projectNameTd = document.createElement("td");
         if (typeZPID === "1") {
-            projectNameTd.innerHTML = `<b>${list[j].fullName}</b>`
+            projectNameTd.innerHTML = `<a href=/project_edit/${list[j].cid}${window.location.search}>
+                    <b>${list[j].fullName}</b>
+                </a>`
             if (list[j]["status"] === "Uzavřeno") {
                 projectNameTd.style.color = "red";
             }
         }
         else if (typeZPID === "0") {
-            projectNameTd.innerHTML = `<i>${list[j].fullName}</i>`
+            projectNameTd.innerHTML = `<a href=/project_edit/${list[j].cid}${window.location.search}>
+                    <i>${list[j].fullName}</i>
+                </a>`
             if (list[j]["status"] === 2) {
                 projectNameTd.style.color = "red";
             }
