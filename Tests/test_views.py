@@ -41,6 +41,7 @@ class MyTestCase(unittest.TestCase):
 
     @unittest.skip("takes too long to load")
     def test_projects(self):
+        
         response = self.tester.get('/projects')
         self.assertEqual(response.status_code, 200)
 
