@@ -1,8 +1,8 @@
 from typing import List
 from planner.Sql.SqlMain import SqlMain
 from planner.Models.DataModels.DateRange import DateRange
-from app_config import DevConfig
 from flask import current_app
+
 
 class WorkerPlanTable(SqlMain):
  

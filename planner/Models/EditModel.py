@@ -7,7 +7,6 @@ from planner.Sql.ProjectTables.ProjectTableCRM import ProjectTableCRM
 from planner.Sql.ProjectTables.OpportunityTable import OpportunityTable
 
 
-
 class EditModel(Model):
     def __init__(self, tableHeader: HeaderModel, workerId: str) -> None:
         super().__init__()
@@ -19,49 +18,51 @@ class EditModel(Model):
         self.opportunityValues: Dict = {}
 
     def workerPlan(self, typeZPID: str) -> Dict:
-        workerPlanTable = WorkerPlanTable()
+        worker_plan_table = WorkerPlanTable()
         plan: Dict[str, str] = {}
         result = {}
-        workerPlanTable.get_worker_plan(self.workerId, typeZPID, self.header.dateRange)
+        worker_plan_table.get_worker_plan(self.workerId, typeZPID, self.header.dateRange)
         for week in self.header.weeks:
             plan[str(int(week))] = ""
-        for i, week in enumerate(workerPlanTable.week):
+        for i, week in enumerate(worker_plan_table.week):
             current_value = ""
-            if workerPlanTable.cid[i] in result.keys():
-                current_value = result[workerPlanTable.cid[i]][week]
+            if worker_plan_table.cid[i] in result.keys():
+                current_value = result[worker_plan_table.cid[i]][week]
             else:
-                result[workerPlanTable.cid[i]] = plan.copy()
+                result[worker_plan_table.cid[i]] = plan.copy()
             if current_value:
-                result[workerPlanTable.cid[i]][week] = str(int(workerPlanTable.planned[i]) + int(current_value))
+                result[worker_plan_table.cid[i]][week] = str(int(worker_plan_table.planned[i]) + int(current_value))
             else:
-                result[workerPlanTable.cid[i]][week] = str(workerPlanTable.planned[i])
+                result[worker_plan_table.cid[i]][week] = str(worker_plan_table.planned[i])
         return result
         
-    def set_projectDetails(self):
+    def set_projectDetails(self) -> None:
         self.projectValues = self.workerPlan("1")
         self.opportunityValues = self.workerPlan("0")
-        tableOfProjects = ProjectTableCRM()
-        tableOfOpportunities = OpportunityTable()
+        table_of_projects = ProjectTableCRM()
+        table_of_opportunities = OpportunityTable()
         
         for cid in self.projectValues.keys():
-            tableOfProjects.get_project_details(cid)
-            if tableOfProjects.projectFullName:
+            table_of_projects.get_project_details(cid)
+            if table_of_projects.projectFullName:
                 try:
-                    project = Project(cid, tableOfProjects.projectFullName[0], tableOfProjects.pmFullName[0])
+                    project = Project(cid, table_of_projects.projectFullName[0],
+                                      table_of_projects.pmFullName[0], table_of_projects.status[0])
                 except IndexError:
                     project = Project(cid, cid, "NULL!!!")
                 self.projectList.append(project)
-            tableOfProjects.clearTable()
+            table_of_projects.clearTable()
 
         for cid in self.opportunityValues.keys():
-            tableOfOpportunities.get_opportunity_details(cid)
-            if tableOfOpportunities.opportunityFullName:
+            table_of_opportunities.get_opportunity_details(cid)
+            if table_of_opportunities.opportunityFullName:
                 try:
-                    opportunity = Project(cid, tableOfOpportunities.opportunityFullName[0], tableOfOpportunities.pmFullName[0])
+                    opportunity = Project(cid, table_of_opportunities.opportunityFullName[0],
+                                          table_of_opportunities.pmFullName[0], table_of_opportunities.status[0])
                 except IndexError:
                     opportunity = Project(cid, cid, "NULL!!!")
                 self.opportunityList.append(opportunity)
-            tableOfOpportunities.clearTable()
+            table_of_opportunities.clearTable()
 
     def toDict(self) -> Dict:
         return {

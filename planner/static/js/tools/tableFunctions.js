@@ -103,24 +103,21 @@ export function tableSearch() {
  */
 export function coloringResult(workingHours, planned) {
     if (planned == "")
-        return
+        return ""
     
     const wHours = parseInt(workingHours);
     const plan = parseInt(planned);
 
-    if (wHours - plan >= 5)
-        return "ultraless"
+    const alpha = 0.5
 
-    else if (wHours === plan)
-        return "optimal"
-    else if (wHours - plan >= -5)
-        return "over"
-    
-    else if (wHours - plan >= -6)
-        return "notultraover"
+    if (wHours - plan === 0)
+        return `rgb(0, 255, 127, ${alpha})`
 
-    else if (wHours - plan >= -10)
-        return "ultraover"
-    
-    else return ""
+    else if (wHours - plan > 0)
+        return `rgb(135, 206, 235, ${alpha})`
+
+    else if (wHours - plan < 0)
+        return `rgb(255, 160, 122, ${alpha})`
+
+    return ""
 }

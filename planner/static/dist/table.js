@@ -98,25 +98,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return HeaderComponent; });
 // HEADER
 
+
 /**
  * This function Display table Header from TableHeader Model
  * @param {Element} target target parent element
  * @param {any} header JSON from TableModel
  */
 function HeaderComponent(header, target) {
-    let weeksTr = document.createElement("tr");
-    let datesTr = document.createElement("tr");
+    const weeksTr = document.createElement("tr");
+    const datesTr = document.createElement("tr");
 
     weeksTr.appendChild(document.createElement("td"))
     datesTr.appendChild(document.createElement("td"))
-    for (let i = 0; i < header.weeks.length; i++) {
+    for (let i = 0; i < header["weeks"].length; i++) {
         let td = document.createElement("td");
-        td.innerHTML = `${header.weeks[i]} (${header.workingHours[i]})`
+        if (header["weeks"][i] === header["currentWeek"]) {
+            td.style.backgroundColor = "rgb(255, 0, 255, 0.5)";
+        }
+        td.innerHTML = `${header["weeks"][i]} (${header["workingHours"][i]})`
         weeksTr.appendChild(td)
     }    
-    for (let i = 0; i < header.weeks.length; i++) {
+    for (let i = 0; i < header["weeks"].length; i++) {
         let td = document.createElement("td");
-        td.innerHTML = header.dates[i]
+        td.innerHTML = header["dates"][i]
         datesTr.appendChild(td)
     } 
     target.appendChild(weeksTr);
@@ -160,9 +164,9 @@ function TableComponent(header, list, values, target) {
             td.innerHTML = values[list[j].id][week]
 
             td.classList.add("text-center")
-            let colorClass = Object(_tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__["coloringResult"])(header.workingHours[i],values[list[j].id][week])
-            if (colorClass) {
-                td.classList.add(colorClass)
+            let color = Object(_tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_0__["coloringResult"])(header.workingHours[i],values[list[j].id][week])
+            if (color) {
+                td.style.backgroundColor = color
             }
             tr.appendChild(td)
         }
@@ -766,26 +770,23 @@ function tableSearch() {
  */
 function coloringResult(workingHours, planned) {
     if (planned == "")
-        return
+        return ""
     
     const wHours = parseInt(workingHours);
     const plan = parseInt(planned);
 
-    if (wHours - plan >= 5)
-        return "ultraless"
+    const alpha = 0.5
 
-    else if (wHours === plan)
-        return "optimal"
-    else if (wHours - plan >= -5)
-        return "over"
-    
-    else if (wHours - plan >= -6)
-        return "notultraover"
+    if (wHours - plan === 0)
+        return `rgb(0, 255, 127, ${alpha})`
 
-    else if (wHours - plan >= -10)
-        return "ultraover"
-    
-    else return ""
+    else if (wHours - plan > 0)
+        return `rgb(135, 206, 235, ${alpha})`
+
+    else if (wHours - plan < 0)
+        return `rgb(255, 160, 122, ${alpha})`
+
+    return ""
 }
 
 /***/ }),

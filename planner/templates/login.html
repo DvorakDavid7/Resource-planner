@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
+        <link href="https://fonts.googleapis.com/css?family=Sacramento&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title>Login</title>
+    </head>
+    <body class="intro-page">
+        <div class="container">
+            <div><img class="logo-login" src="{{ url_for('static', filename = 'images/logo.png') }}" alt=""></div>
+            <div class="">
+                <p class="item-1">_for planning</p>
+                <p class="item-2">...because time is the most precious thing</p>
+                <p class="item-3">David is The best programmer in the world.</p>
+            </div>
+        </div>
+        <div class="">
+
+        </div>
+        <div class="login">
+            <button class="btn btn-primary btn-lg" onclick="window.location.href='{{ redirect }}'"><span><img class="microsoft-logo" src="{{ url_for('static', filename = 'images/microsoft.ico') }}"></span>Login with Microsoft</button>
+            <button class="btn btn-info btn-lg" onclick="window.location.href='{{ "mailto:ddvorak@trask.cz" }}'"><span><img class="microsoft-logo" src="{{ url_for('static', filename = 'images/machine_wheel.png') }}"></span>Technical Support</button>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+</html>

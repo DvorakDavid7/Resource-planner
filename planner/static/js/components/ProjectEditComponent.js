@@ -9,7 +9,9 @@ export default function projectEditGenerator(header, list, values, target) {
     for (let j = 0; j < list.length; j++) {
         let tr = document.createElement("tr");
         let workerName = document.createElement("td");
-        workerName.innerHTML = `<b>${list[j].fullName} (${list[j].department})</b>`
+        workerName.innerHTML = `<a href=/edit/${list[j].id}${window.location.search}>
+                <b>${list[j].fullName} (${list[j].department})</b>
+            </a>`
         tr.appendChild(workerName);
 
         for (let i = 0; i < header.weeks.length; i++) {

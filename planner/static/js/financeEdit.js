@@ -12,6 +12,9 @@ let data;
 let currentTable = "finance";
 let project
 
+const resourceTableClass = "col";
+const initialTableClass = "col-lg-6";
+
 // DOM queries
 const table = document.querySelector("#table");
 // const headerRow = document.querySelector("#header-row");
@@ -21,7 +24,7 @@ const input = document.querySelector("#multi-insert");
 const saveBtn = document.querySelector("#save-btn");
 
 const trCid = document.querySelector("#cid");
-const trProjectId = document.querySelector("#projectId");
+// const trProjectId = document.querySelector("#projectId");
 const trProjectManager = document.querySelector("#projectManager");
 const trDeliveryManager = document.querySelector("#deliveryManager");
 const trEstimate = document.querySelector("#estimate");
@@ -34,7 +37,7 @@ const resourcePlanSwitch = document.querySelector("#resource-plan");
 // Events
 window.addEventListener('load', async () => {
     initialPlanSwitch.disabled = true
-    getProjectInfo()
+    await getProjectInfo()
     data = await getData();
     spinner.remove();
     generatePhaseTable(data);
@@ -54,13 +57,11 @@ resourcePlanSwitch.addEventListener("click", () => window.location.reload());
 function insertValues(event) {
     if (event.key === "ArrowRight") {
         let sel = document.querySelector(".selected");
-        let next = sel.nextSibling.classList.add("selected");
         sel.classList.remove("selected"); 
         input.value = ""
     }
     else if (event.key === "ArrowLeft") {
         let sel = document.querySelector(".selected");
-        let next = sel.previousSibling.classList.add("selected");
         sel.classList.remove("selected");    
         input.value = ""
     }
@@ -68,6 +69,14 @@ function insertValues(event) {
         document.querySelectorAll(".selected").forEach((element) => {
             element.innerHTML = input.value;
         });
+    }
+
+    if (currentTable == "finance") {
+        initialPlanSum();
+    }
+    else {
+        addVerticalSum();
+        addHorizontalSum();
     }
     sumField.innerHTML = computeSum();
 }
@@ -88,6 +97,10 @@ async function getData() {
 
 function generatePhaseTable(data) {
     currentTable = "resources";
+    table.classList.remove(initialTableClass)
+    table.classList.add(resourceTableClass);
+    
+    document.querySelector('#current-table').innerText = "Resource Plan";
     table.innerHTML = `<thead><tr id="header-row"></tr></thead><tbody></tbody>`;
     const headerRow = document.querySelector("#header-row");
     const tbody = document.querySelector(".wrapper tbody");
@@ -95,13 +108,39 @@ function generatePhaseTable(data) {
     workerList = data.workerList;
     const values = data.values;
 
+    const ColWidth = Math.floor(100 / (workerList.length + 1)) 
+
+    let trSum = document.createElement("tr");
+    trSum.classList.add("sum-row");
+    trSum.dataset.len = workerList.length;
+
+    let thFirst = document.createElement("th");
+    thFirst.style = `width: ${ColWidth}%`;
+    thFirst.scope = "col";
+    thFirst.innerText = "Phase";
+    thFirst.classList.add("text-center");
+
+    headerRow.appendChild(thFirst);
+    for (let worker of workerList) {
+        const workerName = worker.fullName != null ? worker.fullName : worker.id;
+        let th = document.createElement("th");
+        th.scope = "col";
+        th.innerText = `${workerName} (${worker.role})`;
+        th.classList.add("header-data");
+        th.style = `width: ${ColWidth}%`
+        if (!worker.isWorkerActive) {
+            th.style.color = "red";
+        };
+        headerRow.appendChild(th);
+    }
+
     for (let phase of phaseList) {
         let tr = document.createElement("tr");
         let th = document.createElement("th");
         th.scope = "row";
         th.innerText = phase.phaseName;
         if (phase.status != "active") {
-            th.style.backgroundColor = "red"
+            th.style.color = "red"
         }
         tr.appendChild(th);
         for (let worker of workerList) {
@@ -115,44 +154,87 @@ function generatePhaseTable(data) {
             td.classList.add("data");
             tr.appendChild(td);
         }
+        let tdSum = document.createElement("td");
+        tdSum.classList.add("sum-cell");
+
+        tr.appendChild(tdSum);
         tbody.appendChild(tr);
     }
+    tbody.appendChild(trSum);
 
-    let thSum = document.createElement("th");
-    thSum.scope = "row";
-    thSum.innerText = "Sum";
+    // let thSum = document.createElement("th");
+    // thSum.scope = "row";
+    // thSum.innerText = "Sum";
     // tbody.appendChild(thSum);
 
-    let thFirst = document.createElement("th");
-    thFirst.scope = "col";
-    
-    headerRow.appendChild(thFirst);
-    for (let worker of workerList) {
-        const workerName = worker.fullName != null ? worker.fullName : worker.id;
-        let th = document.createElement("th");
-        th.scope = "col";
-        th.innerText = `${workerName} (${worker.role})`;
-        th.classList.add("header-data");
-        if (!worker.isWorkerActive) {
-            th.style.backgroundColor = "red";
-        };
-        headerRow.appendChild(th);
+    addVerticalSum();
+    addHorizontalSum();
+}
+
+
+function addHorizontalSum()
+{
+    const sumCells = document.querySelectorAll(".sum-cell");
+    const horizontalSumField = generateHorizontalSum(); 
+    let i = 0;
+    for (let cell of sumCells) {
+        cell.innerText = horizontalSumField[i];
+        i++;
     }
 }
 
+
+function addVerticalSum()
+{
+    const sumRow = document.querySelector(".sum-row");
+    const horizontalLength = sumRow.dataset.len;
+    sumRow.innerHTML = "";
+    const verticalSumField = generateVerticalSum();
+    const firstTd = document.createElement("td");
+    firstTd.innerHTML = "<b>Sum:</b>"
+    sumRow.appendChild(firstTd);
+    for (let i = 0; i < horizontalLength; i++) {
+        let tdSum = document.createElement("td");
+        tdSum.innerText = verticalSumField[i];
+        tdSum.classList.add("text-center");
+        sumRow.appendChild(tdSum);
+    }
+}
+
+
 async function generateInatialPlanTable(data) {
     currentTable = "finance";
-    table.innerHTML = `<thead><tr id="header-row"></tr></thead><tbody></tbody>`;
-    const headerRow = document.querySelector("#header-row");
+    table.classList.remove(resourceTableClass);
+    table.classList.add(initialTableClass);
+    document.querySelector('#current-table').innerText = "Initial Plan";
+    table.innerHTML = `
+    <thead>
+        <tr id="header-row">
+            <th class="text-center">Phase</th>
+            <th class="text-center">Money</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    `;
+
+    // const headerRow = document.querySelector("#header-row");
     const tbody = document.querySelector(".wrapper tbody");
     phaseList = data.phaseList;
     workerList = data.workerList;
 
     const response = await fetch(`${window.origin}/finance/initial_planning/get_values/${projectId}`)
     const responseData = await response.json()
-    console.log(responseData);
-    
 
+    
+    let sumRow = document.createElement("tr");
+    let sumTdFirst = document.createElement("td");
+    sumTdFirst.innerHTML = "<b>Sum:</b>"
+    let sumTdValue = document.createElement("td");
+    sumTdValue.classList.add("sum-td");
+    sumTdValue.classList.add("text-center");
+    sumRow.appendChild(sumTdFirst);
+    sumRow.appendChild(sumTdValue);
+    
     for (let phase of phaseList) {
         let tr = document.createElement("tr");
         let th = document.createElement("th");
@@ -160,13 +242,14 @@ async function generateInatialPlanTable(data) {
         th.scope = "row";
         th.innerText = phase.phaseName;
         if (responseData[phase.phaseId]) {
-            td.innerText = parseInt(responseData[phase.phaseId]).toFixed(2);
+            let value = parseInt(responseData[phase.phaseId]).toFixed(2);
+            td.innerText = parseFloat(value).toLocaleString();
         }
         else {
             td.innerText = ""
         }
-        if (phase.status != "active") {
-            th.style.backgroundColor = "red"
+        if (phase.status !== "active") {
+            th.style.color = "red"
         }
         td.classList.add("selectable");
         td.classList.add("text-center");
@@ -176,10 +259,56 @@ async function generateInatialPlanTable(data) {
         tbody.appendChild(tr);
     }
     for (let element of document.querySelectorAll(".finance-data")) {
-        defaultValuesFiance.push(element.innerHTML)
+        defaultValuesFiance.push(parseFloat(element.innerHTML.replace("&nbsp;", "")))
     }
+    tbody.appendChild(sumRow);
+    initialPlanSum();
 }
 
+
+function initialPlanSum()
+{
+    const data = document.querySelectorAll(".finance-data");
+    const sumTd = document.querySelector(".sum-td");
+    let sum = 0;
+    for (let element of data) {
+        let value = element.innerHTML.replace("&nbsp;", "");
+        sum += value ? parseFloat(value) : 0;
+    }
+    sumTd.innerText = `${parseFloat(sum).toLocaleString()} Kč`;
+}
+
+
+function generateVerticalSum()
+{
+    const matrix = toMatrix();
+    let result = [];
+
+    for (let i = 0; i < matrix.length; i++) {
+        let sum = 0;
+        for (let row of matrix) {
+            sum += row[i] ? parseInt(row[i]) : 0;
+         }
+        result.push(sum);
+    }
+    return result;
+}
+
+
+function generateHorizontalSum()
+{
+    const matrix = toMatrix();
+    let result = [];
+
+    for (let row of matrix) {
+        let sum = 0;
+        for (let i = 0; i < row.length; i++) {
+            sum += row[i] ? parseInt(row[i]) : 0;
+        }
+        result.push(sum);
+    }
+    return result;
+}
 
 
 function toMatrix() {
@@ -214,7 +343,7 @@ function getChangesList() {
     if (currentTable === "finance") {
         let values = document.querySelectorAll(".finance-data");
         for (let i = 0; i < values.length; i++) {
-            if(values[i].innerHTML != defaultValuesFiance[i]) {
+            if(parseInt(values[i].innerHTML.replace("&nbsp;", "")) != defaultValuesFiance[i]) {
                 let newValue = values[i].innerHTML;
                 let change = {
                     "amount": newValue,
@@ -245,7 +374,6 @@ function getChangesList() {
         }
         sendChanges(changeList, '/finance/save_changes');
     }
-    console.log(changeList);
 }
 
 
@@ -260,7 +388,7 @@ async function sendChanges(changeList, url) {
     }
     
     window.location.reload();
-    console.log("succes", responseData);
+    console.log("success", responseData);
 
 }
 
@@ -276,8 +404,8 @@ async function getProjectInfo() {
     // trProjectId.innerHTML = project.projectID;
     trProjectManager.innerHTML = project.projectManager;
     trDeliveryManager.innerHTML = project.deliveryManager;
-    trEstimate.innerHTML = project.estimate + "h | " + (parseInt(project.estimate) / 8).toFixed(1) + "md"; 
-    trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toFixed(2) + " Kč" : "";
+    trEstimate.innerHTML = project.estimate + " h | " + (parseInt(project.estimate) / 8).toFixed(1) + " MD"; 
+    trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toLocaleString() + " Kč" : "";
 }
 
 
@@ -290,5 +418,5 @@ function computeSum() {
             sum += value;
         }
     }
-    return sum + "h | " + (parseInt(sum) / 8).toFixed(1) + "md";;
+    return sum + " h | " + (sum / 8).toFixed(1) + " MD";
 }

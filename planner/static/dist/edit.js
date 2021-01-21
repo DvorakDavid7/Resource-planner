@@ -97,25 +97,60 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EditComponent; });
 /**
- * 
- * @param {*} header 
- * @param {*} list 
- * @param {*} values 
- * @param {String} typeZPID 
- * @param {Element} target 
+ *
+ * @param {*} header
+ * @param {*} list
+ * @param {*} values
+ * @param {String} typeZPID
+ * @param targetForTable
+ * @param targetForSum
  */
 function EditComponent(header, list, values, typeZPID, targetForTable, targetForSum) {
     // TABLE
     for (let j = 0; j < list.length; j++) {
         let tr = document.createElement("tr");
+        let tdAutocompleteButton = document.createElement("td");
+        let tdDeleteRowButton = document.createElement("td");
+        tdAutocompleteButton.innerHTML = `
+            <button type="button" class="btn btn-success autocomplete" 
+                data-toggle="popover" 
+                data-trigger="hover"
+                data-placement="top"
+                data-content="Doplní maximální možný (nenaplánovaný) počet hodin do každého týdne za vybrané období."
+            >
+            A
+            </button>
+        `;
+
+        tdDeleteRowButton.innerHTML = `
+            <button type="button" class="btn btn-danger delete" 
+                data-toggle="popover" 
+                data-trigger="hover"
+                data-placement="top"
+                data-content="Smaže všechny vyplněné hodiny v daném řádku za vybrané období."
+            >
+            X
+            </button>
+        `;
+
         let projectNameTd = document.createElement("td");
         if (typeZPID === "1") {
-            projectNameTd.innerHTML = `<b>${list[j].fullName}</b>`
+            projectNameTd.innerHTML = `<a href=/project_edit/${list[j].cid}${window.location.search}>
+                    <b>${list[j].fullName}</b>
+                </a>`
+            if (list[j]["status"] === "Uzavřeno") {
+                projectNameTd.style.color = "red";
+            }
         }
         else if (typeZPID === "0") {
-            projectNameTd.innerHTML = `<i>${list[j].fullName}</i>`
+            projectNameTd.innerHTML = `<a href=/project_edit/${list[j].cid}${window.location.search}>
+                    <i>${list[j].fullName}</i>
+                </a>`
+            if (list[j]["status"] === 2) {
+                projectNameTd.style.color = "red";
+            }
         }
-        tr.append(projectNameTd);
+        tr.appendChild(projectNameTd);
 
         for (let i = 0; i < header.weeks.length; i++) {
             let td = document.createElement("td");
@@ -132,7 +167,10 @@ function EditComponent(header, list, values, typeZPID, targetForTable, targetFor
             td.classList.add("text-center")
             tr.append(td);
         }
+        tr.appendChild(tdAutocompleteButton);
+        tr.appendChild(tdDeleteRowButton);
         targetForTable.append(tr);
+
     }
     if (typeZPID === "1") return; // Generate sum after opprortunities
 
@@ -166,25 +204,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return HeaderComponent; });
 // HEADER
 
+
 /**
  * This function Display table Header from TableHeader Model
  * @param {Element} target target parent element
  * @param {any} header JSON from TableModel
  */
 function HeaderComponent(header, target) {
-    let weeksTr = document.createElement("tr");
-    let datesTr = document.createElement("tr");
+    const weeksTr = document.createElement("tr");
+    const datesTr = document.createElement("tr");
 
     weeksTr.appendChild(document.createElement("td"))
     datesTr.appendChild(document.createElement("td"))
-    for (let i = 0; i < header.weeks.length; i++) {
+    for (let i = 0; i < header["weeks"].length; i++) {
         let td = document.createElement("td");
-        td.innerHTML = `${header.weeks[i]} (${header.workingHours[i]})`
+        if (header["weeks"][i] === header["currentWeek"]) {
+            td.style.backgroundColor = "rgb(255, 0, 255, 0.5)";
+        }
+        td.innerHTML = `${header["weeks"][i]} (${header["workingHours"][i]})`
         weeksTr.appendChild(td)
     }    
-    for (let i = 0; i < header.weeks.length; i++) {
+    for (let i = 0; i < header["weeks"].length; i++) {
         let td = document.createElement("td");
-        td.innerHTML = header.dates[i]
+        td.innerHTML = header["dates"][i]
         datesTr.appendChild(td)
     } 
     target.appendChild(weeksTr);
@@ -223,6 +265,8 @@ __webpack_require__.r(__webpack_exports__);
 // dataholder JSON parser
 let header = JSON.parse(document.querySelector("#dataholder").dataset.header);
 let tableModel = JSON.parse(document.querySelector("#dataholder").dataset.body);
+let userInfo = JSON.parse(document.querySelector("#dataholder").dataset.fullname)
+
 
 // def variables and consts
 let projectList = tableModel.projects.projectList;
@@ -231,7 +275,7 @@ let opportunityList = tableModel.opportunities.opportunityList;
 let opportunityValues = tableModel.opportunities.values;
 
 let defaultProjectValues = [];
-let defaultOpportunitysValues = [];
+let defaultOpportunitiesValues = [];
 
 // DOM Querries
 const input = document.querySelector("#multi-insert");
@@ -248,9 +292,11 @@ const sum = document.querySelector("#sum");
 const inputSearch = document.querySelector("#myInput");
 const backForm = document.querySelector("#back-form");
 
+// RUN FUNCTION
+generateTable(tableModel, header);
 
 // Event listenners
-window.addEventListener('load', () => generateTable(tableModel, header));
+// window.addEventListener('load', () => generateTable(tableModel, header));
 dropbtn.addEventListener("click",() => Object(_tools_generators_js__WEBPACK_IMPORTED_MODULE_0__["projectListGenerator"])(header, dropDown));
 input.addEventListener("keyup", insertValues);
 document.body.addEventListener('dblclick', _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["removeSelected"]);
@@ -263,6 +309,7 @@ dateForm.addEventListener("submit", e => Object(_tools_navigationFunctions_js__W
 moveBtnGroup.addEventListener("click", e => Object(_tools_navigationFunctions_js__WEBPACK_IMPORTED_MODULE_5__["navigationMoveUrl"])(e, header));
 
 // Functions
+
 
 function backBtnHandler() {    
     const form = document.createElement('form');
@@ -299,7 +346,7 @@ async function send_changes(changes) {
     });
     const responseData = await response.json();
     window.location.reload();
-    console.log("succes", responseData);
+    console.log("success", responseData);
 }
 
 
@@ -308,10 +355,10 @@ function computeSum() {
     let horizontalSum = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["sumOfAll"](header)
     document.querySelectorAll(".sum-value").forEach((element, index) => {
         element.innerHTML = horizontalSum[index];
-        element.classList.remove("optimal", "over", "ultraover", "notultraover"); 
-        colourClass = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["coloringResult"](header.workingHours[index], horizontalSum[index]);
-        if (colourClass) {
-            element.classList.add(colourClass);
+        element.style.backgroundColor = ""
+        let color = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["coloringResult"](header.workingHours[index], horizontalSum[index]);
+        if (color) {
+            element.style.backgroundColor = color
         }
     })
 }
@@ -327,7 +374,59 @@ function generateTable(tableModel, header) {
     Object(_components_EditComponent_js__WEBPACK_IMPORTED_MODULE_3__["default"])(header, opportunityList, opportunityValues, "0", opportunities, sum)
     computeSum();
     defaultProjectValues = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["toMatrix"](document.querySelectorAll(".project-data"), header)
-    defaultOpportunitysValues = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["toMatrix"](document.querySelectorAll(".opportunity-data"), header)
+    defaultOpportunitiesValues = _tools_tableFunctions_js__WEBPACK_IMPORTED_MODULE_1__["toMatrix"](document.querySelectorAll(".opportunity-data"), header)
+    
+    let row = 0;
+    document.querySelectorAll(".delete").forEach((button) => {
+        button.row = row;
+        button.addEventListener("click", (e) => {
+            deleteRowHandler(e.currentTarget.row);
+        });
+        row++;
+    });
+    
+    row = 0;
+    document.querySelectorAll(".autocomplete").forEach((button) => {
+        button.row = row;
+        button.header = header;
+        button.addEventListener("click", (e) => {
+            autocompleteHandler(e.currentTarget.row, e.currentTarget.header);
+        });
+        row++;
+    });
+}
+
+
+function autocompleteHandler(row, header) 
+{
+    const tableRows = document.querySelectorAll(".table tr")
+    const trs = [...tableRows].slice(2, -1);
+    const sum = [...tableRows][tableRows.length - 1];
+
+    for (let i = 1; i < sum.children.length; i++) {
+        let sumValue = sum.children[i].innerText;
+        let cellValue = trs[row].children[i].innerText;
+        let reference = header.workingHours[i - 1]
+
+        let cellValueInt = cellValue ? parseInt(cellValue) : 0;
+        let sumValueInt = sumValue ? parseInt(sumValue) : 0;
+        let referenceInt = reference ? parseInt(reference) : 0;
+
+        let result = referenceInt - (sumValueInt - cellValueInt);
+        if (result > 0)
+            trs[row].children[i].innerText = result;
+    }
+    computeSum();
+}
+
+
+function deleteRowHandler(row)
+{
+    const trs = [...document.querySelectorAll(".table tr")].slice(2, -1);
+    for (let i = 1; i < trs[row].children.length - 2; i++) {
+        trs[row].children[i].innerText = "";
+    }
+    computeSum();
 }
 
 
@@ -376,7 +475,7 @@ function saveChanges() {
     }
     for (let i = 0; i < currentOpportunityValues.length; i++) {
         for (let j = 0; j < currentOpportunityValues[i].length; j++) {
-            if (currentOpportunityValues[i][j] !== defaultOpportunitysValues[i][j]) {
+            if (currentOpportunityValues[i][j] !== defaultOpportunitiesValues[i][j]) {
                 let value = currentOpportunityValues[i][j];
                 if (!validationReg.test(value)) {
                     alert("Some fields contain invalid content");
@@ -390,6 +489,7 @@ function saveChanges() {
     }
     send_changes(changes)
 }
+
 
 /***/ }),
 
@@ -417,6 +517,9 @@ function projectListGenerator(header, target) {
             let dropDownItem = document.createElement("a");
             dropDownItem.innerHTML = `p: ${project.fullName}`;
             dropDownItem.classList.add("dropdown-item");
+            if (project["status"] === "Uzavřeno") {
+                dropDownItem.style.color = "red"
+            }
             dropDownItem.href = "javascript:;";
             dropDownItem.addEventListener("click", () => addProject(header, project.cid, "1"))
             target.append(dropDownItem)
@@ -425,6 +528,9 @@ function projectListGenerator(header, target) {
             let dropDownItem = document.createElement("a");
             dropDownItem.innerHTML = `o: ${opportunity.fullName}`;
             dropDownItem.classList.add("dropdown-item");
+            if (opportunity["status"] === 2) {
+                dropDownItem.style.color = "red"
+            }
             dropDownItem.href = "javascript:;";
             dropDownItem.addEventListener("click", () => addProject(header, opportunity.cid, "0"))
             target.append(dropDownItem)
@@ -995,26 +1101,23 @@ function tableSearch() {
  */
 function coloringResult(workingHours, planned) {
     if (planned == "")
-        return
+        return ""
     
     const wHours = parseInt(workingHours);
     const plan = parseInt(planned);
 
-    if (wHours - plan >= 5)
-        return "ultraless"
+    const alpha = 0.5
 
-    else if (wHours === plan)
-        return "optimal"
-    else if (wHours - plan >= -5)
-        return "over"
-    
-    else if (wHours - plan >= -6)
-        return "notultraover"
+    if (wHours - plan === 0)
+        return `rgb(0, 255, 127, ${alpha})`
 
-    else if (wHours - plan >= -10)
-        return "ultraover"
-    
-    else return ""
+    else if (wHours - plan > 0)
+        return `rgb(135, 206, 235, ${alpha})`
+
+    else if (wHours - plan < 0)
+        return `rgb(255, 160, 122, ${alpha})`
+
+    return ""
 }
 
 /***/ }),

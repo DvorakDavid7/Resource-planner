@@ -3,7 +3,7 @@
 ## Local installation
 1) Turn on VPN
 
-2) set virtual evirnment
+2) set virtual environment
 ```PowerShell
 py -3 -m venv venv
 venv\scripts\activate
@@ -18,4 +18,13 @@ pip install -r requirements.txt
 ```PowerShell
 $env:FLASK_APP = "application.py"
 python -m flask run
+```
+
+5) Create file .env and set these values:
+```bash
+ENV=DEVELOPMENT
+CLIENT_SECRET=
+AUTHORITY=
+CLIENT_ID=
+CONNECTION_STRING=
 ```

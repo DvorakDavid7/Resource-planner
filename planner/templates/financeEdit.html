@@ -1,4 +1,4 @@
-{% extends "layout_2.html" %}
+{% extends "layouts/layout_2.html" %}
 
 {% block content%}
 <style>
@@ -48,7 +48,7 @@
                     <h6 id="projectName" class="card-subtitle mb-2 text-muted"></h6>
                     <table class="">
                         <tr>
-                            <td class="spacing">Cid</td>
+                            <td class="spacing">CID</td>
                             <td id="cid"></td>
                         </tr>
 
@@ -90,13 +90,34 @@
             </div>
         </div>
         <div class="col">
-            <button id="initial-plan" class="btn btn-primary" type="button">Initial Plan</button>
-            <button id="resource-plan" class="btn btn-info" type="button">Resource Plan</button>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <button onclick="toggleMode(1)" id="resource-plan" class="btn btn-info" type="button">Resource Plan</button>
+                    <button onclick="toggleMode(2)" id="initial-plan" class="btn btn-primary" type="button">Initial Plan</button>
+                </div>
+                <div>
+                    <button onclick="toggleHelp()" class="btn btn-warning" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-question-square" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                            <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                        </svg>
+                        Help
+                    </button>
+                </div>
+            </div>
+            <div class="collapse" id="collapseExample">
+
+            </div>
         </div>
     </div>
     <div class="row mt-2">
-        <div class="col wrapper">
-            <table id="table" class="table table-bordered table-hover table-editable selectable-table" cellpadding="0" cellspacing="0">
+        <div class="col">
+            <h4 id="current-table"></h4>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class= "col wrapper">
+            <table id="table" class="table table-bordered table-hover table-editable selectable-table table-sm " cellpadding="0" cellspacing="0">
 
             </table>
         </div>
@@ -112,5 +133,106 @@
     <input type="text" name="" id="multi-insert" placeholder="insert">
 
 </div>
-<script type="text/javascript" src="{{ url_for('static', filename='dist/financeEdit.js') }}"></script>  
+<script type="text/javascript" src="{{ url_for('static', filename='dist/financeEdit.js') }}"></script>
+
+
+
+<script>
+    let MODE_TOGGLE = 1;
+    
+    const help_Initial_Plan = `
+        <div class="card mt-3">
+            <div class="card-body row">
+                <div class="col-sm-12 col-md-6">
+                    <h6>Nápověda</h6>
+                    <ul>
+                        <li>
+                            Používáme u FTFP projektů a zakázek. 
+                        </li>
+                        <li>
+                            Tyto hodnoty je nutné vyplnit vždy na začátku projektu a udržovat je aktuální. Jsou důležité pro následný reporting a průběžné hodnocení projetků a pracovníků. 
+                        </li>
+                        <li>
+                            Vyplň prodejní ceny jednotlivých fází projektu v Kč, tj. za kolik danou část prodáváme zákazníkovi. 
+                        </li>
+                        <li>
+                            Částku zde měníme jen v případě, že došlo k navýšení pracnosti u dané fáze, kterou zákazník zaplatí (navyšuje se Current Planning v Achievu). 
+                        </li>
+                        <li>
+                            Vycházíme z nabídky. Cena zde se nemusí shodovat s cenou, která vychází z plánu MD v Achievu u dané fáze vynásobené prodejní sazbou. 
+                        </li>
+                        <li>
+                            Červenou barvou jsou zvýrazněny fáze, které jsou v Achievu již neaktivní. 
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <h6>Poznámka</h6>
+                    <ul>
+                        <li>
+                            Je nutné mít naplánované fáze a přiřazené osoby v Achievu. Do této aplikace se změny propisují každý den kolem půlnoci.  
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        `
+    const help_Resource_Plan = `
+        <div class="card mt-3">
+            <div class="card-body row">
+                <div class="col-sm-12 col-md-6">
+                    <h6>Nápověda</h6>
+                    <ul>
+                        <li>
+                            Používáme u FTFP projektů a zakázek. 
+                        </li>
+                        <li>
+                            Údaje zde uvedené slouží pouze jako pomůcka pro Projektového manažera a není nutné je vyplňovat. 
+                        </li>
+                        <li>
+                            Naplánuj v hodinách, kolik má kdo přiděleno času na práci u dané fáze. 
+                        </li>
+                        <li>
+                            Hodnotu zde měníme jen v případě, že došlo k navýšení pracnosti u dané fáze, kterou zákazník zaplatí (navyšuje se Current Planning v Achievu).  
+                        </li>
+                        <li>
+                            Součet naplánovaných hodin u fáze by měl odpovídat hodinám u dané fáze v Achievu.  
+                        </li>
+                        <li>
+                            Červenou barvou jsou zvýrazněny fáze, které jsou v Achievu již neaktivní.  
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <h6>Poznámka</h6>
+                    <ul>
+                        <li>
+                            Je nutné mít naplánované fáze a přiřazené osoby v Achievu. Do této aplikace se změny propisují každý den kolem půlnoci.  
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `
+
+    function toggleHelp() {
+        const helpHolder = document.querySelector("#collapseExample");
+        switch (MODE_TOGGLE) {
+            case 1:
+                helpHolder.innerHTML = help_Resource_Plan;
+                break;
+            case 2:
+                helpHolder.innerHTML = help_Initial_Plan;
+                break;
+            default:
+                helpHolder.innerHTML = help_Resource_Plan;
+        }
+    }
+
+    function toggleMode(value) {
+        MODE_TOGGLE = value
+        toggleHelp()
+    }
+
+</script>
 {% endblock content %}
