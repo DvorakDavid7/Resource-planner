@@ -108,11 +108,14 @@ function generatePhaseTable(data) {
     workerList = data.workerList;
     const values = data.values;
 
+    const ColWidth = Math.floor(100 / (workerList.length + 1)) 
+
     let trSum = document.createElement("tr");
     trSum.classList.add("sum-row");
     trSum.dataset.len = workerList.length;
 
     let thFirst = document.createElement("th");
+    thFirst.style = `width: ${ColWidth}%`;
     thFirst.scope = "col";
     thFirst.innerText = "Phase";
     thFirst.classList.add("text-center");
@@ -124,6 +127,7 @@ function generatePhaseTable(data) {
         th.scope = "col";
         th.innerText = `${workerName} (${worker.role})`;
         th.classList.add("header-data");
+        th.style = `width: ${ColWidth}%`
         if (!worker.isWorkerActive) {
             th.style.color = "red";
         };
@@ -187,6 +191,7 @@ function addVerticalSum()
     sumRow.innerHTML = "";
     const verticalSumField = generateVerticalSum();
     const firstTd = document.createElement("td");
+    firstTd.innerHTML = "<b>Sum:</b>"
     sumRow.appendChild(firstTd);
     for (let i = 0; i < horizontalLength; i++) {
         let tdSum = document.createElement("td");
@@ -223,6 +228,7 @@ async function generateInatialPlanTable(data) {
     
     let sumRow = document.createElement("tr");
     let sumTdFirst = document.createElement("td");
+    sumTdFirst.innerHTML = "<b>Sum:</b>"
     let sumTdValue = document.createElement("td");
     sumTdValue.classList.add("sum-td");
     sumTdValue.classList.add("text-center");
@@ -237,7 +243,7 @@ async function generateInatialPlanTable(data) {
         th.innerText = phase.phaseName;
         if (responseData[phase.phaseId]) {
             let value = parseInt(responseData[phase.phaseId]).toFixed(2);
-            td.innerText = value;
+            td.innerText = parseFloat(value).toLocaleString();
         }
         else {
             td.innerText = ""
@@ -253,7 +259,7 @@ async function generateInatialPlanTable(data) {
         tbody.appendChild(tr);
     }
     for (let element of document.querySelectorAll(".finance-data")) {
-        defaultValuesFiance.push(element.innerHTML)
+        defaultValuesFiance.push(parseFloat(element.innerHTML.replace("&nbsp;", "")))
     }
     tbody.appendChild(sumRow);
     initialPlanSum();
@@ -266,10 +272,10 @@ function initialPlanSum()
     const sumTd = document.querySelector(".sum-td");
     let sum = 0;
     for (let element of data) {
-        let value = element.innerText;
-        sum += value ? parseInt(value) : 0;
+        let value = element.innerHTML.replace("&nbsp;", "");
+        sum += value ? parseFloat(value) : 0;
     }
-    sumTd.innerText = `${sum} Kč`;
+    sumTd.innerText = `${parseFloat(sum).toLocaleString()} Kč`;
 }
 
 
@@ -337,7 +343,7 @@ function getChangesList() {
     if (currentTable === "finance") {
         let values = document.querySelectorAll(".finance-data");
         for (let i = 0; i < values.length; i++) {
-            if(values[i].innerHTML != defaultValuesFiance[i]) {
+            if(parseInt(values[i].innerHTML.replace("&nbsp;", "")) != defaultValuesFiance[i]) {
                 let newValue = values[i].innerHTML;
                 let change = {
                     "amount": newValue,
@@ -368,7 +374,6 @@ function getChangesList() {
         }
         sendChanges(changeList, '/finance/save_changes');
     }
-    console.log(changeList);
 }
 
 
@@ -399,8 +404,8 @@ async function getProjectInfo() {
     // trProjectId.innerHTML = project.projectID;
     trProjectManager.innerHTML = project.projectManager;
     trDeliveryManager.innerHTML = project.deliveryManager;
-    trEstimate.innerHTML = project.estimate + "h | " + (parseInt(project.estimate) / 8).toFixed(1) + "md"; 
-    trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toFixed(2) + " Kč" : "";
+    trEstimate.innerHTML = project.estimate + " h | " + (parseInt(project.estimate) / 8).toFixed(1) + " MD"; 
+    trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toLocaleString() + " Kč" : "";
 }
 
 
@@ -413,5 +418,5 @@ function computeSum() {
             sum += value;
         }
     }
-    return sum + "h | " + (sum / 8).toFixed(1) + "md";
+    return sum + " h | " + (sum / 8).toFixed(1) + " MD";
 }
