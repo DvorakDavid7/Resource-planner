@@ -26,7 +26,7 @@ def create_app(config_class):
     from planner.Controllers.groups import groups
     from planner.Controllers.finance import finance
     from planner.Controllers.projects import projects
-    from planner.Controllers.alocation import allocation
+    from planner.Controllers.allocation import allocation
     from planner.Controllers.home import home
     from planner.Controllers.navigation import navigation
 
