@@ -383,13 +383,16 @@ function generateVerticalSum()
     const matrix = toMatrix();
     let result = [];
 
-    for (let i = 0; i < matrix.length; i++) {
-        let sum = 0;
-        for (let row of matrix) {
-            sum += row[i] ? parseInt(row[i]) : 0;
-         }
-        result.push(sum);
+    for (let i = 0; i < matrix[0].length; i++) {
+        result[i] = 0
     }
+
+    for (let row of matrix) {
+        for (let i = 0; i < row.length; i++) {
+            result[i] += row[i] ? parseInt(row[i]) : 0
+        }
+    }
+    
     return result;
 }
 
