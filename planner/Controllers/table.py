@@ -21,7 +21,7 @@ def table_get() -> str:
             "workerList": json.loads(workerList),
             "values": json.loads(values)
         }
-        return render_template("table.html", header=json.loads(header), tableModel=tableModel)
+        return render_template("table.html", header=json.loads(header), tableModel=tableModel, env=current_app.config["ENV"])
 
     date_range = DateRange("", "", "", "")
     date_range.set_basedOnWeekNumber(date_range.currentWeek, date_range.currentYear)
