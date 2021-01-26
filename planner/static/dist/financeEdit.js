@@ -372,7 +372,6 @@ function initialPlanSum()
     let sum = 0;
     for (let element of data) {
         let value = element.innerHTML.replace("&nbsp;", "").replace("Kč", "").replace(",", ".");
-        console.log(parseFloat(value));
         sum += value ? parseFloat(value) : 0;
     }
     sumTd.innerText = `${parseFloat(sum).toLocaleString('cs-CZ', {style:'currency', currency:'CZK'})}`;
