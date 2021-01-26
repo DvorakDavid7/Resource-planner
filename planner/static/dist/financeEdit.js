@@ -341,8 +341,8 @@ async function generateInatialPlanTable(data) {
         th.scope = "row";
         th.innerText = phase.phaseName;
         if (responseData[phase.phaseId]) {
-            let value = parseInt(responseData[phase.phaseId]).toFixed(2);
-            td.innerText = parseFloat(value).toLocaleString();
+            let value = parseFloat(responseData[phase.phaseId]).toFixed(2);
+            td.innerText = parseFloat(value).toLocaleString('cs-CZ', {style:'currency', currency:'CZK'});
         }
         else {
             td.innerText = ""
@@ -371,10 +371,11 @@ function initialPlanSum()
     const sumTd = document.querySelector(".sum-td");
     let sum = 0;
     for (let element of data) {
-        let value = element.innerHTML.replace("&nbsp;", "");
+        let value = element.innerHTML.replace("&nbsp;", "").replace("Kč", "").replace(",", ".");
+        console.log(parseFloat(value));
         sum += value ? parseFloat(value) : 0;
     }
-    sumTd.innerText = `${parseFloat(sum).toLocaleString()} Kč`;
+    sumTd.innerText = `${parseFloat(sum).toLocaleString('cs-CZ', {style:'currency', currency:'CZK'})}`;
 }
 
 
@@ -445,7 +446,7 @@ function getChangesList() {
     if (currentTable === "finance") {
         let values = document.querySelectorAll(".finance-data");
         for (let i = 0; i < values.length; i++) {
-            if(parseInt(values[i].innerHTML.replace("&nbsp;", "")) != defaultValuesFiance[i]) {
+            if(parseFloat(values[i].innerHTML.replace("&nbsp;", "")) != defaultValuesFiance[i]) {
                 let newValue = values[i].innerHTML;
                 let change = {
                     "amount": newValue,
@@ -507,7 +508,7 @@ async function getProjectInfo() {
     trProjectManager.innerHTML = project.projectManager;
     trDeliveryManager.innerHTML = project.deliveryManager;
     trEstimate.innerHTML = project.estimate + " h | " + (parseInt(project.estimate) / 8).toFixed(1) + " MD"; 
-    trAmount.innerHTML = project.amountTotal != "None" ? parseInt(project.amountTotal).toLocaleString() + " Kč" : "";
+    trAmount.innerHTML = project.amountTotal != "None" ? parseFloat(project.amountTotal).toLocaleString('cs-CZ', {style:'currency', currency:'CZK'}) : "";
 }
 
 
